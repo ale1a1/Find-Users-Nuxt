@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import { watchEffect } from 'vue';
+import Footer from './components/footer.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -15,7 +16,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div>
+  <div class="min-h-screen flex flex-col">
     <!-- Check if user is authenticated -->
     <template v-if="authStore.user">
       <!-- Show navbar if user is authenticated -->
@@ -48,7 +49,13 @@ watchEffect(() => {
         </div>
       </nav>
     </template>
-    <!-- Main page content goes here -->
-    <NuxtPage />
+    <!-- Main page content -->
+    <div class="flex-1">
+      <NuxtPage />
+    </div>
+    <!-- Footer only if user is authenticated -->
+    <template v-if="authStore.user">
+      <Footer />
+    </template>
   </div>
 </template>
