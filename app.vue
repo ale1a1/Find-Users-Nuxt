@@ -19,7 +19,7 @@ const router = useRouter();
 
 // Redirect if user is not authenticated
 watchEffect(() => {
-  if (authStore.user && router.currentRoute.value.path !== '/login') {
+  if (!authStore.user && router.currentRoute.value.path !== '/login') {
     router.push('/login');
   }
 });
@@ -28,7 +28,7 @@ watchEffect(() => {
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Check if user is authenticated -->
-    <template v-if="!authStore.user">
+    <template v-if="authStore.user">
       <nav class="bg-red-500">
         <div class="px-2 sm:px-6 lg:px-8">
           <div class="relative flex h-16 items-center justify-between">
@@ -100,7 +100,7 @@ watchEffect(() => {
       <NuxtPage />
     </div>
     <!-- Footer only if user is authenticated -->
-    <template v-if="!authStore.user">
+    <template v-if="authStore.user">
       <Footer />
     </template>  
   </div>
