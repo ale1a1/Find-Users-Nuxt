@@ -4,7 +4,6 @@ import RegistrationModal from '~/components/registration-modal.vue';
 const isModalOpen = ref(false)
 
 const openRegisterModal = () => {
-  console.log("Opening modal"); // Debugging
   isModalOpen.value = true
 }
 
