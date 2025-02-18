@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
+import type { FirebaseUser } from '~/types/firebase';
+
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as null | { id: string; name: string; email: string }, 
+    user: null as null | FirebaseUser
   }),
 
   actions: {
-    setUser(user: { id: string; name: string; email: string }) {
+    setUser(user: FirebaseUser) {
       this.user = user;
     },
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { defineEmits } from "vue";
-
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "~/firebase";
 
@@ -43,10 +42,10 @@ const closeModal = () => {
 
 <template>
   <!-- Modal Overlay -->
-  <div v-if="modalVisible" class="min-h-screen bg-gray-200 flex-col w-full px-6 py-12 lg:px-8 fixed inset-0 flex justify-center items-center z-50">
-    <div v-click-outside="closeModal" class="bg-white rounded-lg shadow-lg w-full sm:w-96 p-6 relative">
+  <div v-if="modalVisible" class="min-h-screen bg-gray-100 flex-col w-full px-6 py-12 lg:px-8 fixed inset-0 flex justify-center items-center z-50">
+    <div v-click-outside="closeModal" class="bg-white rounded-lg shadow-lg w-full sm:w-96 p-8 relative">
       <!-- Close Button -->
-      <button @click="closeModal" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-xl cursor-pointer">
+      <button @click="closeModal" class="absolute top-0 right-2 text-gray-600 hover:text-gray-900 text-xl cursor-pointer">
         &times;
       </button>
       <!-- Title -->      

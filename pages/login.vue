@@ -1,5 +1,16 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth';
 import RegistrationModal from '~/components/registration-modal.vue'; 
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "~/firebase";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+
+// Form fields
+const email = ref("");
+const password = ref("");
 
 const isModalOpen = ref(false)
 
@@ -10,6 +21,30 @@ const openRegisterModal = () => {
 const closeRegisterModal = () => {
   isModalOpen.value = false;
 };
+
+// TODO: se the toaster for success and error
+// Login function
+const login = async () => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+    const user = userCredential.user;
+    authStore.setUser(user);
+    alert("LOGGED IN");    
+    router.push("/");
+  } catch (error: unknown) {
+    if (isFirebaseError(error)) {
+      const errorCode = error.code || 'Unknown error code';
+      const errorMessage = error.message || 'Unknown error message';
+      alert(`ERROR: ${errorCode} - ${errorMessage}`);
+    } else {
+      alert("An unexpected error occurred.");
+    }
+  }
+};
+
+function isFirebaseError(error: unknown): error is { code: string; message: string } {
+  return typeof error === 'object' && error !== null && 'code' in error && 'message' in error;
+}
 </script>
 
 <template>
@@ -19,11 +54,11 @@ const closeRegisterModal = () => {
           <h2 class="mt-0 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
       </div>
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
+        <form @submit.prevent="login" class="space-y-6" action="#" method="POST">
           <div>
             <label for="email" class="block font-medium text-gray-900">Email address</label>
             <div class="mt-2">
-              <input type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <input v-model="email" type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
             </div>
           </div>
           <div>
@@ -34,7 +69,7 @@ const closeRegisterModal = () => {
               </div>
             </div>
             <div class="mt-2">
-              <input type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <input v-model="password" type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
             </div>
           </div>
           <div>

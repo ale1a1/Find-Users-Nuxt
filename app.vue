@@ -4,10 +4,12 @@ import { useRouter } from 'vue-router';
 import { watchEffect } from 'vue';
 import Footer from './components/footer.vue';
 import { useHead } from '#imports'
+import { signOut } from "firebase/auth";
+import { auth } from "~/firebase";
 
 useHead({
   htmlAttrs: {
-    class: 'h-full bg-white'
+    class: 'h-full bg-gray-100'
   },
   bodyAttrs: {
     class: 'h-full'
@@ -16,6 +18,19 @@ useHead({
 
 const authStore = useAuthStore();
 const router = useRouter();
+
+const logout = async () => {
+  try {
+    // Step 1: Empty the user store 
+    authStore.logout(); 
+    // Step 2: Call Firebase sign-out to clear any stored auth tokens and session
+    await signOut(auth);   
+    alert("Successfully logged out!");
+  } catch (error) {
+    console.error("Logout Error: ", error);
+    alert("An error occurred while logging out.");
+  }
+};
 
 // Redirect if user is not authenticated
 watchEffect(() => {
@@ -78,7 +93,7 @@ watchEffect(() => {
                   <!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
                   <NuxtLink to="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</NuxtLink>
                   <NuxtLink to="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</NuxtLink>
-                  <NuxtLink to="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
+                  <NuxtLink @click="logout" class="block px-4 py-2 text-sm text-gray-700 cursor-pointer" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
                 </div>
               </div>
             </div>
