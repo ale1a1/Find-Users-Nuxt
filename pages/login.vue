@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth';
 import RegistrationModal from '~/components/registration-modal.vue'; 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "~/firebase";
+import { toast } from 'vue3-toastify'
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -28,9 +29,17 @@ const login = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
-    authStore.setUser(user);
-    alert("LOGGED IN");    
-    router.push("/");
+    toast.success('Logging in...', {
+      position: 'top-right',
+      autoClose: 1250,       
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true
+    })
+    setTimeout(() => {
+      authStore.setUser(user);
+      router.push('/');
+    }, 1750); 
   } catch (error: unknown) {
     if (isFirebaseError(error)) {
       const errorCode = error.code || 'Unknown error code';

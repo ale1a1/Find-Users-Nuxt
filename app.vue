@@ -6,6 +6,7 @@ import Footer from './components/footer.vue';
 import { useHead } from '#imports'
 import { signOut } from "firebase/auth";
 import { auth } from "~/firebase";
+import { toast } from 'vue3-toastify'
 
 useHead({
   htmlAttrs: {
@@ -21,18 +22,24 @@ const router = useRouter();
 
 const logout = async () => {
   try {
-    // Step 1: Empty the user store 
-    authStore.logout(); 
-    // Step 2: Call Firebase sign-out to clear any stored auth tokens and session
-    await signOut(auth);   
-    alert("Successfully logged out!");
+    await signOut(auth); 
+    setTimeout(() => {
+      authStore.logout(); 
+    }, 1750);   
+    toast.success('Logging out', {
+      position: 'top-right',
+      autoClose: 1250,       
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true
+    })
   } catch (error) {
     console.error("Logout Error: ", error);
     alert("An error occurred while logging out.");
   }
 };
 
-// Redirect if user is not authenticated
+// // Redirect if user is not authenticated
 watchEffect(() => {
   if (!authStore.user && router.currentRoute.value.path !== '/login') {
     router.push('/login');
