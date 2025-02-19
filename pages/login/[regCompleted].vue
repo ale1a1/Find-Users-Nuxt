@@ -4,9 +4,10 @@ import RegistrationModal from '~/components/registration-modal.vue';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "~/firebase";
 import { toast } from 'vue3-toastify'
-import { Eye, EyeOff } from 'lucide-vue-next';
+import { Eye, EyeOff, Check } from 'lucide-vue-next';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 const email = ref("");
@@ -19,6 +20,8 @@ const isModalOpen = ref(false)
 
 const openRegisterModal = () => {
   isModalOpen.value = true
+  email.value = "";
+  password.value = "";
 }
 
 const closeRegisterModal = () => {
@@ -70,11 +73,23 @@ const login = async () => {
 function isFirebaseError(error: unknown): error is { code: string; message: string } {
   return typeof error === 'object' && error !== null && 'code' in error && 'message' in error;
 }
+ 
+const verificationMessage = route.params.regCompleted == "email-verified" ? 'Your email has been verified. <br> You can now login.' : '';
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">
+  
+  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 pt-0 pb-12 lg:px-8">
+    <!-- Verification message -->      
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <div v-if="verificationMessage" class="flex items-center mb-4 p-4 bg-green-50 border border-green-200 rounded-lg shadow-md">
+        <div class="flex items-center justify-center w-10 h-10 bg-green-500 rounded-full">
+          <Check class="w-6 h-6 text-white" />
+        </div>
+        <p class="text-green-800 ml-4 text-lg font-semibold" v-html="verificationMessage"></p>
+      </div>
+    </div>   
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">    
       <!-- Title -->      
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 class="mt-0 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>

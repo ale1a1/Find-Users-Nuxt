@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits } from "vue";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import { auth } from "~/firebase";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
@@ -26,6 +26,9 @@ const submitForm = async () => {
  isRegistering.value = true;
  await createUserWithEmailAndPassword(auth, email.value, password.value)
   .then((userCredential) => {
+      setTimeout(() => {
+        isRegistering.value = false;
+      }, 7000);
       toast.success('Registration completed!', {
       position: 'top-right',
       autoClose: 7000,       
@@ -33,6 +36,14 @@ const submitForm = async () => {
       closeOnClick: false,
       pauseOnHover: false
     })
+    const user = userCredential.user;
+    if (user) {
+      sendEmailVerification(user);
+      toast.info("Verification email sent! Please check your inbox.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    }
   })
   .catch((error) => {
     setTimeout(() => {
@@ -53,6 +64,7 @@ const submitForm = async () => {
 const closeModal = () => {
   email.value = "";
   password.value = "";
+  passwordTouched.value = false;
   emit("close");
 };
 

@@ -48,7 +48,7 @@ const logout = async () => {
 
 // Redirect if user is not authenticated
 watchEffect(() => {
-  if (!authStore.user && router.currentRoute.value.path !== '/login') {
+  if (!authStore.user && router.currentRoute.value.path !== '/login' && router.currentRoute.value.path !== '/login/email-verified') {
     router.push('/login');
   }
 });
