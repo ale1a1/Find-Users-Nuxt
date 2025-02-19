@@ -26,7 +26,7 @@ const logout = async () => {
     setTimeout(() => {
       authStore.logout(); 
     }, 1750);   
-    toast.success('Logging out', {
+    toast.success('Logging out...-', {
       position: 'top-right',
       autoClose: 1250,       
       hideProgressBar: false,
@@ -34,12 +34,19 @@ const logout = async () => {
       pauseOnHover: true
     })
   } catch (error) {
-    console.error("Logout Error: ", error);
-    alert("An error occurred while logging out.");
+    const toastErrorMessage = "Logout Error: " + error
+    console.error(toastErrorMessage);
+    toast.error(toastErrorMessage, {
+      position: 'top-right',
+      autoClose: 7000,       
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
   }
 };
 
-// // Redirect if user is not authenticated
+// Redirect if user is not authenticated
 watchEffect(() => {
   if (!authStore.user && router.currentRoute.value.path !== '/login') {
     router.push('/login');

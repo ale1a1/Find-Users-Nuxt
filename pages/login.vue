@@ -4,14 +4,16 @@ import RegistrationModal from '~/components/registration-modal.vue';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "~/firebase";
 import { toast } from 'vue3-toastify'
+import { Eye, EyeOff } from 'lucide-vue-next';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
-
-// Form fields
 const email = ref("");
 const password = ref("");
+const showPassword = ref(false);
+
+const isLogging = ref(false);
 
 const isModalOpen = ref(false)
 
@@ -23,9 +25,8 @@ const closeRegisterModal = () => {
   isModalOpen.value = false;
 };
 
-// TODO: se the toaster for success and error
-// Login function
 const login = async () => {
+  isLogging.value = true;
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
@@ -41,12 +42,27 @@ const login = async () => {
       router.push('/');
     }, 1750); 
   } catch (error: unknown) {
-    if (isFirebaseError(error)) {
-      const errorCode = error.code || 'Unknown error code';
-      const errorMessage = error.message || 'Unknown error message';
-      alert(`ERROR: ${errorCode} - ${errorMessage}`);
+    setTimeout(() => {
+      isLogging.value = false;
+    }, 7000);
+    if (isFirebaseError(error)) {      
+      const toastErrorMessage = error.code || 'Unknown error';
+      console.error(toastErrorMessage);
+      toast.error(toastErrorMessage, {
+        position: 'top-right',
+        autoClose: 7000,       
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      })
     } else {
-      alert("An unexpected error occurred.");
+      toast.error("An unexpected error occurred.", {
+        position: 'top-right',
+        autoClose: 7000,       
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      })
     }
   }
 };
@@ -59,17 +75,21 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
 <template>
   <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">
+      <!-- Title -->      
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 class="mt-0 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
       </div>
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <!-- Form -->
         <form @submit.prevent="login" class="space-y-6" action="#" method="POST">
+          <!-- Email address -->
           <div>
             <label for="email" class="block font-medium text-gray-900">Email address</label>
             <div class="mt-2">
-              <input v-model="email" type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <input v-model="email" :disabled="isLogging" type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
             </div>
-          </div>
+          </div>    
+          <!-- Password -->
           <div>
             <div class="flex items-center justify-between">
               <label for="password" class="block font-medium text-gray-900">Password</label>
@@ -77,12 +97,18 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
                 <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
               </div>
             </div>
-            <div class="mt-2">
-              <input v-model="password" type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <div class="relative mt-2">
+              <input :type="showPassword ? 'text' : 'password'" :disabled="isLogging" id="password" v-model="password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+              <!-- Eye Icon Toggle -->
+              <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700">
+                <Eye v-if="!showPassword" class="w-5 h-5" />
+                <EyeOff v-else class="w-5 h-5" />
+              </button> 
             </div>
           </div>
+          <!-- Submit Button -->
           <div>
-            <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">Sign in</button>
+            <button type="submit" :disabled="isLogging" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">Sign in</button>
           </div>
         </form>
         <p class="mt-10 text-center text-sm/6 text-gray-500">
