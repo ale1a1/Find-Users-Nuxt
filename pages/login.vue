@@ -30,6 +30,8 @@ const login = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
+    email.value = ""; 
+    password.value = "";
     toast.success('Logging in...', {
       position: 'top-right',
       autoClose: 1250,       
