@@ -1,17 +1,19 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCENAiZMK90S0S6ECFF7ZpwRgHO4dsGe-E",
-  authDomain: "find-users-nuxt-fd91e.firebaseapp.com",
-  projectId: "find-users-nuxt-fd91e",
-  storageBucket: "find-users-nuxt-fd91e.firebasestorage.app",
-  messagingSenderId: "324266030114",
-  appId: "1:324266030114:web:7883c498d763eb902d467b",
-  measurementId: "G-DMB0C6EH03"
+  apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-export { auth };
+export { auth, db };
