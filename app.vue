@@ -25,10 +25,10 @@ const logout = async () => {
     await signOut(auth); 
     setTimeout(() => {
       authStore.logout(); 
-    }, 1750);   
+    }, 2000);   
     toast.success('Logging out...-', {
       position: 'top-right',
-      autoClose: 1250,       
+      autoClose: 1000,       
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: true

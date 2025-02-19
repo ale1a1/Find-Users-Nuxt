@@ -15,8 +15,11 @@ const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
 const passwordTouched = ref(false);
+const formTouchedAfterError = ref(false);
 
 const isRegistering = ref(false);
+const registered = ref(false);
+const apiCall = ref(false);
 
 const modalVisible = computed(() => {
   return props.isOpen;
@@ -24,11 +27,11 @@ const modalVisible = computed(() => {
 
 const submitForm = async () => { 
  isRegistering.value = true;
+ apiCall.value = true     
  await createUserWithEmailAndPassword(auth, email.value, password.value)
   .then((userCredential) => {
-      setTimeout(() => {
-        isRegistering.value = false;
-      }, 7000);
+      apiCall.value = false
+      registered.value = true
       toast.success('Registration completed!', {
       position: 'top-right',
       autoClose: 7000,       
@@ -39,13 +42,19 @@ const submitForm = async () => {
     const user = userCredential.user;
     if (user) {
       sendEmailVerification(user);
-      toast.info("Verification email sent! Please check your inbox.", {
+      setTimeout(() => {
+        toast.info("Verification email sent! Please check your inbox.", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 6500,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
       });
+      }, 2000);  
     }
   })
   .catch((error) => {
+    apiCall.value = false     
     setTimeout(() => {
       isRegistering.value = false;
     }, 7000);
@@ -53,7 +62,7 @@ const submitForm = async () => {
     console.error(toastErrorMessage);
     toast.error(toastErrorMessage, {
       position: 'top-right',
-      autoClose: 7000,       
+      autoClose: 5500,       
       hideProgressBar: true,
       closeOnClick: false,
       pauseOnHover: false
@@ -65,6 +74,8 @@ const closeModal = () => {
   email.value = "";
   password.value = "";
   passwordTouched.value = false;
+  isRegistering.value = false;
+  registered.value = false;
   emit("close");
 };
 
@@ -104,7 +115,7 @@ const passwordError = computed(() => {
           <label for="username" class="block font-medium text-gray-900">Email address</label>
           <div class="mt-2">
 
-            <input type="email" :disabled="isRegistering" id="username" v-model="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+            <input type="email" @input="formTouchedAfterError = true" :disabled="isRegistering" id="username" v-model="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
           </div>
         </div>
         <!-- Password -->
@@ -122,8 +133,11 @@ const passwordError = computed(() => {
         </div>   
         <!-- Register Button -->
         <div>
-          <button type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
-            Register
+          <button v-if="!registered"  type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
+            {{ apiCall ? 'Registering...' : 'Register' }}
+          </button>
+          <button v-else type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
+            Registered
           </button>
         </div>
       </form>

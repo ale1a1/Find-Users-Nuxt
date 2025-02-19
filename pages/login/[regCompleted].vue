@@ -15,6 +15,7 @@ const password = ref("");
 const showPassword = ref(false);
 
 const isLogging = ref(false);
+const apiCall = ref(false);
 
 const isModalOpen = ref(false)
 
@@ -29,13 +30,14 @@ const closeRegisterModal = () => {
 };
 
 const login = async () => {
+  apiCall.value = true;
   isLogging.value = true;
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;    
     toast.success('Logging in...', {
       position: 'top-right',
-      autoClose: 1250,       
+      autoClose: 1000,       
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: true
@@ -43,8 +45,9 @@ const login = async () => {
     setTimeout(() => {
       authStore.setUser(user);
       router.push('/');
-    }, 1750); 
+    }, 2000); 
   } catch (error: unknown) {
+    apiCall.value = false;
     setTimeout(() => {
       isLogging.value = false;
     }, 7000);
@@ -53,7 +56,7 @@ const login = async () => {
       console.error(toastErrorMessage);
       toast.error(toastErrorMessage, {
         position: 'top-right',
-        autoClose: 7000,       
+        autoClose: 5500,       
         hideProgressBar: true,
         closeOnClick: false,
         pauseOnHover: false
@@ -61,7 +64,7 @@ const login = async () => {
     } else {
       toast.error("An unexpected error occurred.", {
         position: 'top-right',
-        autoClose: 7000,       
+        autoClose: 5500,       
         hideProgressBar: true,
         closeOnClick: false,
         pauseOnHover: false
@@ -123,7 +126,9 @@ const verificationMessage = route.params.regCompleted == "email-verified" ? 'You
           </div>
           <!-- Submit Button -->
           <div>
-            <button type="submit" :disabled="isLogging" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">Sign in</button>
+            <button type="submit" :disabled="isLogging" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
+              {{ apiCall ? 'Signing in...' : 'Sign in' }}
+            </button>
           </div>
         </form>
         <p class="mt-10 text-center text-sm/6 text-gray-500">
