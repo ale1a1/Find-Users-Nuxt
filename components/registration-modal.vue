@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { defineEmits } from "vue";
 import { createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
-import { auth } from "~/firebase";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
+
+const auth = useNuxtApp().$auth;
 
 const props = defineProps<{
   isOpen: boolean;

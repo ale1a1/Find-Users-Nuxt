@@ -5,8 +5,9 @@ import { watchEffect } from 'vue';
 import Footer from './components/footer.vue';
 import { useHead } from '#imports'
 import { signOut } from "firebase/auth";
-import { auth } from "~/firebase";
 import { toast } from 'vue3-toastify'
+
+const auth = useNuxtApp().$auth;
 
 useHead({
   htmlAttrs: {

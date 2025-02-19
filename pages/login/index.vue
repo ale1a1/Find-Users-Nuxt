@@ -2,9 +2,10 @@
 import { useAuthStore } from '@/stores/auth';
 import RegistrationModal from '~/components/registration-modal.vue'; 
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "~/firebase";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
+
+const auth = useNuxtApp().$auth;
 
 const router = useRouter();
 const authStore = useAuthStore();
