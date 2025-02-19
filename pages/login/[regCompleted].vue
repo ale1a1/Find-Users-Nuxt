@@ -78,7 +78,7 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
   return typeof error === 'object' && error !== null && 'code' in error && 'message' in error;
 }
  
-const verificationMessage = route.params.regCompleted == "email-verified" ? 'Your email has been verified. <br> You can now login.' : '';
+const verificationMessage = route.params.regCompleted == "email-verified" ? 'Your email has been verified. You can now login.' : '';
 </script>
 
 <template>
@@ -87,10 +87,10 @@ const verificationMessage = route.params.regCompleted == "email-verified" ? 'You
     <!-- Verification message -->      
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <div v-if="verificationMessage" class="flex items-center mb-4 p-4 bg-green-50 border border-green-200 rounded-lg shadow-md">
-        <div class="flex items-center justify-center w-10 h-10 bg-green-500 rounded-full">
-          <Check class="w-6 h-6 text-white" />
+        <div class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full">
+          <Check class="w-4 h-4 text-white" />
         </div>
-        <p class="text-green-800 ml-4 text-lg font-semibold" v-html="verificationMessage"></p>
+        <p class="text-green-800 ml-2 text-sm font-semibold" v-html="verificationMessage"></p>
       </div>
     </div>   
     <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">    
@@ -131,11 +131,7 @@ const verificationMessage = route.params.regCompleted == "email-verified" ? 'You
               {{ apiCall ? 'Signing in...' : 'Sign in' }}
             </button>
           </div>
-        </form>
-        <p class="mt-10 text-center text-sm/6 text-gray-500">
-          Not register yet?
-          <a @click="openRegisterModal" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Click here to create your profile</a>
-        </p>
+        </form>       
       </div>
     </div>
   </div>
