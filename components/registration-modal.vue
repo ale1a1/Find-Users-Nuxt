@@ -14,6 +14,7 @@ const emit = defineEmits(["close"]);
 const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
+const passwordTouched = ref(false);
 
 const isRegistering = ref(false);
 
@@ -25,9 +26,7 @@ const submitForm = async () => {
  isRegistering.value = true;
  await createUserWithEmailAndPassword(auth, email.value, password.value)
   .then((userCredential) => {
-    email.value = "";
-    password.value = "";  
-    toast.success('Registration completed!', {
+      toast.success('Registration completed!', {
       position: 'top-right',
       autoClose: 7000,       
       hideProgressBar: true,
@@ -56,6 +55,24 @@ const closeModal = () => {
   password.value = "";
   emit("close");
 };
+
+const passwordError = computed(() => {
+  if (!passwordTouched.value) return ""; 
+  
+  if (password.value.length < 6) {
+    return "Password must be at least 6 characters long.";
+  }
+  if (password.value.length > 20) {
+    return "Password cannot be more than 20 characters.";
+  }
+  if (!/[A-Z]/.test(password.value)) {
+    return "Password must contain at least one uppercase letter.";
+  }
+  if (!/\d/.test(password.value)) {
+    return "Password must contain at least one number.";
+  }
+  return "";
+});
 </script >
 
 <template>
@@ -74,6 +91,7 @@ const closeModal = () => {
         <div>
           <label for="username" class="block font-medium text-gray-900">Email address</label>
           <div class="mt-2">
+
             <input type="email" :disabled="isRegistering" id="username" v-model="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
           </div>
         </div>
@@ -81,17 +99,18 @@ const closeModal = () => {
         <div>
           <label for="password" class="block font-medium text-gray-900">Password</label>
           <div class="relative mt-2">
-            <input :type="showPassword ? 'text' : 'password'" :disabled="isRegistering" id="password" v-model="password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+            <input :type="showPassword ? 'text' : 'password'"  @input="passwordTouched = true" :disabled="isRegistering" id="password" v-model="password" required class="block w-full rounded-md bg-white pl-3 pr-10 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
             <!-- Eye Icon Toggle -->
             <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700">
               <Eye v-if="!showPassword" class="w-5 h-5" />
               <EyeOff v-else class="w-5 h-5" />
             </button> 
           </div>
+          <p v-if="passwordError" class="text-red-500 text-sm mt-2">{{ passwordError }}</p>
         </div>   
         <!-- Register Button -->
         <div>
-          <button type="submit" :disabled="isRegistering" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
+          <button type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
             Register
           </button>
         </div>

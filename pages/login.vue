@@ -29,9 +29,7 @@ const login = async () => {
   isLogging.value = true;
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-    const user = userCredential.user;
-    email.value = ""; 
-    password.value = "";
+    const user = userCredential.user;    
     toast.success('Logging in...', {
       position: 'top-right',
       autoClose: 1250,       
@@ -100,7 +98,7 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
               </div>
             </div>
             <div class="relative mt-2">
-              <input :type="showPassword ? 'text' : 'password'" :disabled="isLogging" id="password" v-model="password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+              <input :type="showPassword ? 'text' : 'password'" :disabled="isLogging" id="password" v-model="password" required class="block w-full rounded-md bg-white pl-3 pr-10 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
               <!-- Eye Icon Toggle -->
               <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700">
                 <Eye v-if="!showPassword" class="w-5 h-5" />
