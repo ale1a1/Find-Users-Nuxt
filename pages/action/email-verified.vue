@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
-import RegistrationModal from '~/components/registration-modal.vue'; 
-import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useAuthStore } from '../../stores/auth';
+import ForgotPasswordModal from '../../components/forgot-password-modal.vue';
+import { type Auth, signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from 'vue3-toastify'
-import { Eye, EyeOff } from 'lucide-vue-next';
+import { Eye, EyeOff, Check } from 'lucide-vue-next';
+import { reactive, ref } from 'vue';
+import { useNuxtApp } from 'nuxt/app';
+import { useRouter } from 'vue-router';
+
 
 type ModalKeys = "registerModal" | "forgotPasswordModal";
 
-const auth = useNuxtApp().$auth;
+const auth = useNuxtApp().$auth as Auth;
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -19,6 +22,8 @@ const showPassword = ref(false);
 
 const isLogging = ref(false);
 const apiCall = ref(false);
+
+const verificationMessage = 'Your email has been verified. You can now login.';
 
 const modals = reactive({
   registerModalOpen: false,
@@ -81,12 +86,22 @@ const login = async () => {
 
 function isFirebaseError(error: unknown): error is { code: string; message: string } {
   return typeof error === 'object' && error !== null && 'code' in error && 'message' in error;
-}
+} 
 </script>
 
-<template>
-  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">
+<template>  
+
+  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 pt-0 pb-12 lg:px-8">
+    <!-- Verification message -->      
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <div class="flex items-center mb-4 p-4 bg-green-50 border border-green-200 rounded-lg shadow-md">
+        <div class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full">
+          <Check class="w-4 h-4 text-white" />
+        </div>
+        <p class="text-green-800 ml-2 text-sm font-semibold" v-html="verificationMessage"></p>
+      </div>
+    </div>   
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">    
       <!-- Title -->      
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 class="mt-0 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
@@ -124,16 +139,11 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
               {{ apiCall ? 'Signing in...' : 'Sign in' }}
             </button>
           </div>
-        </form>
-        <p class="mt-10 text-center text-sm/6 text-gray-500">
-          Not register yet?
-          <a @click="openModal('registerModal')" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Click here to create your profile</a>
-        </p>
+        </form>       
       </div>
     </div>
   </div>
 
- <RegistrationModal :isOpen="modals.registerModalOpen" @close="closeModal('registerModal')"/>
  <ForgotPasswordModal :isOpen="modals.forgotPasswordModalOpen" @close="closeModal('forgotPasswordModal')"/>
- 
+
 </template>

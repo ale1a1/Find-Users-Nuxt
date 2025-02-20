@@ -79,7 +79,7 @@ const closeModal = () => {
       <h2 class="text-center text-2xl font-bold text-gray-900 mb-4">Forgot password?</h2>
       <!-- Description -->
       <p class="text-gray-700 text-center mt-10 mb-4">
-        Enter your email below and click 'Send Email' to receive a password reset link
+        Enter your email below and click 'Send Email' to receive a password reset <link rel="stylesheet" href="" class="">
       </p>      
       <!-- Form -->
       <form @submit.prevent="sendResetPasswordEmail" class="space-y-6 mt-10">

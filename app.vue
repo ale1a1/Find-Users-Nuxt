@@ -27,7 +27,7 @@ const logout = async () => {
     setTimeout(() => {
       authStore.logout(); 
     }, 2000);   
-    toast.success('Logging out...-', {
+    toast.success('Logging out...', {
       position: 'top-right',
       autoClose: 1000,       
       hideProgressBar: false,
@@ -47,9 +47,9 @@ const logout = async () => {
   }
 };
 
-// Redirect if user is not authenticated
 watchEffect(() => {
-  if (!authStore.user && router.currentRoute.value.path !== '/login' && router.currentRoute.value.path !== '/login/email-verified') {
+  const currentPath = router.currentRoute.value.path;
+  if (!authStore.user && currentPath !== '/login' && !currentPath.startsWith('/action')) {
     router.push('/login');
   }
 });

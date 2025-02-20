@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
+import RegistrationModal from '~/components/registration-modal.vue'; 
 import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from 'vue3-toastify'
-import { Eye, EyeOff, Check } from 'lucide-vue-next';
+import { Eye, EyeOff } from 'lucide-vue-next';
 
 type ModalKeys = "registerModal" | "forgotPasswordModal";
 
 const auth = useNuxtApp().$auth;
 
 const router = useRouter();
-const route = useRoute();
 const authStore = useAuthStore();
 
 const email = ref("");
@@ -40,18 +40,38 @@ const login = async () => {
   isLogging.value = true;
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-    const user = userCredential.user;    
-    toast.success('Logging in...', {
+    const user = userCredential.user;  
+    if (user.emailVerified) {
+      toast.success('Logging in...', {
       position: 'top-right',
       autoClose: 1000,       
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: true
-    })
-    setTimeout(() => {
-      authStore.setUser(user);
-      router.push('/');
-    }, 2000); 
+      })
+      setTimeout(() => {
+        authStore.setUser(user);
+        router.push('/');
+      }, 2000); 
+    } else {
+      apiCall.value = false;
+      toast.error('Please verify your email before logging in.', {
+      position: 'top-right',
+      autoClose: 7000,       
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+      })
+      setTimeout(() => {
+        toast.info("Please check your inbox.", {
+        position: "top-right",
+        autoClose: 6500,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      });
+      }, 2000); 
+    }
   } catch (error: unknown) {
     apiCall.value = false;
     setTimeout(() => {
@@ -82,23 +102,11 @@ const login = async () => {
 function isFirebaseError(error: unknown): error is { code: string; message: string } {
   return typeof error === 'object' && error !== null && 'code' in error && 'message' in error;
 }
- 
-const verificationMessage = route.params.regCompleted == "email-verified" ? 'Your email has been verified. You can now login.' : '';
 </script>
 
-<template>  
-
-  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 pt-0 pb-12 lg:px-8">
-    <!-- Verification message -->      
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <div v-if="verificationMessage" class="flex items-center mb-4 p-4 bg-green-50 border border-green-200 rounded-lg shadow-md">
-        <div class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full">
-          <Check class="w-4 h-4 text-white" />
-        </div>
-        <p class="text-green-800 ml-2 text-sm font-semibold" v-html="verificationMessage"></p>
-      </div>
-    </div>   
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">    
+<template>
+  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg rounded-lg p-8 bg-white">
       <!-- Title -->      
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 class="mt-0 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
@@ -136,11 +144,16 @@ const verificationMessage = route.params.regCompleted == "email-verified" ? 'You
               {{ apiCall ? 'Signing in...' : 'Sign in' }}
             </button>
           </div>
-        </form>       
+        </form>
+        <p class="mt-10 text-center text-sm/6 text-gray-500">
+          Not register yet?
+          <a @click="openModal('registerModal')" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Click here to create your profile</a>
+        </p>
       </div>
     </div>
   </div>
 
+ <RegistrationModal :isOpen="modals.registerModalOpen" @close="closeModal('registerModal')"/>
  <ForgotPasswordModal :isOpen="modals.forgotPasswordModalOpen" @close="closeModal('forgotPasswordModal')"/>
-
+ 
 </template>
