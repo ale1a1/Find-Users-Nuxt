@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
 import RegistrationModal from '~/components/registration-modal.vue'; 
+import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
+
+type ModalKeys = "registerModal" | "forgotPasswordModal";
 
 const auth = useNuxtApp().$auth;
 
@@ -17,16 +20,19 @@ const showPassword = ref(false);
 const isLogging = ref(false);
 const apiCall = ref(false);
 
-const isModalOpen = ref(false)
+const modals = reactive({
+  registerModalOpen: false,
+  forgotPasswordModalOpen: false
+});
 
-const openRegisterModal = () => {
-  isModalOpen.value = true
+const openModal = (modalName: ModalKeys) => {
+  modals[`${modalName}Open` as keyof typeof modals] = true;
   email.value = "";
-  password.value = "";
-}
+  password.value = ""
+};
 
-const closeRegisterModal = () => {
-  isModalOpen.value = false;
+const closeModal = (modalName: ModalKeys) => {
+  modals[`${modalName}Open` as keyof typeof modals] = false;
 };
 
 const login = async () => {
@@ -100,7 +106,7 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
             <div class="flex items-center justify-between">
               <label for="password" class="block font-medium text-gray-900">Password</label>
               <div class="text-sm">
-                <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                <a @click="openModal('forgotPasswordModal')" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Forgot password?</a>
               </div>
             </div>
             <div class="relative mt-2">
@@ -121,12 +127,13 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
         </form>
         <p class="mt-10 text-center text-sm/6 text-gray-500">
           Not register yet?
-          <a @click="openRegisterModal" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Click here to create your profile</a>
+          <a @click="openModal('registerModal')" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Click here to create your profile</a>
         </p>
       </div>
     </div>
   </div>
 
- <RegistrationModal :isOpen="isModalOpen" @close="closeRegisterModal"/>
+ <RegistrationModal :isOpen="modals.registerModalOpen" @close="closeModal('registerModal')"/>
+ <ForgotPasswordModal :isOpen="modals.forgotPasswordModalOpen" @close="closeModal('forgotPasswordModal')"/>
  
 </template>

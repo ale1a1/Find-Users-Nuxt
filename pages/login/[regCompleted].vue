@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
-import RegistrationModal from '~/components/registration-modal.vue'; 
+import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff, Check } from 'lucide-vue-next';
+
+type ModalKeys = "registerModal" | "forgotPasswordModal";
 
 const auth = useNuxtApp().$auth;
 
@@ -18,16 +20,19 @@ const showPassword = ref(false);
 const isLogging = ref(false);
 const apiCall = ref(false);
 
-const isModalOpen = ref(false)
+const modals = reactive({
+  registerModalOpen: false,
+  forgotPasswordModalOpen: false
+});
 
-const openRegisterModal = () => {
-  isModalOpen.value = true
+const openModal = (modalName: ModalKeys) => {
+  modals[`${modalName}Open` as keyof typeof modals] = true;
   email.value = "";
-  password.value = "";
-}
+  password.value = ""
+};
 
-const closeRegisterModal = () => {
-  isModalOpen.value = false;
+const closeModal = (modalName: ModalKeys) => {
+  modals[`${modalName}Open` as keyof typeof modals] = false;
 };
 
 const login = async () => {
@@ -81,8 +86,8 @@ function isFirebaseError(error: unknown): error is { code: string; message: stri
 const verificationMessage = route.params.regCompleted == "email-verified" ? 'Your email has been verified. You can now login.' : '';
 </script>
 
-<template>
-  
+<template>  
+
   <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 pt-0 pb-12 lg:px-8">
     <!-- Verification message -->      
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -113,7 +118,7 @@ const verificationMessage = route.params.regCompleted == "email-verified" ? 'You
             <div class="flex items-center justify-between">
               <label for="password" class="block font-medium text-gray-900">Password</label>
               <div class="text-sm">
-                <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                <a @click="openModal('forgotPasswordModal')" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">Forgot password?</a>
               </div>
             </div>
             <div class="relative mt-2">
@@ -136,6 +141,6 @@ const verificationMessage = route.params.regCompleted == "email-verified" ? 'You
     </div>
   </div>
 
- <RegistrationModal :isOpen="isModalOpen" @close="closeRegisterModal"/>
- 
+ <ForgotPasswordModal :isOpen="modals.forgotPasswordModalOpen" @close="closeModal('forgotPasswordModal')"/>
+
 </template>
