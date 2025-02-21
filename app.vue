@@ -17,13 +17,7 @@ const isAuthChecked = ref(false);
 
 onMounted(() => {
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      authStore.setUser(user); 
-    } else {
-      authStore.logout(); 
-      router.push('/login'); 
-    }
+  onAuthStateChanged(auth, () => {  
     isAuthChecked.value = true;
   });
 });
@@ -80,7 +74,7 @@ watchEffect(() => {
 <template>
 
   <div  v-if="isAuthChecked" class="min-h-screen flex flex-col">
-    <!-- Check if user is authenticated -->
+    <!-- Navbar renders only if user is authenticated  -->
     <template v-if="authStore.user">
       <nav class="bg-red-500">
         <div class="px-2 sm:px-6 lg:px-8">
