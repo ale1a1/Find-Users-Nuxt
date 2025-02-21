@@ -4,10 +4,31 @@ import { useRouter } from 'vue-router';
 import { watchEffect } from 'vue';
 import Footer from './components/footer.vue';
 import { useHead } from '#imports'
-import { signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
+import { useLoginRedirectStore } from '@/stores/loginRedirect';
+import LoadingSpinner from './components/loading-spinner.vue';
 
 const auth = useNuxtApp().$auth;
+
+const loginRedirectStore = useLoginRedirectStore();
+
+const isAuthChecked = ref(false);
+
+onMounted(() => {
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authStore.setUser(user); 
+    } else {
+      authStore.logout(); 
+      router.push('/login'); 
+    }
+    isAuthChecked.value = true;
+  });
+});
+
+const loadingSpinnerMessage = "Loading..."
 
 useHead({
   htmlAttrs: {
@@ -27,6 +48,7 @@ const logout = async () => {
     setTimeout(() => {
       authStore.logout(); 
     }, 2000);   
+    loginRedirectStore.setRedirectFrom(null)
     toast.success('Logging out...', {
       position: 'top-right',
       autoClose: 1000,       
@@ -56,7 +78,8 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+
+  <div  v-if="isAuthChecked" class="min-h-screen flex flex-col">
     <!-- Check if user is authenticated -->
     <template v-if="authStore.user">
       <nav class="bg-red-500">
@@ -134,4 +157,11 @@ watchEffect(() => {
       <Footer />
     </template>  
   </div>
+
+  <template v-else>
+    <div  class="min-h-screen flex flex-col">
+      <LoadingSpinner :message="loadingSpinnerMessage" />    
+    </div>
+  </template>
+
 </template>

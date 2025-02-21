@@ -4,6 +4,9 @@ import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
 import { useNuxtApp } from "nuxt/app";
 import { computed, ref } from "vue";
+import { useLoginRedirectStore } from '@/stores/loginRedirect';
+
+const loginRedirectStore = useLoginRedirectStore();
 
 const auth = useNuxtApp().$auth as Auth;
 
@@ -25,6 +28,7 @@ const resetPassword = async () => {
   .then(() => {
       apiCall.value = false
       passwordSaved.value = true
+      loginRedirectStore.setRedirectFrom('reset-password')
       toast.success('Password successfully reset!', {
       position: 'top-right',
       autoClose: 3000,       

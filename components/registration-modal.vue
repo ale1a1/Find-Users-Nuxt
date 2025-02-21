@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineEmits } from "vue";
 import { createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
@@ -42,16 +41,32 @@ const submitForm = async () => {
     })
     const user = userCredential.user;
     if (user) {
-      sendEmailVerification(user);
-      setTimeout(() => {
-        toast.info("Verification email sent! Please check your inbox.", {
-        position: "top-right",
-        autoClose: 6500,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: false
-      });
-      }, 2000);  
+      sendEmailVerification(user).then(() => {
+        setTimeout(() => {
+          toast.info("Verification email sent! Please check your inbox.", {
+          position: "top-right",
+          autoClose: 6500,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: false
+        });
+        }, 2000); 
+      })
+      .catch((error) => {
+        apiCall.value = false     
+        setTimeout(() => {
+          isRegistering.value = false;
+        }, 7000);
+        const toastErrorMessage = error.code
+        console.error(toastErrorMessage);
+        toast.error(toastErrorMessage, {
+          position: 'top-right',
+          autoClose: 5500,       
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: false
+        })
+      })
     }
   })
   .catch((error) => {

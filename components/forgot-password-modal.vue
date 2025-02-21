@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineEmits } from "vue";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 
