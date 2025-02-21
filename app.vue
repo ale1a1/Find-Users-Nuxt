@@ -8,6 +8,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import LoadingSpinner from './components/loading-spinner.vue';
+import backgroundImage from '~/assets/images/keyboard bg.jpg';
 
 const auth = useNuxtApp().$auth;
 
@@ -73,7 +74,7 @@ watchEffect(() => {
 
 <template>
 
-  <div  v-if="isAuthChecked" class="min-h-screen flex flex-col">
+  <div  v-if="isAuthChecked" class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="authStore.user">
       <nav class="bg-red-500">

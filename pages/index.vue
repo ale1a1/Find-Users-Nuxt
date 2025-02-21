@@ -1,16 +1,76 @@
 <script setup lang="ts">
+import { Search, FileText, Save, User } from "lucide-vue-next";
+</script>
+
+<script setup lang="ts">
 </script>
 
 <template>
-  <div class="flex flex-col w-full">
-    <div class="flex justify-center mt-[8vh]">
-      <h1 class="text-red-900 text-4xl">HOME</h1>
-    </div>
+  <div class="flex flex-col w-full  text-white">   
     <div class="flex-grow flex items-center justify-center">
-      <div class="w-[75vw] h-[50vh] border-4 border-red-500 flex items-center justify-center">
-        <p class="text-2xl">some content...</p>
+      <div class="w-auto min-h-[75vh] h-auto sm:h-[50vh] p-4 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">
+        <h1 class="text-6xl font-bold text-white text-center mb-20">Welcome to the Find Users App!</h1>
+        <p class="text-5xl font-semibold text-center text-white mb-12">Use our app for</p>  
+        <ul class="text-3xl list-none mb-8 space-y-8">
+        <li class="flex items-center gap-4">
+          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <User class="size-8" />
+          </NuxtLink>
+          <div class="flex items-center gap-3">
+            <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">Creating</p>
+            <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">Update</p>
+            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              YOUR PROFILE
+            </NuxtLink>
+          </div>
+        </li> 
+        <li class="flex items-center gap-4">
+          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <Search class="size-8" />
+          </NuxtLink>
+          <div class="flex items-center gap-3">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">Searching users from the</p>
+            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              USERS LIST
+            </NuxtLink>
+          </div>
+        </li>
+        <li class="flex items-center gap-4">
+          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <FileText class="size-8" />
+          </NuxtLink>
+          <div class="flex items-center gap-3">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">Retrieving</p>
+            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              USERS INFORMATION
+            </NuxtLink>
+          </div>
+        </li>      
+        <li class="flex items-center gap-4">
+          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <Save class="size-8" />
+          </NuxtLink>
+          <div class="flex items-center gap-3">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">Saving your</p>
+            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              FAVOURITE USERS
+            </NuxtLink>
+          </div>
+        </li>     
+      </ul>  
       </div>
     </div>
   </div>
 </template>
+
+<style>
+  /* Additional styles can go here */
+</style>
+
+
+<style>
+  /* Additional styles can go here */
+</style>
+
+
 
