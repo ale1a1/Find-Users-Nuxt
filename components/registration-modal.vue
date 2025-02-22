@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut} from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff } from 'lucide-vue-next';
 

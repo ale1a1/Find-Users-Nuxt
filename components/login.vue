@@ -5,6 +5,7 @@ import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
 import { signInWithEmailAndPassword, sendEmailVerification, signOut, type Auth } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff, Check  } from 'lucide-vue-next';
+import { useUserStore } from '#imports';
 
 type ModalKeys = "registerModal" | "forgotPasswordModal";
 
@@ -13,6 +14,7 @@ onMounted(() => {
 })
 
 const auth = useNuxtApp().$auth as Auth;
+const userStore = useUserStore();
 
 const router = useRouter();
 const loginRedirectStore = useLoginRedirectStore();
@@ -55,7 +57,11 @@ const login = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user; 
+    const token = await user.getIdToken();   
+    sessionStorage.setItem('find-users-Token', token); 
     if (user.emailVerified) {
+      userStore.setToken(token)
+      userStore.setCurrentUser(user)
       router.push('/');
     } else {
       await signOut(auth); 

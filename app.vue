@@ -7,8 +7,10 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
+import { useUserStore } from '#imports';
 
 const auth = useNuxtApp().$auth;
+const userStore = useUserStore();
 
 const loginRedirectStore = useLoginRedirectStore();
 
@@ -16,17 +18,30 @@ const isAuthChecked = ref(false);
 
 const currentUser = ref();
 
-onAuthStateChanged(auth, (user) => {  
-  if (user) {
-    console.log("User is signed in:", user);    
-    currentUser.value = user  
-  } else {
-    console.log("No user signed in");    
-  } 
-  isAuthChecked.value = true;
+onMounted(() => {
+  const token = typeof window !== 'undefined' ? sessionStorage.getItem('find-users-Token') : null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user?.emailVerified && token) {
+      console.log("User is signed in");
+      currentUser.value = user;
+    } else {
+      console.log("No user signed in");
+    }
+    isAuthChecked.value = true;
+  });
 });
 
-const loadingSpinnerMessage = "Loading..."
+const token = ref(userStore.token);
+
+watch(() => userStore.token, (token) => {
+  console.log("Token value changed:", token);
+});
+
+watch(() => userStore.currentUser, (user) => {
+  currentUser.value = user
+  console.log("User value changed:", user);
+});
 
 useHead({
   htmlAttrs: {
@@ -42,7 +57,10 @@ const router = useRouter();
 const logout = async () => {
   try {
     await signOut(auth); 
-    setTimeout(() => {    
+    setTimeout(() => { 
+      userStore.clearToken()
+      userStore.clearCurrentUser()
+      sessionStorage.removeItem("find-users-Token")   
       currentUser.value = null; 
     }, 2000);   
     loginRedirectStore.setRedirectFrom(null)
@@ -68,7 +86,7 @@ const logout = async () => {
 
 watchEffect(() => {
   const currentPath = router.currentRoute.value.path;
-  if (isAuthChecked.value && !currentUser.value && currentPath !== '/login' && !currentPath.startsWith('/action')) {
+  if (isAuthChecked.value && !token.value && !currentUser.value && currentPath !== '/login' && !currentPath.startsWith('/action')) {
     router.push('/login');
   }
 });
