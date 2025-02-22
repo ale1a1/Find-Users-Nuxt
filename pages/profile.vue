@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UserDetails from '~/components/userDetails.vue';
 const showContent = ref(false);
 
 onMounted(() => {
@@ -10,14 +11,10 @@ onMounted(() => {
 
 <template>
   <div v-if="showContent" class="flex flex-col w-full">
-    <div class="flex justify-center mt-[8vh]">
-      <h1 class="text-red-900 text-4xl">YOUR PROFILE</h1>
+    <div class="flex justify-center mt-10">
+      <h1 class="text-amber-400 text-3xl font-bold ">YOUR PROFILE</h1>
     </div>
-    <div class="flex-grow flex items-center justify-center">
-      <div class="w-[75vw] h-[50vh] border-4 border-red-500 flex items-center justify-center">
-        <p class="text-2xl">some content...</p>
-      </div>
-    </div>
+    <UserDetails />   
   </div>
   <template v-else>
     <div class="absolute inset-0 flex flex-col items-center justify-center">
