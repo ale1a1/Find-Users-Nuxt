@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import { watchEffect } from 'vue';
 import Footer from './components/footer.vue';
@@ -16,11 +15,16 @@ const loginRedirectStore = useLoginRedirectStore();
 
 const isAuthChecked = ref(false);
 
-onMounted(() => {
-  const auth = getAuth();
-  onAuthStateChanged(auth, () => {  
-    isAuthChecked.value = true;
-  });
+const currentUser = ref();
+
+onAuthStateChanged(auth, (user) => {  
+  if (user) {
+    console.log("User is signed in:", user);    
+    currentUser.value = user  
+  } else {
+    console.log("No user signed in");    
+  } 
+  isAuthChecked.value = true;
 });
 
 const loadingSpinnerMessage = "Loading..."
@@ -34,18 +38,17 @@ useHead({
   }
 })
 
-const authStore = useAuthStore();
 const router = useRouter();
 
 const logout = async () => {
   try {
     await signOut(auth); 
-    setTimeout(() => {
-      authStore.logout(); 
+    setTimeout(() => {    
+      currentUser.value = null; 
     }, 2000);   
     loginRedirectStore.setRedirectFrom(null)
     toast.success('Logging out...', {
-      position: 'top-right',
+      position: 'bottom-right',
       autoClose: 1000,       
       hideProgressBar: false,
       closeOnClick: false,
@@ -66,7 +69,7 @@ const logout = async () => {
 
 watchEffect(() => {
   const currentPath = router.currentRoute.value.path;
-  if (!authStore.user && currentPath !== '/login' && !currentPath.startsWith('/action')) {
+  if (isAuthChecked.value && !currentUser.value && currentPath !== '/login' && !currentPath.startsWith('/action')) {
     router.push('/login');
   }
 });
@@ -76,7 +79,7 @@ watchEffect(() => {
 
   <div  v-if="isAuthChecked" class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
     <!-- Navbar renders only if user is authenticated  -->
-    <template v-if="authStore.user">
+    <template v-if="currentUser">
       <nav class="bg-red-500">
         <div class="px-2 sm:px-6 lg:px-8">
           <div class="relative flex h-16 items-center justify-between">
@@ -123,7 +126,6 @@ watchEffect(() => {
                   </button>
                 </div>        
                 <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                  <!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
                   <NuxtLink to="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</NuxtLink>
                   <NuxtLink to="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</NuxtLink>
                   <NuxtLink @click="logout" class="block px-4 py-2 text-sm text-gray-700 cursor-pointer" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
@@ -135,7 +137,6 @@ watchEffect(() => {
         <!-- Mobile menu, show/hide based on menu state. -->
         <div class="sm:hidden" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
-            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
             <NuxtLink to="/" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">Home</NuxtLink>
             <NuxtLink to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
             <NuxtLink to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Favourites</NuxtLink>
@@ -148,7 +149,7 @@ watchEffect(() => {
       <NuxtPage />
     </div>
     <!-- Footer only if user is authenticated -->
-    <template v-if="authStore.user">
+    <template v-if="currentUser">
       <Footer />
     </template>  
   </div>

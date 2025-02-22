@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import RegistrationModal from '~/components/registration-modal.vue';
 import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
@@ -7,16 +6,15 @@ import { signInWithEmailAndPassword, sendEmailVerification, signOut, type Auth }
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff, Check  } from 'lucide-vue-next';
 
+type ModalKeys = "registerModal" | "forgotPasswordModal";
+
 onMounted(() => {
   signOut(auth)
 })
 
-type ModalKeys = "registerModal" | "forgotPasswordModal";
-
 const auth = useNuxtApp().$auth as Auth;
 
 const router = useRouter();
-const authStore = useAuthStore();
 const loginRedirectStore = useLoginRedirectStore();
 
 const { redirectFrom } = storeToRefs(loginRedirectStore);
@@ -53,29 +51,14 @@ const closeModal = (modalName: ModalKeys) => {
 
 const login = async () => {
   apiCall.value = true;
-  isLogging.value = true;
+  isLogging.value = true;  
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-    const user = userCredential.user;
-    // Force reload to get the latest email verification status
-    await user.reload();
-    console.log(user)
-
-    // TODO: revert this back once issue with Firebase returning always user.emailVerified (even after clicking the verification link) has been resolved
-    // if (user.emailVerified) {
-    if (10 == 10) {
-      toast.success('Logging in...', {
-      position: 'top-right',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true
-      })
-      setTimeout(() => {
-        authStore.setUser(user);
-        router.push('/');
-      }, 2000);
+    const user = userCredential.user; 
+    if (user.emailVerified) {
+      router.push('/');
     } else {
+      await signOut(auth); 
       apiCall.value = false;
       verificationMessage.value = null;
       sendEmailVerification(user).then(() => {
@@ -100,7 +83,7 @@ const login = async () => {
         apiCall.value = false
         setTimeout(() => {
           apiCall.value = false;
-        }, 7000);
+        }, 3000);
         const toastErrorMessage = error.code
         console.error(toastErrorMessage);
         toast.error(toastErrorMessage, {
@@ -116,7 +99,7 @@ const login = async () => {
     apiCall.value = false;
     setTimeout(() => {
       isLogging.value = false;
-    }, 7000);
+    }, 3000);
     if (isFirebaseError(error)) {
       const toastErrorMessage = error.code || 'Unknown error';
       console.error(toastErrorMessage);
@@ -147,7 +130,7 @@ function isFirebaseError(error: unknown): error is { code: string } {
 
 <template>
 
-  <div class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
+  <div v-if="!modals.registerModalOpen && !modals.forgotPasswordModalOpen"class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
     <!-- Verification message -->
     <div v-if="verificationMessage" class="sm:mx-auto sm:w-full sm:max-w-sm">
       <div class="flex items-center mb-4 p-4 bg-green-50 border border-green-200 rounded-lg shadow-md">
@@ -191,8 +174,12 @@ function isFirebaseError(error: unknown): error is { code: string } {
           </div>
           <!-- Submit Button -->
           <div>
-            <button type="submit" :disabled="isLogging" class="flex w-full justify-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
-              {{ apiCall ? 'Signing in...' : 'Sign in' }}
+            <button type="submit" :disabled="isLogging" class="flex w-full justify-center items-center rounded-md mt-8 bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400">
+              <svg v-if="apiCall" class="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+              </svg>
+              <span>{{ apiCall ? 'Signing in...' : 'Sign in' }}</span>
             </button>
           </div>
         </form>
