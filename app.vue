@@ -3,11 +3,10 @@ import { useRouter } from 'vue-router';
 import { watchEffect } from 'vue';
 import Footer from './components/footer.vue';
 import { useHead } from '#imports'
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
-import LoadingSpinner from './components/loading-spinner.vue';
-import backgroundImage from '~/assets/images/keyboard bg.jpg';
+import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
 
 const auth = useNuxtApp().$auth;
 
@@ -75,12 +74,12 @@ watchEffect(() => {
 });
 </script>
 
-<template>
+<template >
 
   <div  v-if="isAuthChecked" class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="currentUser">
-      <nav class="bg-red-500">
+      <nav class="bg-red-500/90">
         <div class="px-2 sm:px-6 lg:px-8">
           <div class="relative flex h-16 items-center justify-between">
             <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -96,15 +95,15 @@ watchEffect(() => {
                 </svg>
               </button>
             </div>
-            <div class="flex flex-1 gap-20 items-center justify-center sm:items-stretch sm:justify-start">
+            <div class="flex flex-1 gap-24 items-center justify-center sm:items-stretch sm:justify-start">
               <div class="flex shrink-0 items-center">
-                <p>Find Users App</p>
+                <p class="text-white">Find Users App</p>
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
                   <NuxtLink to="/" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Home</NuxtLink>
-                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
-                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Favourites</NuxtLink>
+                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-700">Users list</NuxtLink>
+                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-700">Favourites</NuxtLink>
                 </div>
               </div>
             </div>
@@ -155,9 +154,9 @@ watchEffect(() => {
   </div>
 
   <template v-else>
-    <div  class="min-h-screen flex flex-col">
-      <LoadingSpinner :message="loadingSpinnerMessage" />    
+    <div class="flex flex-col items-center justify-center h-screen w-screen bg-gray-900">
+      <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
-  </template>
+  </template>  
 
 </template>

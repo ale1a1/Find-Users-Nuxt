@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import { Search, FileText, Save, User } from "lucide-vue-next";
-</script>
 
-<script setup lang="ts">
+const showContent = ref(false);
+
+// TODO: retrieve from somewhere (store? localStorage?cookies as it might get encripted there? whichever is saver)
+const profile = null
+
+onMounted(() => {
+  setTimeout(() => {
+    showContent.value = true;
+  }, 300); 
+});
 </script>
 
 <template>
-  <div class="flex flex-col w-full  text-white">   
-    <div class="flex-grow flex items-center justify-center">
+
+  <div class="flex flex-col w-full text-white">  
+
+    <div v-if="showContent" class="flex-grow flex items-center justify-center">
       <div class="w-auto min-h-[75vh] h-auto sm:h-[50vh] p-4 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">
         <h1 class="text-6xl font-bold text-white text-center mb-20">Welcome to the Find Users App!</h1>
         <p class="text-5xl font-semibold text-center text-white mb-12">Use our app for</p>  
@@ -59,18 +69,19 @@ import { Search, FileText, Save, User } from "lucide-vue-next";
         </li>     
       </ul>  
       </div>
-    </div>
+    </div>  
+    <template v-else>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"> </div>
+      </div>
+    </template>
+
+
+
   </div>
 </template>
 
-<style>
-  /* Additional styles can go here */
-</style>
 
-
-<style>
-  /* Additional styles can go here */
-</style>
 
 
 
