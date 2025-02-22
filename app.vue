@@ -144,8 +144,11 @@ watchEffect(() => {
       </nav>  
     </template>
     <!-- Main page content -->
-    <div class="flex flex-1">
-      <NuxtPage />
+    <div class="flex flex-1 flex-col items-center">
+      <div v-if="!currentUser" class="max-w-[90vw] max-h-[10vh] absolute inset-y-0 top-[5vh] flex flex-col items-center justify-center">
+        <h1 class="p-2 text-amber-400 text-3xl sm:text-4xl lg:text-5xl font-bold bg-neutral-900/10 pointer-events-none text-center">Find Users App</h1>
+      </div>
+      <NuxtPage/>
     </div>
     <!-- Footer only if user is authenticated -->
     <template v-if="currentUser">
