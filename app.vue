@@ -175,7 +175,7 @@ watchEffect(() => {
   </div>
 
   <template v-else>
-    <div class="flex flex-col items-center justify-center h-screen w-screen bg-gray-900">
+    <div class="flex flex-col items-center justify-center h-screen w-screen bg-neutral-950">
       <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
   </template>  
