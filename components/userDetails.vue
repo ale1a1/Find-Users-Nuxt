@@ -107,6 +107,7 @@ onMounted(fetchFormData);
   <div class="flex flex-col items-center justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-2xl shadow-lg border border-amber-400 rounded-lg p-8 bg-neutral-900 text-gray-100">
       <form @submit.prevent="submitForm" class="space-y-8">
+        <!--------------------- Form Fields ---------------------->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-10">
           <!-- Username, job and email -->
           <div v-for="(label, key) in { username: 'Username', job: 'Job', email: 'Email' }" :key="key" class="relative">
@@ -150,19 +151,22 @@ onMounted(fetchFormData);
                 &times; 
               </button>
             </div>
-          </div>
+          </div>        
           <!-- Opened to work checkbox -->
           <div class="flex items-center space-x-2">
-            <input v-model="form.openedToWork" type="checkbox" class="w-4 h-4" />
-            <span>Opened to Work</span>
+            <input
+              v-model="form.openedToWork"
+              type="checkbox"
+              id="openedToWork"
+              class="hidden"
+            />
+            <label for="openedToWork" class="custom-checkbox">
+              <span class="checkmark"></span>
+            </label>
+            <span>Opened to work</span>
           </div>
-
-
-
-
-
-
         </div>
+         <!--------------------- Save and Cancek buttons ---------------------->
         <div class="flex space-x-8">
           <button
             type="submit"
@@ -199,5 +203,38 @@ input.autofill {
   background-color: rgba(16, 16, 16, 0.1) !important;
   color: #d1d5db !important;
   -webkit-text-fill-color: #d1d5db !important;
+}
+/* Open to work check box */
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 3px; 
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  background-color: rgba(156, 163, 175, 0.1);
+}
+.custom-checkbox .checkmark {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 1x; 
+  transition: background-color 0.3s;
+}
+input[type="checkbox"]:checked + .custom-checkbox .checkmark {
+  background-color:#16A34A; 
+}
+input[type="checkbox"]:checked + .custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  left: 5.5px;
+  width: 6px;
+  height: 13px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
 </style>
