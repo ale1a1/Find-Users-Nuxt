@@ -2,7 +2,6 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useUserStore } from '#imports';
-import { Check } from 'lucide-vue-next';
 
 interface UserDetails {
   username: string;
@@ -10,7 +9,7 @@ interface UserDetails {
   country: string;
   email: string;
   phone: string;
-  openToWork: boolean;
+  openedToWork: boolean;
   profilePicture: File | null;
 }
 
@@ -20,7 +19,7 @@ const formInitialState: UserDetails = {
   country: '',
   email: '',
   phone: '',
-  openToWork: false,
+  openedToWork: false,
   profilePicture: null,
 };
 
@@ -35,10 +34,12 @@ const isFormValid = computed(() => {
   return (
     form.username &&
     form.job &&
-    form.country &&
+    // form.country &&
     form.email &&
     form.phone &&
-    form.profilePicture !== null
+    form.openedToWork &&
+    // form.profilePicture !== null
+    Object.keys(inputError.value).length === 0
   );
 });
 
@@ -78,6 +79,27 @@ const handleFileChange = (event: Event) => {
   formTouched.value = true;
 };
 
+const clearProfilePicture = () => {
+  form.profilePicture = null;
+  fileName.value = ''; 
+  formTouched.value = true; 
+};
+
+const inputError = computed(() => {
+  const errors: Record<string, string> = {};
+  if (form.username.length > 20) {
+    errors.username = `Username must be at most 20 characters.`;  }
+  if (form.job.length > 20) {
+    errors.job = `Job title must be at most 20 characters.`;
+  }
+  if (form.email.length > 20) {
+    errors.email = `Email must be at most 20 characters.`;
+  }  
+  return errors;
+});
+
+
+
 onMounted(fetchFormData);
 </script>
 
@@ -85,18 +107,23 @@ onMounted(fetchFormData);
   <div class="flex flex-col items-center justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-2xl shadow-lg border border-amber-400 rounded-lg p-8 bg-neutral-900 text-gray-100">
       <form @submit.prevent="submitForm" class="space-y-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-10">
-          <div v-for="(label, key) in { username: 'Username', job: 'Job', country: 'Country', email: 'Email', phone: 'Phone Number' }" :key="key">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-10">
+          <!-- Username, job and email -->
+          <div v-for="(label, key) in { username: 'Username', job: 'Job', email: 'Email' }" :key="key" class="relative">
             <label :for="key" class="block font-medium">{{ label }}</label>
             <input
               v-model="form[key]"
-              type="text"
+              :type="key === 'email' ? 'email' : 'text'"
               :id="key"
               required
               class="block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500/80 sm:text-sm/6"
               @input="formTouched = true"
             />
-          </div>
+            <p v-if="inputError[key]" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
+          </div>  
+          <!-- Phone number -->
+          
+          
           <!-- Profile Picture -->
           <div class="flex flex-col gap-2">
             <div class="flex items-center space-x-2">
@@ -116,7 +143,7 @@ onMounted(fetchFormData);
               <span class="text-gray-300 text-sm">{{ fileName || 'No file chosen' }}</span>
               <button
                 type="button"
-                @click="form.profilePicture = null; fileName.value = ''"
+                @click="clearProfilePicture"
                 class="text-red-500 hover:text-red-500/80 text-lg cursor-pointer"
                 v-if="form.profilePicture"
               >
@@ -124,10 +151,17 @@ onMounted(fetchFormData);
               </button>
             </div>
           </div>
+          <!-- Opened to work checkbox -->
           <div class="flex items-center space-x-2">
-            <input v-model="form.openToWork" type="checkbox" class="w-4 h-4" />
-            <span>Open to Work</span>
+            <input v-model="form.openedToWork" type="checkbox" class="w-4 h-4" />
+            <span>Opened to Work</span>
           </div>
+
+
+
+
+
+
         </div>
         <div class="flex space-x-8">
           <button
