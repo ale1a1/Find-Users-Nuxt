@@ -2,10 +2,11 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useUserStore } from '#imports';
+import { ChevronDown } from 'lucide-vue-next';
 
 interface UserDetails {
-  username: string;
-  job: string;
+  name: string;
+  profession: string;
   country: string;
   email: string;
   phone: string;
@@ -13,9 +14,15 @@ interface UserDetails {
   profilePicture: File | null;
 }
 
+interface Country {
+  name: string;
+  alpha3Code: string;
+  flag: string;
+}
+
 const formInitialState: UserDetails = {
-  username: '',
-  job: '',
+  name: '',
+  profession: '',
   country: '',
   email: '',
   phone: '',
@@ -30,21 +37,29 @@ const formTouched = ref(false);
 const userStore = useUserStore();
 const fileName = ref('');
 
+const countries = ref<Country[]>([]);
+const isOpen = ref(false);
+const selectedCountryName = ref('');
+const selectedCountryFlag = ref('');
+const isLoadingCountries = ref(false);
+const countryFetchError = ref<string | null>(null);
+
+
 const isFormValid = computed(() => {
   return (
-    form.username &&
-    form.job &&
-    // form.country &&
+    form.name &&
+    form.profession &&
+    form.country &&
     form.email &&
-    form.phone &&
     form.openedToWork &&
-    // form.profilePicture !== null
     Object.keys(inputError.value).length === 0
   );
 });
 
 const resetForm = () => {
   Object.assign(form, formInitialState);
+  selectedCountryName.value = ''
+  selectedCountryFlag.value = ''
   formTouched.value = false;
 };
 
@@ -81,26 +96,65 @@ const handleFileChange = (event: Event) => {
 
 const clearProfilePicture = () => {
   form.profilePicture = null;
-  fileName.value = ''; 
-  formTouched.value = true; 
+  fileName.value = '';
+  formTouched.value = true;
 };
 
 const inputError = computed(() => {
   const errors: Record<string, string> = {};
-  if (form.username.length > 20) {
+  if (form.name.length > 20) {
     errors.username = `Username must be at most 20 characters.`;  }
-  if (form.job.length > 20) {
+  if (form.profession.length > 20) {
     errors.job = `Job title must be at most 20 characters.`;
   }
   if (form.email.length > 20) {
     errors.email = `Email must be at most 20 characters.`;
-  }  
+  }
   return errors;
 });
 
+const fetchCountries = async () => {
+  isLoadingCountries.value = true;
+  countryFetchError.value = null;
+  try {
+    const response = await fetch('https://restcountries.com/v3.1/all');
+    if (!response.ok) {
+      throw new Error('Failed to fetch countries');
+    }   
+    const data = await response.json();
+    countries.value = data.map(country => ({
+      name: country.name.common,
+      alpha3Code: country.alpha3Code,
+      flag: country.flags.svg
+    }));
+  } catch (error) {
+    console.error('Error fetching countries:', error);
+    countryFetchError.value = 'Something went wrong while retrieving the country list.';
+  } finally {
+    isLoadingCountries.value = false;
+  }
+};
 
+const toggleCountriesDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
 
-onMounted(fetchFormData);
+const selectCountry = (country: any) => {
+  selectedCountryName.value = country.name;
+  selectedCountryFlag.value = country.flag;
+  form.country = country.name
+  formTouched.value = true
+  isOpen.value = false;
+};
+
+watch(isLoadingCountries, (newValue) => {
+  console.log('Loading state changed:', newValue);
+});
+
+onMounted(() => {
+  fetchCountries();
+  fetchFormData()
+});
 </script>
 
 <template>
@@ -110,7 +164,7 @@ onMounted(fetchFormData);
         <!--------------------- Form Fields ---------------------->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-10">
           <!-- Username, job and email -->
-          <div v-for="(label, key) in { username: 'Username', job: 'Job', email: 'Email' }" :key="key" class="relative">
+          <div v-for="(label, key) in { name: 'Name', profession: 'Profession', email: 'Email' }" :key="key" class="relative">
             <label :for="key" class="block font-medium">{{ label }}</label>
             <input
               v-model="form[key]"
@@ -121,10 +175,37 @@ onMounted(fetchFormData);
               @input="formTouched = true"
             />
             <p v-if="inputError[key]" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
-          </div>  
-          <!-- Phone number -->
-          
-          
+          </div>
+          <!-- Country -->
+          <div class="relative inline-block w-full">
+            <label class="block font-medium">Country</label>
+            <button
+              @click.prevent="toggleCountriesDropdown"
+              class="w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:outline-amber-400 focus:outline-offset-2 flex justify-between items-center cursor-pointer"
+            >
+              <span class="flex items-center">
+                <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
+                {{ selectedCountryName || 'Select a country' }}
+                <span v-if="isLoadingCountries" class="loader ml-2"></span> 
+              </span>
+              <ChevronDown class="w-4 h-4 text-amber-400" />
+            </button>
+            <div v-if="isOpen" v-click-outside="toggleCountriesDropdown" class="absolute left-0 right-0 mt-1 bg-neutral-800 border border-amber-400 rounded-md shadow-lg z-10">
+              <ul class="max-h-60 overflow-auto">
+                <li v-if="countryFetchError" class="flex items-center p-2 text-xs text-red-500 italic">{{ countryFetchError }}</li>
+                <li v-if="isLoadingCountries" class="flex items-center p-2 italic">loading...</li>
+                <li
+                  v-for="country in countries"
+                  :key="country.alpha3Code"
+                  @click="selectCountry(country)"
+                  class="flex items-center p-2 hover:bg-gray-500 cursor-pointer"
+                >
+                  <img :src="country.flag" alt="" class="w-5 h-5 mr-2" />
+                  {{ country.name }}
+                </li>
+              </ul>
+            </div>
+          </div>
           <!-- Profile Picture -->
           <div class="flex flex-col gap-2">
             <div class="flex items-center space-x-2">
@@ -148,10 +229,10 @@ onMounted(fetchFormData);
                 class="text-red-500 hover:text-red-500/80 text-lg cursor-pointer"
                 v-if="form.profilePicture"
               >
-                &times; 
+                &times;
               </button>
             </div>
-          </div>        
+          </div>
           <!-- Opened to work checkbox -->
           <div class="flex items-center space-x-2">
             <input
@@ -180,7 +261,7 @@ onMounted(fetchFormData);
             type="button"
             @click="resetForm"
             :disabled="!formTouched"
-            class="w-full bg-red-500 px-3 py-1.5 text-sm font-bold text-white rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40"
+            class="w-full bg-red-500  text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900"
           >
             Cancel
           </button>
@@ -211,7 +292,7 @@ input.autofill {
   width: 20px;
   height: 20px;
   border: 1px solid rgba(251, 191, 36, 0.5);
-  border-radius: 3px; 
+  border-radius: 3px;
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
   background-color: rgba(156, 163, 175, 0.1);
@@ -221,11 +302,11 @@ input.autofill {
   width: 100%;
   height: 100%;
   background-color: transparent;
-  border-radius: 1x; 
+  border-radius: 1x;
   transition: background-color 0.3s;
 }
 input[type="checkbox"]:checked + .custom-checkbox .checkmark {
-  background-color:#16A34A; 
+  background-color:#16A34A;
 }
 input[type="checkbox"]:checked + .custom-checkbox .checkmark::after {
   content: "";
