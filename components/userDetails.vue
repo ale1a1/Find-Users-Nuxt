@@ -89,8 +89,15 @@ const submitForm = async () => {
 
 const handleFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
-  form.profilePicture = input.files?.[0] || null;
-  fileName.value = form.profilePicture ? form.profilePicture.name : 'No file chosen';
+  const file = input.files?.[0] || null;
+
+  if (file && !file.type.startsWith("image/")) {
+    toast.error("Only image files are allowed!", { position: "top-right" });
+    return;
+  }
+
+  form.profilePicture = file;
+  fileName.value = file ? file.name : "No file chosen";
   formTouched.value = true;
 };
 
@@ -185,8 +192,7 @@ onMounted(() => {
             >
               <span class="flex items-center">
                 <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
-                {{ selectedCountryName || 'Select a country' }}
-                <span v-if="isLoadingCountries" class="loader ml-2"></span> 
+                {{ selectedCountryName || 'select a country' }}
               </span>
               <ChevronDown class="w-4 h-4 text-amber-400" />
             </button>
@@ -222,7 +228,7 @@ onMounted(() => {
               </label>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-gray-300 text-sm">{{ fileName || 'No file chosen' }}</span>
+              <span class="text-gray-300 text-sm">{{ fileName || 'no file chosen' }}</span>
               <button
                 type="button"
                 @click="clearProfilePicture"
@@ -252,7 +258,7 @@ onMounted(() => {
           <button
             type="submit"
             :disabled="!isFormValid"
-            class="w-full bg-amber-400 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40"
+            class="w-full bg-amber-400 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40 cursor-pointer"
           >
             <span v-if="apiCall" class="animate-spin h-5 w-5 mr-2">🔄</span>
             {{ isSubmitting ? 'Saving...' : 'Save' }}
@@ -261,7 +267,7 @@ onMounted(() => {
             type="button"
             @click="resetForm"
             :disabled="!formTouched"
-            class="w-full bg-red-500  text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900"
+            class="w-full bg-red-500  text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900 cursor-pointer"
           >
             Cancel
           </button>
@@ -317,5 +323,24 @@ input[type="checkbox"]:checked + .custom-checkbox .checkmark::after {
   border: solid white;
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
+}
+/* Scrollbar styles for the dropdown */
+::-webkit-scrollbar {
+  width: 8px; 
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(251, 191, 36, 0.5); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(251, 191, 36, 0.8); 
+}
+/* Ensure the dropdown is scrollable */
+.max-h-60 {
+  overflow-y: auto;
 }
 </style>
