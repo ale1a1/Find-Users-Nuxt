@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
-import { useUserStore } from '#imports';
+// import { useUserStore } from '#imports';
 import { ChevronDown } from 'lucide-vue-next';
 import { useRuntimeConfig } from '#app';
 
@@ -69,8 +69,8 @@ const resetForm = () => {
 
 const fetchFormData = async () => {
   try {
-    const userData = await userStore.getUserDetails();
-    Object.assign(form, userData);
+    // const userData = await userStore.getUserDetails();
+    // Object.assign(form, userData);
   } catch (error) {
     console.error('Error fetching user details', error);
   }
@@ -86,7 +86,7 @@ const submitForm = async () => {
     // B) also create updateUserDetails in the userStore so you can store there
     // C) also you need to find the endpoin to retrieve the user details and call it alway at the app component level to retrieve the user details every time that the app component 
       // reload or mount, but only when (user?.emailVerified && token)
-    await userStore.updateUserDetails(form);
+    // await userStore.updateUserDetails(form);
     toast.success('Profile updated successfully!', { position: 'top-right' });
     formTouched.value = false;
   } catch (error) {
