@@ -7,7 +7,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
-import { useUserStore } from '#imports';
+import { useUserStore } from './stores/userStore';
 
 const auth = useNuxtApp().$auth;
 const userStore = useUserStore();

@@ -5,7 +5,7 @@ import ForgotPasswordModal from '~/components/forgot-password-modal.vue';
 import { signInWithEmailAndPassword, sendEmailVerification, signOut, type Auth } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { Eye, EyeOff, Check  } from 'lucide-vue-next';
-import { useUserStore } from '#imports';
+import { useUserStore } from '../stores/userStore'
 
 type ModalKeys = "registerModal" | "forgotPasswordModal";
 
