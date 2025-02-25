@@ -3,6 +3,10 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useUserStore } from '#imports';
 import { ChevronDown } from 'lucide-vue-next';
+import { useRuntimeConfig } from '#app';
+
+const config = useRuntimeConfig();
+const imgurKey = config.public.imgurKey; 
 
 interface UserDetails {
   name: string;
@@ -11,7 +15,7 @@ interface UserDetails {
   email: string;
   phone: string;
   openedToWork: boolean;
-  profilePicture: File | null;
+  profilePicture: string | null;
 }
 
 interface Country {
@@ -76,6 +80,12 @@ const submitForm = async () => {
   apiCall.value = true;
   isSubmitting.value = true;
   try {
+    const profilePictureUrl = await uploadToImgur()
+    form.profilePicture = profilePictureUrl
+    // A) TODO: here you should call the firebase endpoint to post the form to the DB (you need the user id to match its user detail row in the users details table)
+    // B) also create updateUserDetails in the userStore so you can store there
+    // C) also you need to find the endpoin to retrieve the user details and call it alway at the app component level to retrieve the user details every time that the app component 
+      // reload or mount, but only when (user?.emailVerified && token)
     await userStore.updateUserDetails(form);
     toast.success('Profile updated successfully!', { position: 'top-right' });
     formTouched.value = false;
@@ -90,13 +100,11 @@ const submitForm = async () => {
 const handleFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0] || null;
-
   if (file && !file.type.startsWith("image/")) {
     toast.error("Only image files are allowed!", { position: "top-right" });
     return;
   }
-
-  form.profilePicture = file;
+  // form.profilePicture = file;
   fileName.value = file ? file.name : "No file chosen";
   formTouched.value = true;
 };
@@ -105,6 +113,37 @@ const clearProfilePicture = () => {
   form.profilePicture = null;
   fileName.value = '';
   formTouched.value = true;
+};
+
+const uploadToImgur = async (): Promise<string | null> => {
+    if (!form.profilePicture) {
+        toast.error("Please select an image!", { position: "top-right" });
+        return null;
+    }
+    const imageFile = form.profilePicture; 
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    const clientId = "56f415c0bdf60ec"; 
+    try {
+        const response = await fetch("https://api.imgur.com/3/image", {
+            method: "POST",
+            headers: {
+                "Authorization": `Client-ID ${clientId}`
+            },
+            body: formData
+        });
+        const data = await response.json();
+        if (data.success) {
+            return data.data.link; 
+        } else {
+            toast.error("Profile picture upload failed!", { position: "top-right" });
+            return null;
+        }
+    } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        toast.error("Something went wrong!", { position: "top-right" });
+        return null;
+    }
 };
 
 const inputError = computed(() => {
