@@ -15,7 +15,8 @@ interface UserDetails {
   email: string;
   phone: string;
   openedToWork: boolean;
-  profilePicture: string | null;
+  profilePicture: File | null;
+  profilePictureUrl: string | null
 }
 
 interface Country {
@@ -32,13 +33,14 @@ const formInitialState: UserDetails = {
   phone: '',
   openedToWork: false,
   profilePicture: null,
+  profilePictureUrl: null
 };
 
 const form = reactive({ ...formInitialState });
 const apiCall = ref(false);
 const isSubmitting = ref(false);
 const formTouched = ref(false);
-const userStore = useUserStore();
+// const userStore = useUserStore();
 const fileName = ref('');
 
 const countries = ref<Country[]>([]);
@@ -81,8 +83,9 @@ const submitForm = async () => {
   isSubmitting.value = true;
   try {
     const profilePictureUrl = await uploadToImgur()
-    form.profilePicture = profilePictureUrl
+    form.profilePictureUrl = profilePictureUrl
     console.log(profilePictureUrl)
+    console.log(form)
     // A) TODO: here you should call the firebase endpoint to post the form to the DB (you need the user id to match its user detail row in the users details table)
     // B) also create updateUserDetails in the userStore so you can store there
     // C) also you need to find the endpoin to retrieve the user details and call it alway at the app component level to retrieve the user details every time that the app component 
@@ -105,7 +108,7 @@ const handleFileChange = (event: Event) => {
     toast.error("Only image files are allowed!", { position: "top-right" });
     return;
   }
-  // form.profilePicture = file;
+  form.profilePicture = file;
   fileName.value = file ? file.name : "No file chosen";
   formTouched.value = true;
 };
