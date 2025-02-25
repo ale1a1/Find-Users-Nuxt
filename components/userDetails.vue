@@ -82,6 +82,7 @@ const submitForm = async () => {
   try {
     const profilePictureUrl = await uploadToImgur()
     form.profilePicture = profilePictureUrl
+    console.log(form)
     // A) TODO: here you should call the firebase endpoint to post the form to the DB (you need the user id to match its user detail row in the users details table)
     // B) also create updateUserDetails in the userStore so you can store there
     // C) also you need to find the endpoin to retrieve the user details and call it alway at the app component level to retrieve the user details every time that the app component 
