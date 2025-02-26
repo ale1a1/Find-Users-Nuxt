@@ -19,7 +19,7 @@ logs
 .idea
 
 # Ignore nuxt.config.ts 
-# nuxt.config.ts
+nuxt.config.ts
 
 # Local env files
 .env

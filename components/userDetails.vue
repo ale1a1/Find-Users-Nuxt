@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
-// import { useUserStore } from '#imports';
+import { useUserStore } from '../stores/userStore';
 import { ChevronDown } from 'lucide-vue-next';
 import { useRuntimeConfig } from '#app';
 
@@ -13,7 +13,6 @@ interface UserDetails {
   profession: string;
   country: string;
   email: string;
-  phone: string;
   openedToWork: boolean;
   profilePicture: File | null;
   profilePictureUrl: string | null
@@ -30,7 +29,6 @@ const formInitialState: UserDetails = {
   profession: '',
   country: '',
   email: '',
-  phone: '',
   openedToWork: false,
   profilePicture: null,
   profilePictureUrl: null
@@ -40,8 +38,9 @@ const form = reactive({ ...formInitialState });
 const apiCall = ref(false);
 const isSubmitting = ref(false);
 const formTouched = ref(false);
-// const userStore = useUserStore();
+const userStore = useUserStore();
 const fileName = ref('');
+const { currentUser } = userStore;
 
 const countries = ref<Country[]>([]);
 const isOpen = ref(false);
@@ -82,10 +81,11 @@ const submitForm = async () => {
   apiCall.value = true;
   isSubmitting.value = true;
   try {
-    const profilePictureUrl = await uploadToImgur()
-    form.profilePictureUrl = profilePictureUrl
-    console.log(profilePictureUrl)
-    console.log(form)
+    // const profilePictureUrl = await uploadToImgur()
+    // form.profilePictureUrl = profilePictureUrl   
+    form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
+    userStore.setVisibleDetails(form)
+
     // A) TODO: here you should call the firebase endpoint to post the form to the DB (you need the user id to match its user detail row in the users details table)
     // B) also create updateUserDetails in the userStore so you can store there
     // C) also you need to find the endpoin to retrieve the user details and call it alway at the app component level to retrieve the user details every time that the app component 
@@ -114,6 +114,7 @@ const handleFileChange = (event: Event) => {
 };
 
 const clearProfilePicture = () => {
+
   form.profilePicture = null;
   fileName.value = '';
   formTouched.value = true;

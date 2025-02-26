@@ -9,6 +9,26 @@ import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
 import { useUserStore } from './stores/userStore';
 
+interface ProfilePicture {
+  readonly lastModified: number;
+  readonly name: string;
+  readonly webkitRelativePath: string;
+  text: {
+    // Define fields inside text here
+  };
+}
+
+interface UserVisibleDetails {
+  name: string;
+  profession: string;
+  country: string;
+  email: string;
+  openedToWork: boolean;
+  profilePicture: ProfilePicture | null;
+  profilePictureUrl: string | null;
+}
+
+
 const auth = useNuxtApp().$auth;
 const userStore = useUserStore();
 
@@ -17,6 +37,12 @@ const loginRedirectStore = useLoginRedirectStore();
 const isAuthChecked = ref(false);
 
 const currentUser = ref();
+
+
+// TODO: this is for now is update by the watch based on the change of the variable in the storeToRefs...
+// but it should also be update by calling the firebase DB with the userVisible details 
+// so if the app gets refreshed it won't get null (remember the store reset upon browser refresh) 
+const userVisibleDetails = ref<UserVisibleDetails | null>(null);
 
 onMounted(() => {
   const token = typeof window !== 'undefined' ? sessionStorage.getItem('find-users-Token') : null;
@@ -42,6 +68,11 @@ watch(() => userStore.currentUser, (user) => {
   currentUser.value = user
   console.log("User value changed:", user);
 });
+
+watch(() => userStore.userVisibleDetails, (newDetails) => {
+  console.log("User visible details changed:", newDetails);
+  userVisibleDetails.value = newDetails
+}); 
 
 useHead({
   htmlAttrs: {
@@ -139,7 +170,8 @@ watchEffect(() => {
                   <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
-                    <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                    <img v-if="!userVisibleDetails?.profilePictureUrl" class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                    <img v-if="userVisibleDetails?.profilePictureUrl" class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl" alt="">
                   </button>
                 </div>        
                 <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">

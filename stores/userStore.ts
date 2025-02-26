@@ -29,10 +29,21 @@ interface STSTokenManager {
   expirationTime: number; 
 }
 
+interface VisibleDetails {
+  name: string;
+  profession: string;
+  country: string;
+  email: string;
+  openedToWork: boolean;
+  profilePicture: File | null;
+  profilePictureUrl: string | null
+}
+
 export const useUserStore = defineStore('userStore', {
   state: () => ({
     token: null as string | null,
     currentUser: null as User | null,
+    userVisibleDetails: null as VisibleDetails | null
   }),
   actions: {
     setToken(token: Token) {
@@ -43,8 +54,11 @@ export const useUserStore = defineStore('userStore', {
       this.token = null;
       sessionStorage.removeItem('find-users-Token'); 
     },
-    setCurrentUser(user: any) {
+    setCurrentUser(user: User) {
       this.currentUser = user;
+    },
+    setVisibleDetails(visibleDetails: VisibleDetails) {
+      this.userVisibleDetails = visibleDetails;
     },
     clearCurrentUser() {
       this.currentUser = null;
