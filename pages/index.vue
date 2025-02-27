@@ -76,8 +76,6 @@ onMounted(() => {
       </div>
     </template>
 
-
-
   </div>
 </template>
 

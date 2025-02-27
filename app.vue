@@ -8,6 +8,7 @@ import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
 import { useUserStore } from './stores/userStore';
+import { doc, getDoc, type Firestore } from 'firebase/firestore';
 
 interface ProfilePicture {
   readonly lastModified: number;
@@ -30,6 +31,9 @@ interface UserVisibleDetails {
 
 
 const auth = useNuxtApp().$auth;
+const { $db } = useNuxtApp();
+// const auth = getAuth(); 
+const user = auth.currentUser; 
 const userStore = useUserStore();
 
 const loginRedirectStore = useLoginRedirectStore();
@@ -38,10 +42,6 @@ const isAuthChecked = ref(false);
 
 const currentUser = ref();
 
-
-// TODO: this is for now is update by the watch based on the change of the variable in the storeToRefs...
-// but it should also be update by calling the firebase DB with the userVisible details 
-// so if the app gets refreshed it won't get null (remember the store reset upon browser refresh) 
 const userVisibleDetails = ref<UserVisibleDetails | null>(null);
 
 onMounted(() => {
@@ -50,6 +50,7 @@ onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     if (user?.emailVerified && token) {
       console.log("User is signed in");
+      getProfileData(user)
       currentUser.value = user;
     } else {
       console.log("No user signed in");
@@ -59,6 +60,41 @@ onMounted(() => {
 });
 
 const token = ref(userStore.token);
+
+const getProfileData = async (user: any) => {
+  if (!user) {
+    console.error("User not logged in!");
+    return;
+  }
+  try {
+    // Ensure TypeScript knows $db is of type Firestore
+    const db = $db as Firestore;
+    // Get the document for the logged-in user from the "UsersProfileDetails" collection
+    const docRef = doc(db, "UsersProfileDetails", user.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      // If the document exists, return the user data
+      const userData = docSnap.data();      
+         // Safely update userVisibleDetails with default values for missing fields
+        userStore.setVisibleDetails({
+          name: userData.name || '', // Default to an empty string if name is missing
+          profession: userData.profession || '', // Default to an empty string if profession is missing
+          country: userData.country || '', // Default to an empty string if country is missing
+          email: userData.email || '', // Default to an empty string if email is missing
+          openedToWork: userData.openedToWork ?? false, // Default to false if openedToWork is missing or null
+          profilePicture: userData.profilePicture || null, // Default to null if profilePicture is missing
+          profilePictureUrl: userData.profilePictureUrl || null, // Default to null if profilePictureUrl is missing
+      });
+      console.log("User data:", userData);
+      return userData;
+    } else {
+      console.error("No user data found for the logged-in user.");
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+};
+
 
 watch(() => userStore.token, (token) => {
   console.log("Token value changed:", token);
@@ -73,6 +109,12 @@ watch(() => userStore.userVisibleDetails, (newDetails) => {
   console.log("User visible details changed:", newDetails);
   userVisibleDetails.value = newDetails
 }); 
+
+watchEffect(() => {
+  if (userStore.userVisibleDetails) {
+    userVisibleDetails.value = userStore.userVisibleDetails;
+  }
+});
 
 useHead({
   htmlAttrs: {

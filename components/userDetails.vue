@@ -4,6 +4,13 @@ import { toast } from 'vue3-toastify';
 import { useUserStore } from '../stores/userStore';
 import { ChevronDown } from 'lucide-vue-next';
 import { useRuntimeConfig } from '#app';
+import { useNuxtApp } from "#app";
+import { getAuth } from "firebase/auth";
+import { Firestore, doc, getDoc, setDoc } from "firebase/firestore";
+
+const { $db } = useNuxtApp();
+const auth = getAuth(); 
+const user = auth.currentUser; 
 
 const config = useRuntimeConfig();
 const imgurKey = config.public.imgurKey; 
@@ -69,11 +76,57 @@ const resetForm = () => {
 };
 
 const fetchFormData = async () => {
+  if (!user) {
+    console.error("User not logged in!");
+    return;
+  }
   try {
-    // const userData = await userStore.getUserDetails();
-    // Object.assign(form, userData);
+    // Ensure TypeScript knows $db is of type Firestore
+    const db = $db as Firestore;
+    // Get the document for the logged-in user from the "UsersProfileDetails" collection
+    const docRef = doc(db, "UsersProfileDetails", user.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      // If the document exists, return the user data
+      const userData = docSnap.data();
+      form.country = userData.country
+      form.name = userData.name
+      form.email = userData.email
+      form.profession = userData.profession
+      form.profilePictureUrl = userData.profilePictureUrl
+      form.openedToWork = userData.openedToWork
+      console.log("User data:", userData);
+      return userData;
+    } else {
+      console.error("No user data found for the logged-in user.");
+    }
   } catch (error) {
-    console.error('Error fetching user details', error);
+    console.error("Error fetching user data:", error);
+  }
+};
+
+
+const saveFormData = async (userProfileDetails: any) => {
+  if (!user) {
+    console.error("User not logged in!");
+    return;
+  }
+  try {
+    // Ensure TypeScript knows $db is of type Firestore
+    const db = $db as Firestore;
+    await setDoc(doc(db, "UsersProfileDetails", user.uid), {
+      uid: user.uid,
+      name: form.name,
+      profession: form.profession,
+      country: form.country,
+      email: form.email,
+      openedToWork: form.openedToWork,
+      profilePictureUrl: form.profilePictureUrl,
+      createdAt: new Date(),
+    });
+    alert("Data saved successfully!");
+  } catch (error) {
+    console.error("Error saving data:", error);
   }
 };
 
@@ -85,12 +138,7 @@ const submitForm = async () => {
     // form.profilePictureUrl = profilePictureUrl   
     form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
     userStore.setVisibleDetails(form)
-
-    // A) TODO: here you should call the firebase endpoint to post the form to the DB (you need the user id to match its user detail row in the users details table)
-    // B) also create updateUserDetails in the userStore so you can store there
-    // C) also you need to find the endpoin to retrieve the user details and call it alway at the app component level to retrieve the user details every time that the app component 
-      // reload or mount, but only when (user?.emailVerified && token)
-    // await userStore.updateUserDetails(form);
+    saveFormData(form)
     toast.success('Profile updated successfully!', { position: 'top-right' });
     formTouched.value = false;
   } catch (error) {
@@ -201,6 +249,11 @@ const selectCountry = (country: any) => {
 watch(isLoadingCountries, (newValue) => {
   console.log('Loading state changed:', newValue);
 });
+
+// watch(form, (newValue, oldValue) => {
+//   // Optionally track changes or synchronize data with some logic
+//   console.log('Form updated:', newValue);
+// });
 
 onMounted(() => {
   fetchCountries();
