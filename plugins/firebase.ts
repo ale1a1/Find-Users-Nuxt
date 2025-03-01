@@ -4,16 +4,7 @@ import { getAuth, type Auth } from 'firebase/auth';
 import { Firestore, getFirestore } from 'firebase/firestore';
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const config = useRuntimeConfig();
-
   const firebaseConfig = {
-    // apiKey: config.public.firebaseApiKey,
-    // authDomain: config.public.firebaseAuthDomain,
-    // projectId: config.public.firebaseProjectId,
-    // storageBucket: config.public.firebaseStorageBucket,
-    // messagingSenderId: config.public.firebaseMessagingSenderId,
-    // appId: config.public.firebaseAppId,
-    // measurementId: config.public.firebaseMeasurementId,
     apiKey: nuxtApp.$config.public.firebaseApiKey,
     authDomain: nuxtApp.$config.public.firebaseAuthDomain,
     projectId: nuxtApp.$config.public.firebaseProjectId,
