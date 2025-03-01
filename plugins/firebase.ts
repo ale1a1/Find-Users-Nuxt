@@ -1,27 +1,32 @@
 import { defineNuxtPlugin } from '#app';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, type Auth } from 'firebase/auth';
 import { Firestore, getFirestore } from 'firebase/firestore';
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig();
+
   const firebaseConfig = {
-    apiKey: nuxtApp.$config.public.firebaseApiKey,
-    authDomain: nuxtApp.$config.public.firebaseAuthDomain,
-    projectId: nuxtApp.$config.public.firebaseProjectId,
-    storageBucket: nuxtApp.$config.public.firebaseStorageBucket,
-    messagingSenderId: nuxtApp.$config.public.firebaseMessagingSenderId,
-    appId: nuxtApp.$config.public.firebaseAppId,
-    measurementId: nuxtApp.$config.public.firebaseMeasurementId,
+    apiKey: config.public.firebaseApiKey,
+    authDomain: config.public.firebaseAuthDomain,
+    projectId: config.public.firebaseProjectId,
+    storageBucket: config.public.firebaseStorageBucket,
+    messagingSenderId: config.public.firebaseMessagingSenderId,
+    appId: config.public.firebaseAppId,
+    measurementId: config.public.firebaseMeasurementId,
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  // const db = getFirestore(app);
-  const db: Firestore = getFirestore(app);
-
-  // Make auth and db available in the Nuxt app
-  nuxtApp.provide('auth', auth);
-  nuxtApp.provide('db', db);
+  try {
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth: Auth = getAuth(app);
+    const db: Firestore = getFirestore(app);
+    alert("YOOOOO")
+    // Make auth and db available in the Nuxt app
+    nuxtApp.provide('auth', auth);
+    nuxtApp.provide('db', db);
+  } catch (error) {
+    console.error('Error initializing Firebase:', error);
+  }
 });
 
