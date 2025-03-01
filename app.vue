@@ -85,6 +85,7 @@ const getProfileData = async (user: any) => {
           profilePicture: userData.profilePicture || null, // Default to null if profilePicture is missing
           profilePictureUrl: userData.profilePictureUrl || null, // Default to null if profilePictureUrl is missing
       });
+      userVisibleDetails.value = userStore.userVisibleDetails
       console.log("User data:", userData);
       return userData;
     } else {
