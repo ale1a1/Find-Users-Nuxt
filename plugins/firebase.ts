@@ -21,7 +21,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     const app = initializeApp(firebaseConfig);
     const auth: Auth = getAuth(app);
     const db: Firestore = getFirestore(app);
-    alert("YOOOOO")
     // Make auth and db available in the Nuxt app
     nuxtApp.provide('auth', auth);
     nuxtApp.provide('db', db);
