@@ -61,7 +61,6 @@ const login = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user; 
-    console.log(user)
     const token = await user.getIdToken();   
     sessionStorage.setItem('find-users-Token', token); 
     if (user.emailVerified) {

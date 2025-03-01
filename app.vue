@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { watchEffect } from 'vue';
-import Footer from './components/footer.vue';
 import { useHead } from '#imports'
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
 import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
 import { useUserStore } from './stores/userStore';
-import { doc, getDoc, type Firestore } from 'firebase/firestore';
+import { doc, getDoc, type DocumentData, type Firestore } from 'firebase/firestore';
+import Footer from './components/footer.vue';
 
 interface ProfilePicture {
   readonly lastModified: number;
   readonly name: string;
   readonly webkitRelativePath: string;
-  text: {
-    // Define fields inside text here
-  };
+  text: {};
 }
 
 interface UserVisibleDetails {
@@ -29,27 +27,21 @@ interface UserVisibleDetails {
   profilePictureUrl: string | null;
 }
 
-
+const router = useRouter();
 const auth = useNuxtApp().$auth;
 const { $db } = useNuxtApp();
-// const auth = getAuth(); 
-const user = auth.currentUser; 
+const userData = ref<DocumentData | null>(null); 
 const userStore = useUserStore();
-
 const loginRedirectStore = useLoginRedirectStore();
-
 const isAuthChecked = ref(false);
-
 const currentUser = ref();
-
 const userVisibleDetails = ref<UserVisibleDetails | null>(null);
+const token = ref(userStore.token);
 
 onMounted(() => {
-  const token = typeof window !== 'undefined' ? sessionStorage.getItem('find-users-Token') : null;
-
   onAuthStateChanged(auth, (user) => {
+    const token = sessionStorage.getItem('find-users-Token') ? sessionStorage.getItem('find-users-Token') : userStore.token;
     if (user?.emailVerified && token) {
-      console.log("User is signed in");
       getProfileData(user)
       currentUser.value = user;
     } else {
@@ -57,64 +49,6 @@ onMounted(() => {
     }
     isAuthChecked.value = true;
   });
-});
-
-const token = ref(userStore.token);
-
-const getProfileData = async (user: any) => {
-  if (!user) {
-    console.error("User not logged in!");
-    return;
-  }
-  try {
-    // Ensure TypeScript knows $db is of type Firestore
-    const db = $db as Firestore;
-    // Get the document for the logged-in user from the "UsersProfileDetails" collection
-    const docRef = doc(db, "UsersProfileDetails", user.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      // If the document exists, return the user data
-      const userData = docSnap.data();      
-         // Safely update userVisibleDetails with default values for missing fields
-        userStore.setVisibleDetails({
-          name: userData.name || '', // Default to an empty string if name is missing
-          profession: userData.profession || '', // Default to an empty string if profession is missing
-          country: userData.country || '', // Default to an empty string if country is missing
-          email: userData.email || '', // Default to an empty string if email is missing
-          openedToWork: userData.openedToWork ?? false, // Default to false if openedToWork is missing or null
-          profilePicture: userData.profilePicture || null, // Default to null if profilePicture is missing
-          profilePictureUrl: userData.profilePictureUrl || null, // Default to null if profilePictureUrl is missing
-      });
-      userVisibleDetails.value = userStore.userVisibleDetails
-      console.log("User data:", userData);
-      return userData;
-    } else {
-      console.error("No user data found for the logged-in user.");
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
-};
-
-
-watch(() => userStore.token, (token) => {
-  console.log("Token value changed:", token);
-});
-
-watch(() => userStore.currentUser, (user) => {
-  currentUser.value = user
-  console.log("User value changed:", user);
-});
-
-watch(() => userStore.userVisibleDetails, (newDetails) => {
-  console.log("User visible details changed:", newDetails);
-  userVisibleDetails.value = newDetails
-}); 
-
-watchEffect(() => {
-  if (userStore.userVisibleDetails) {
-    userVisibleDetails.value = userStore.userVisibleDetails;
-  }
 });
 
 useHead({
@@ -126,7 +60,34 @@ useHead({
   }
 })
 
-const router = useRouter();
+const getProfileData = async (user: any) => {
+  if (!user) {
+    console.error("User not logged in!");
+    return;
+  }
+  try {
+    const db = $db as Firestore;
+    const docRef = doc(db, "UsersProfileDetails", user.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      userData.value = docSnap.data();      
+      userStore.setVisibleDetails({
+        name: userData.value.name || '', 
+        profession: userData.value.profession || '', 
+        country: userData.value.country || '', 
+        email: userData.value.email || '', 
+        openedToWork: userData.value.openedToWork ?? false, 
+        profilePicture: userData.value.profilePicture || null, 
+        profilePictureUrl: userData.value.profilePictureUrl || null, 
+      });
+      return userData;
+    } else {
+      console.error("No user data found for the logged-in user.");
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+};
 
 const logout = async () => {
   try {
@@ -158,6 +119,34 @@ const logout = async () => {
   }
 };
 
+watch(() => userStore.token, (token) => {
+  console.log("Token value changed:", token);
+  onAuthStateChanged(auth, (user) => {
+    const token = sessionStorage.getItem('find-users-Token') ? sessionStorage.getItem('find-users-Token') : userStore.token;
+    if (user?.emailVerified && token) {
+      getProfileData(user)
+      currentUser.value = user;
+    } else {
+      console.log("No user signed in");
+    }
+    isAuthChecked.value = true;
+  });
+});
+
+watch(() => userStore.currentUser, (user) => {
+  currentUser.value = user
+});
+
+watch(() => userStore.userVisibleDetails, (newDetails) => {
+  userVisibleDetails.value = newDetails
+}); 
+
+watchEffect(() => {
+  if (userStore.userVisibleDetails) {
+    userVisibleDetails.value = userStore.userVisibleDetails;
+  }
+});
+
 watchEffect(() => {
   const currentPath = router.currentRoute.value.path;
   if (isAuthChecked.value && !token.value && !currentUser.value && currentPath !== '/login' && !currentPath.startsWith('/action')) {
@@ -171,7 +160,7 @@ watchEffect(() => {
   <div  v-if="isAuthChecked" class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="currentUser">
-      <nav class="bg-red-500/90">
+      <nav class="z-20 bg-red-500/90">
         <div class="px-2 sm:px-6 lg:px-8">
           <div class="relative flex h-12 items-center justify-between">
             <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -213,8 +202,8 @@ watchEffect(() => {
                   <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
-                    <img v-if="!userVisibleDetails?.profilePictureUrl" class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                    <img v-if="userVisibleDetails?.profilePictureUrl" class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl" alt="">
+                    <img v-if="!userData?.profilePictureUrl || !userVisibleDetails?.profilePictureUrl" class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                    <img v-if="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" alt="">
                   </button>
                 </div>        
                 <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
@@ -245,7 +234,7 @@ watchEffect(() => {
     </div>
     <!-- Footer only if user is authenticated -->
     <template v-if="currentUser">
-      <Footer />
+      <Footer class="z-20" />
     </template>  
   </div>
 

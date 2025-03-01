@@ -41,14 +41,15 @@ const formInitialState: UserDetails = {
   profilePictureUrl: null
 };
 
+const isLoading = ref(false);
 const form = reactive({ ...formInitialState });
-const apiCall = ref(false);
 const isSubmitting = ref(false);
+const isSubmitted = ref(false);
+const isFormEmpty = ref(false);
 const formTouched = ref(false);
 const userStore = useUserStore();
 const fileName = ref('');
 const { currentUser } = userStore;
-
 const countries = ref<Country[]>([]);
 const isOpen = ref(false);
 const selectedCountryName = ref('');
@@ -56,15 +57,14 @@ const selectedCountryFlag = ref('');
 const isLoadingCountries = ref(false);
 const countryFetchError = ref<string | null>(null);
 
-
-const isFormValid = computed(() => {
+const isFormValid = computed(() => {  
+  isSubmitted.value = false;
   return (
     form.name &&
     form.profession &&
     form.country &&
     form.email &&
-    form.openedToWork &&
-    Object.keys(inputError.value).length === 0
+    Object.keys(inputError.value).length === 0     
   );
 });
 
@@ -72,7 +72,10 @@ const resetForm = () => {
   Object.assign(form, formInitialState);
   selectedCountryName.value = ''
   selectedCountryFlag.value = ''
+  fileName.value = ''
   formTouched.value = false;
+  isSubmitted.value = false;
+  isFormEmpty.value = true;
 };
 
 const fetchFormData = async () => {
@@ -80,14 +83,12 @@ const fetchFormData = async () => {
     console.error("User not logged in!");
     return;
   }
+  isLoading.value = true;
   try {
-    // Ensure TypeScript knows $db is of type Firestore
     const db = $db as Firestore;
-    // Get the document for the logged-in user from the "UsersProfileDetails" collection
     const docRef = doc(db, "UsersProfileDetails", user.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      // If the document exists, return the user data
       const userData = docSnap.data();
       form.country = userData.country
       form.name = userData.name
@@ -95,57 +96,101 @@ const fetchFormData = async () => {
       form.profession = userData.profession
       form.profilePictureUrl = userData.profilePictureUrl
       form.openedToWork = userData.openedToWork
-      console.log("User data:", userData);
+      fileName.value = userData.profilePictureName
+      selectedCountryName.value = userData.country
+      setTimeout(() => {
+        isLoading.value = false;
+        formTouched.value = false
+      }, 500)
+      // Fetch countries first, then select user's country
+      await fetchCountries();
+      const selectedCountry = countries.value.find(
+        (country) => country.name === userData.country
+      );
+      if (selectedCountry) {
+        selectCountry(selectedCountry);
+      }
       return userData;
     } else {
-      console.error("No user data found for the logged-in user.");
+      isLoading.value = false;
+      isFormEmpty.value = true
+      const toastErrorMessage = "No user data found for the logged-in user."
+      toast.error(toastErrorMessage, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      })
+      console.error(toastErrorMessage);
     }
   } catch (error) {
-    console.error("Error fetching user data:", error);
+    isLoading.value = false;
+    isFormEmpty.value = true
+    const toastErrorMessage = "Error fetching user profile data"
+    toast.error(toastErrorMessage, {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
+    console.error("Error fetching user data: " + error)
   }
 };
 
+const submitForm = async () => { 
+  // const profilePictureUrl = await uploadToImgur()
+  // form.profilePictureUrl = profilePictureUrl   
+  // TODO: in production the lines above will replace the ones below
+  form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
+  // form.profilePictureUrl = "https://www.istockphoto.com/photo/human-crowd-surrounding-red-target-object-on-blue-background-gm1805660040-548844861?utm_source=pixabay&utm_medium=affiliate&utm_campaign=sponsored_image&utm_content=srp_topbanner_media&utm_term=seo"
+  userStore.setVisibleDetails(form)  
+  saveFormData(form)
+};
 
 const saveFormData = async (userProfileDetails: any) => {
   if (!user) {
     console.error("User not logged in!");
     return;
   }
+  isSubmitting.value = true;
+  formTouched.value = false
   try {
-    // Ensure TypeScript knows $db is of type Firestore
     const db = $db as Firestore;
     await setDoc(doc(db, "UsersProfileDetails", user.uid), {
       uid: user.uid,
-      name: form.name,
-      profession: form.profession,
-      country: form.country,
-      email: form.email,
-      openedToWork: form.openedToWork,
-      profilePictureUrl: form.profilePictureUrl,
+      name: userProfileDetails.name,
+      profession: userProfileDetails.profession,
+      country: userProfileDetails.country,
+      email: userProfileDetails.email,
+      openedToWork: userProfileDetails.openedToWork,
+      profilePictureUrl: userProfileDetails.profilePictureUrl,
+      profilePictureName: fileName.value,
       createdAt: new Date(),
     });
-    alert("Data saved successfully!");
-  } catch (error) {
-    console.error("Error saving data:", error);
-  }
-};
-
-const submitForm = async () => {
-  apiCall.value = true;
-  isSubmitting.value = true;
-  try {
-    // const profilePictureUrl = await uploadToImgur()
-    // form.profilePictureUrl = profilePictureUrl   
-    form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
-    userStore.setVisibleDetails(form)
-    saveFormData(form)
-    toast.success('Profile updated successfully!', { position: 'top-right' });
-    formTouched.value = false;
-  } catch (error) {
-    toast.error('Error updating profile.', { position: 'top-right' });
-  } finally {
-    apiCall.value = false;
+    toast.success('Profile updated successfully!', {
+      position: 'top-right',
+      autoClose: 2000,       
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true
+    })
     isSubmitting.value = false;
+    isSubmitted.value = true
+    formTouched.value = true
+    isFormEmpty.value = false;
+  } catch (error) {
+    toast.error('Error updating profile.', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
+    console.error('Error updating profile.')
+    isSubmitting.value = false;
+    isFormEmpty.value = false;
   }
 };
 
@@ -159,43 +204,58 @@ const handleFileChange = (event: Event) => {
   form.profilePicture = file;
   fileName.value = file ? file.name : "No file chosen";
   formTouched.value = true;
+  isSubmitted.value = false;
 };
 
 const clearProfilePicture = () => {
-
   form.profilePicture = null;
+  form.profilePictureUrl = '';
   fileName.value = '';
   formTouched.value = true;
+  isSubmitted.value = false;
 };
 
 const uploadToImgur = async (): Promise<string | null> => {
     if (!form.profilePicture) {
-        toast.error("Please select an image!", { position: "top-right" });
-        return null;
+      toast.error("Please select an image!", { position: "top-right" });
+      return null;
     }
     const imageFile = form.profilePicture; 
     const formData = new FormData();
     formData.append("image", imageFile);
     const clientId = "56f415c0bdf60ec"; 
     try {
-        const response = await fetch("https://api.imgur.com/3/image", {
-            method: "POST",
-            headers: {
-                "Authorization": `Client-ID ${clientId}`
-            },
-            body: formData
-        });
-        const data = await response.json();
-        if (data.success) {
-            return data.data.link; 
-        } else {
-            toast.error("Profile picture upload failed!", { position: "top-right" });
-            return null;
-        }
-    } catch (error) {
-        console.error("Error uploading profile picture:", error);
-        toast.error("Something went wrong!", { position: "top-right" });
+      const response = await fetch("https://api.imgur.com/3/image", {
+          method: "POST",
+          headers: {
+              "Authorization": `Client-ID ${clientId}`
+          },
+          body: formData
+      });
+      const data = await response.json();
+      if (data.success) {
+          return data.data.link; 
+      } else {
+        toast.error('Error uploading profile picture.', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: false
+        })
+        console.error("Error uploading profile picture:");
         return null;
+      }
+    } catch (error) {
+        toast.error('Error uploading profile picture.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      })
+      console.error("Error uploading profile picture:", error);
+      return null;
     }
 };
 
@@ -250,11 +310,6 @@ watch(isLoadingCountries, (newValue) => {
   console.log('Loading state changed:', newValue);
 });
 
-// watch(form, (newValue, oldValue) => {
-//   // Optionally track changes or synchronize data with some logic
-//   console.log('Form updated:', newValue);
-// });
-
 onMounted(() => {
   fetchCountries();
   fetchFormData()
@@ -262,7 +317,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center px-6 py-12 lg:px-8">
+  <div v-if="!isLoading" class="flex flex-col items-center justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-2xl shadow-lg border border-amber-400 rounded-lg p-8 bg-neutral-900 text-gray-100">
       <form @submit.prevent="submitForm" class="space-y-8">
         <!--------------------- Form Fields ---------------------->
@@ -275,7 +330,8 @@ onMounted(() => {
               :type="key === 'email' ? 'email' : 'text'"
               :id="key"
               required
-              class="block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500/80 sm:text-sm/6"
+              :disabled="isSubmitting"
+              class="disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500/80 sm:text-sm/6"
               @input="formTouched = true"
             />
             <p v-if="inputError[key]" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
@@ -285,7 +341,8 @@ onMounted(() => {
             <label class="block font-medium">Country</label>
             <button
               @click.prevent="toggleCountriesDropdown"
-              class="w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:outline-amber-400 focus:outline-offset-2 flex justify-between items-center cursor-pointer"
+              :disabled="isSubmitting"
+              class="disabled:cursor-not-allowed w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:outline-amber-400 focus:outline-offset-2 flex justify-between items-center cursor-pointer"
             >
               <span class="flex items-center">
                 <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
@@ -314,10 +371,11 @@ onMounted(() => {
             <div class="flex items-center space-x-2">
               <label class="font-medium">Profile Picture <span class="text-xs text-gray-400">(optional)</span> </label>
               <label class="font-medium">-</label>
-              <label class="text-amber-400  hover:text-amber-400/80 text-sm cursor-pointer italic">
+              <label  class="text-amber-400 hover:text-amber-400/80 text-sm cursor-pointer italic">
                 choose file
                 <input
                   type="file"
+                  :disabled="isSubmitting"
                   accept="image/*"
                   @change="handleFileChange"
                   class="hidden"
@@ -329,8 +387,9 @@ onMounted(() => {
               <button
                 type="button"
                 @click="clearProfilePicture"
-                class="text-red-500 hover:text-red-500/80 text-lg cursor-pointer"
-                v-if="form.profilePicture"
+                :disabled="isSubmitting"
+                class="text-red-500 disabled:hover:text-red-500 disabled:cursor-not-allowed hover:text-red-500/80 text-lg cursor-pointer"
+                v-if="fileName"
               >
                 &times;
               </button>
@@ -339,41 +398,47 @@ onMounted(() => {
           <!-- Opened to work checkbox -->
           <div class="flex items-center space-x-2">
             <input
+              :disabled="isSubmitting"
               v-model="form.openedToWork"
               type="checkbox"
               id="openedToWork"
               class="hidden"
+              @input="formTouched = true"
             />
-            <label for="openedToWork" class="custom-checkbox">
+            <label for="openedToWork" class="custom-checkbox disabled:cursor-not-allowed" :disabled="isSubmitting">
               <span class="checkmark"></span>
             </label>
             <span>Opened to work</span>
           </div>
         </div>
-         <!--------------------- Save and Cancek buttons ---------------------->
+        <!--------------------- Save and Cancek buttons ---------------------->
         <div class="flex space-x-8">
           <button
             type="submit"
-            :disabled="!isFormValid"
+            :disabled="!isFormValid || isSubmitting || isSubmitted || !formTouched"
             class="w-full bg-amber-400 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40 cursor-pointer"
           >
-            <span v-if="apiCall" class="animate-spin h-5 w-5 mr-2">🔄</span>
             {{ isSubmitting ? 'Saving...' : 'Save' }}
           </button>
           <button
             type="button"
             @click="resetForm"
-            :disabled="!formTouched"
-            class="w-full bg-red-500  text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900 cursor-pointer"
+            :disabled="isFormEmpty || isSubmitting"
+            class="w-full bg-red-500 text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900 cursor-pointer"
           >
-            Cancel
+            Clear
           </button>
         </div>
       </form>
     </div>
   </div>
-</template>
+  <!-- Loading spinner -->
+  <div v-else class="flex items-center justify-center absolute inset-0">
+    <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+  </div>
 
+
+</template>
 
 <style scoped>
 input:-webkit-autofill {
