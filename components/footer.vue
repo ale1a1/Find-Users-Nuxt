@@ -13,20 +13,20 @@ const socialLinks = ref([
 </script>
 
 <template>
-  <footer class="border-t border-gray-300/80 py-4 px-6 bg-black text-gray-400">
-    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+  <footer class="border-t border-gray-300/80 py-4 bg-black text-gray-400 w-full">
+    <div class="w-full flex justify-between items-center px-2 sm:px-6 lg:px-8">
       
       <!-- Left Side: Copyright -->
-      <p class="text-sm mb-2 md:mb-0">© {{ new Date().getFullYear() }} ALW Media</p>
+      <p class="text-sm">© {{ new Date().getFullYear() }} ALW Media</p>
 
       <!-- Right Side: Social Icons -->
-      <div class="flex space-x-4">
+      <div class="flex space-x-6">
         <a
           v-for="(item, index) in socialLinks"
           :key="index"
           :href="item.link"
           target="_blank"
-          class="hover:text-white"
+          class="hover:text-white transition-colors"
         >
           <component :is="item.icon" class="size-6" />
         </a>
@@ -35,3 +35,6 @@ const socialLinks = ref([
     </div>
   </footer>
 </template>
+
+
+

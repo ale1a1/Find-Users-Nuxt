@@ -9,6 +9,7 @@ import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
 import { useUserStore } from './stores/userStore';
 import { doc, getDoc, type DocumentData, type Firestore } from 'firebase/firestore';
 import Footer from './components/footer.vue';
+import { User } from "lucide-vue-next";
 
 interface ProfilePicture {
   readonly lastModified: number;
@@ -202,8 +203,10 @@ watchEffect(() => {
                   <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
-                    <img v-if="!userData?.profilePictureUrl || !userVisibleDetails?.profilePictureUrl" class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                    <img v-if="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" alt="">
+                    <template v-if="!userData?.profilePictureUrl && !userVisibleDetails?.profilePictureUrl">
+                      <User class="size-8 text-gray-400" />
+                    </template>
+                    <img v-else class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" alt="">
                   </button>
                 </div>        
                 <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">

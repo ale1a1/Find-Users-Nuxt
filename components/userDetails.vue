@@ -144,6 +144,7 @@ const submitForm = async () => {
   // form.profilePictureUrl = profilePictureUrl   
   // TODO: in production the lines above will replace the ones below
   form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
+  // form.profilePictureUrl = null;
   // form.profilePictureUrl = "https://www.istockphoto.com/photo/human-crowd-surrounding-red-target-object-on-blue-background-gm1805660040-548844861?utm_source=pixabay&utm_medium=affiliate&utm_campaign=sponsored_image&utm_content=srp_topbanner_media&utm_term=seo"
   userStore.setVisibleDetails(form)  
   saveFormData(form)
