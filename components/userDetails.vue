@@ -285,7 +285,8 @@ const fetchCountries = async () => {
       name: country.name.common,
       alpha3Code: country.alpha3Code,
       flag: country.flags.svg
-    }));
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error('Error fetching countries:', error);
     countryFetchError.value = 'Something went wrong while retrieving the country list.';
