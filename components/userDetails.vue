@@ -140,10 +140,10 @@ const fetchFormData = async () => {
 };
 
 const submitForm = async () => { 
-  // const profilePictureUrl = await uploadToImgur()
-  // form.profilePictureUrl = profilePictureUrl   
+  const profilePictureUrl = await uploadToImgur()
+  form.profilePictureUrl = profilePictureUrl   
   // TODO: in production the lines above will replace the ones below
-  form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
+  // form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
   // form.profilePictureUrl = null;
   // form.profilePictureUrl = "https://www.istockphoto.com/photo/human-crowd-surrounding-red-target-object-on-blue-background-gm1805660040-548844861?utm_source=pixabay&utm_medium=affiliate&utm_campaign=sponsored_image&utm_content=srp_topbanner_media&utm_term=seo"
   userStore.setVisibleDetails(form)  
@@ -368,7 +368,7 @@ onMounted(() => {
             </div>
           </div>
           <!-- Profile Picture -->
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-1">
             <div class="flex items-center space-x-2">
               <label class="font-medium">Profile Picture <span class="text-xs text-gray-400">(optional)</span> </label>
               <label class="font-medium">-</label>
@@ -384,7 +384,7 @@ onMounted(() => {
               </label>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-gray-300 text-sm">{{ fileName || 'no file chosen' }}</span>
+              <span class="text-gray-300 text-sm truncate cursor-default" :title="fileName || 'no file chosen'">{{ fileName || 'no file chosen' }}</span>
               <button
                 type="button"
                 @click="clearProfilePicture"
