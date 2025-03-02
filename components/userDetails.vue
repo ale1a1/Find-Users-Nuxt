@@ -218,7 +218,6 @@ const clearProfilePicture = () => {
 
 const uploadToImgur = async (): Promise<string | null> => {
     if (!form.profilePicture) {
-      toast.error("Please select an image!", { position: "top-right" });
       return null;
     }
     const imageFile = form.profilePicture; 
