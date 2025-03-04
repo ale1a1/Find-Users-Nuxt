@@ -49,6 +49,7 @@ const isFormEmpty = ref(false);
 const formTouched = ref(false);
 const userStore = useUserStore();
 const fileName = ref('');
+const fileInput = ref<HTMLInputElement | null>(null); 
 const { currentUser } = userStore;
 const countries = ref<Country[]>([]);
 const isOpen = ref(false);
@@ -76,6 +77,7 @@ const resetForm = () => {
   formTouched.value = false;
   isSubmitted.value = false;
   isFormEmpty.value = true;
+  form.openedToWork = false;
 };
 
 const fetchFormData = async () => {
@@ -153,6 +155,8 @@ const saveFormData = async (userProfileDetails: any) => {
   if (!user) {
     console.error("User not logged in!");
     return;
+    isSubmitting.value = false;
+    formTouched.value = true
   }
   try {
     const db = $db as Firestore;
@@ -174,11 +178,12 @@ const saveFormData = async (userProfileDetails: any) => {
       closeOnClick: false,
       pauseOnHover: true
     })
+    userStore.setVisibleDetails(userProfileDetails)   
     isSubmitting.value = false;
     isSubmitted.value = true
-    formTouched.value = true
-    isFormEmpty.value = false;
-    userStore.setVisibleDetails(form)  
+    form.openedToWork = userProfileDetails.openedToWork;
+    // formTouched.value = true
+    // isFormEmpty.value = false;
   } catch (error) {
     toast.error('Error updating profile.', {
       position: 'top-right',
@@ -208,10 +213,13 @@ const handleFileChange = (event: Event) => {
 
 const clearProfilePicture = () => {
   form.profilePicture = null;
-  form.profilePictureUrl = '';
+  form.profilePictureUrl = null;
   fileName.value = '';
   formTouched.value = true;
   isSubmitted.value = false;
+  if (fileInput.value) {
+    fileInput.value.value = '';  
+  }
 };
 
 const uploadToImgur = async () => {  
@@ -249,6 +257,11 @@ const uploadToImgur = async () => {
           closeOnClick: false,
           pauseOnHover: false
         })
+        isSubmitting.value = false;
+        setTimeout(() => {
+          formTouched.value = true
+          isFormEmpty.value = false;
+        }, 5000)       
         console.error("Error uploading profile picture.");
       }
     } catch (error) {
@@ -259,6 +272,11 @@ const uploadToImgur = async () => {
         closeOnClick: false,
         pauseOnHover: false
       })
+      isSubmitting.value = false;
+      setTimeout(() => {
+          formTouched.value = true
+          isFormEmpty.value = false;
+        }, 5000)  
       console.error("Error uploading profile picture:", error);
     }
 };
@@ -379,6 +397,7 @@ onMounted(() => {
               <label  class="text-amber-400 hover:text-amber-400/80 text-sm cursor-pointer italic">
                 choose file
                 <input
+                  ref="fileInput"
                   type="file"
                   :disabled="isSubmitting"
                   accept="image/*"
@@ -403,14 +422,14 @@ onMounted(() => {
           <!-- Opened to work checkbox -->
           <div class="flex items-center space-x-2">
             <input
-              :disabled="isSubmitting"
               v-model="form.openedToWork"
               type="checkbox"
+              :disabled="isSubmitting"
               id="openedToWork"
               class="hidden"
-              @input="formTouched = true"
+              @input="formTouched = true, isSubmitted = false"
             />
-            <label for="openedToWork" class="custom-checkbox disabled:cursor-not-allowed" :disabled="isSubmitting">
+            <label for="openedToWork" class="custom-checkbox">
               <span class="checkmark"></span>
             </label>
             <span>Opened to work</span>
