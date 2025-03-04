@@ -140,14 +140,13 @@ const fetchFormData = async () => {
 };
 
 const submitForm = async () => { 
-  const profilePictureUrl = await uploadToImgur()
-  form.profilePictureUrl = profilePictureUrl   
-  // TODO: in production the lines above will replace the ones below
-  // form.profilePictureUrl = 'https://i.imgur.com/4R1SQxz.png'
-  // form.profilePictureUrl = null;
-  // form.profilePictureUrl = "https://www.istockphoto.com/photo/human-crowd-surrounding-red-target-object-on-blue-background-gm1805660040-548844861?utm_source=pixabay&utm_medium=affiliate&utm_campaign=sponsored_image&utm_content=srp_topbanner_media&utm_term=seo"
-  userStore.setVisibleDetails(form)  
-  saveFormData(form)
+  isSubmitting.value = true;
+  formTouched.value = false
+  if (!fileName.value) {
+    saveFormData(form)
+  } else {
+    uploadToImgur()   
+  }    
 };
 
 const saveFormData = async (userProfileDetails: any) => {
@@ -155,8 +154,6 @@ const saveFormData = async (userProfileDetails: any) => {
     console.error("User not logged in!");
     return;
   }
-  isSubmitting.value = true;
-  formTouched.value = false
   try {
     const db = $db as Firestore;
     await setDoc(doc(db, "UsersProfileDetails", user.uid), {
@@ -181,6 +178,7 @@ const saveFormData = async (userProfileDetails: any) => {
     isSubmitted.value = true
     formTouched.value = true
     isFormEmpty.value = false;
+    userStore.setVisibleDetails(form)  
   } catch (error) {
     toast.error('Error updating profile.', {
       position: 'top-right',
@@ -216,13 +214,20 @@ const clearProfilePicture = () => {
   isSubmitted.value = false;
 };
 
-const uploadToImgur = async (): Promise<string | null> => {
-    if (!form.profilePicture) {
-      return null;
+const uploadToImgur = async () => {  
+    if (!form.profilePicture || !(form.profilePicture instanceof File)) {
+      toast.error('Please select a valid image file.', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: false
+      });
+      console.error("Invalid profile picture file.");
+      return;
     }
-    const imageFile = form.profilePicture; 
     const formData = new FormData();
-    formData.append("image", imageFile);
+    formData.append("image", form.profilePicture);
     const clientId = "56f415c0bdf60ec"; 
     try {
       const response = await fetch("https://api.imgur.com/3/image", {
@@ -233,8 +238,9 @@ const uploadToImgur = async (): Promise<string | null> => {
           body: formData
       });
       const data = await response.json();
-      if (data.success) {
-          return data.data.link; 
+      if (data.success) {    
+        form.profilePictureUrl = data.data.link; 
+        saveFormData(form)
       } else {
         toast.error('Error uploading profile picture.', {
           position: 'top-right',
@@ -243,8 +249,7 @@ const uploadToImgur = async (): Promise<string | null> => {
           closeOnClick: false,
           pauseOnHover: false
         })
-        console.error("Error uploading profile picture:");
-        return null;
+        console.error("Error uploading profile picture.");
       }
     } catch (error) {
         toast.error('Error uploading profile picture.', {
@@ -255,7 +260,6 @@ const uploadToImgur = async (): Promise<string | null> => {
         pauseOnHover: false
       })
       console.error("Error uploading profile picture:", error);
-      return null;
     }
 };
 
