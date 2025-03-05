@@ -10,9 +10,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="showContent" class="flex flex-col w-full">
-    <div class="flex justify-center mt-10">
-      <h1 class="text-amber-400 text-3xl font-bold ">YOUR PROFILE</h1>
+  <div v-if="showContent" class="flex flex-col w-full gap-16">
+    <div class="flex justify-center mt-12">
+      <h1 class="text-amber-400 text-4xl font-bold ">YOUR PROFILE</h1>
     </div>
     <UserDetails />   
   </div>

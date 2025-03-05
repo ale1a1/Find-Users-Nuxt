@@ -9,8 +9,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="showContent" class="flex flex-col w-full">
-    <div class="flex justify-center mt-10">
+  <div v-if="showContent" class="flex flex-col w-full gap-16">
+    <div class="flex justify-center mt-12">
       <h1 class="text-amber-400 text-4xl font-bold">FAVOURITES</h1>
     </div>
     <div class="flex-grow flex items-center justify-center">
