@@ -327,10 +327,19 @@ const selectCountry = (country: any) => {
   form.country = country.name
   formTouched.value = true
   isOpen.value = false;
+  searchQuery.value = '';
 };
 
 watch(isLoadingCountries, (newValue) => {
   console.log('Loading state changed:', newValue);
+});
+
+const searchQuery = ref(''); 
+
+const filteredCountries = computed(() => {
+  return countries.value.filter(country =>
+    country.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
 
 onMounted(() => {
@@ -359,7 +368,7 @@ onMounted(() => {
             />
             <p v-if="inputError[key]" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
           </div>
-          <!-- Country -->
+          <!-- Country  -->
           <div class="relative inline-block w-full">
             <label class="block font-medium">Country</label>
             <button
@@ -369,22 +378,31 @@ onMounted(() => {
             >
               <span class="flex items-center">
                 <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
-                {{ selectedCountryName || 'select a country' }}
+                <span class="truncate w-full" :title="selectedCountryName">{{ selectedCountryName || 'select a country' }}</span>
               </span>
               <ChevronDown class="w-4 h-4 text-amber-400" />
             </button>
             <div v-if="isOpen" v-click-outside="toggleCountriesDropdown" class="absolute left-0 right-0 mt-1 bg-neutral-800 border border-amber-400 rounded-md shadow-lg z-10">
+              <!-- Search Input for Filtering Countries -->
+              <div class="px-3 py-2">
+                <input
+                  v-model="searchQuery"
+                  type="text"
+                  placeholder="Search country..."
+                  class="w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-amber-400/50 focus:outline-amber-400/50 focus:outline-2"
+                />
+              </div>
               <ul class="max-h-60 overflow-auto">
                 <li v-if="countryFetchError" class="flex items-center p-2 text-xs text-red-500 italic">{{ countryFetchError }}</li>
                 <li v-if="isLoadingCountries" class="flex items-center p-2 italic">loading...</li>
                 <li
-                  v-for="country in countries"
+                  v-for="country in filteredCountries"
                   :key="country.alpha3Code"
                   @click="selectCountry(country)"
                   class="flex items-center p-2 hover:bg-gray-500 cursor-pointer"
                 >
                   <img :src="country.flag" alt="" class="w-5 h-5 mr-2" />
-                  {{ country.name }}
+                  <span class="truncate w-full" :title="country.name">{{ country.name }}</span>
                 </li>
               </ul>
             </div>
