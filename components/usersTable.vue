@@ -22,16 +22,13 @@ const sortOrder = ref<'asc' | 'desc'>('asc');
 
 const sortedUsers = computed(() => {
   if (!sortColumn.value) return props.users;
-
   return [...props.users].sort((a, b) => {
     let valueA = a[sortColumn.value!];
     let valueB = b[sortColumn.value!];
-
     if (typeof valueA === 'boolean' && typeof valueB === 'boolean') {
       valueA = valueA ? 1 : 0;
       valueB = valueB ? 1 : 0;
     }
-
     if (valueA < valueB) return sortOrder.value === 'asc' ? -1 : 1;
     if (valueA > valueB) return sortOrder.value === 'asc' ? 1 : -1;
     return 0;
@@ -61,34 +58,34 @@ const toggleFavorite = (user: UserDetails) => {
   <div class="flex flex-col w-full items-center justify-center">
     <div class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100">
       <div class="overflow-x-auto mt-6">
-        <div class="border border-amber-400 rounded-lg overflow-hidden shadow-lg">
+        <div class="border border-amber-400/40 rounded-lg overflow-hidden shadow-lg">
           <table class="w-full bg-neutral-900 rounded-lg table-fixed">
             <thead>
-              <tr class="text-gray-300">
-                <th class="p-2 text-left w-[5%]"></th> <!-- Empty header for profile picture -->
-                <th class="p-2 text-left w-[20%] cursor-pointer" @click="setSortColumn('name')">
+              <tr class="text-gray-300 text-xl"> 
+                <th class="px-2 py-4 text-left w-[5%] border-b border-amber-400/40"></th> 
+                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
                   <span v-if="sortColumn === 'name'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                 </th>
-                <th class="p-2 text-left w-[20%] cursor-pointer" @click="setSortColumn('profession')">
+                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
                   <span v-if="sortColumn === 'profession'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                 </th>
-                <th class="p-2 text-left w-[15%] cursor-pointer" @click="setSortColumn('country')">
+                <th class="px-2 py-4 text-left w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
                   <span v-if="sortColumn === 'country'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                 </th>
-                <th class="p-2 text-left w-[20%] cursor-pointer" @click="setSortColumn('email')">
+                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
                   <span v-if="sortColumn === 'email'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                 </th>
-                <th class="p-2 text-center w-[15%] cursor-pointer" @click="setSortColumn('openToWork')">
+                <th class="px-2 py-4 text-center w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
                     <span v-if="sortColumn === 'openToWork'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                   </span>
                 </th>
-                <th class="p-2 text-center w-[10%]">Favorite</th>
+                <th class="px-2 py-4 text-center w-[10%] border-b border-amber-400/40">Favorite</th>
               </tr>
             </thead>
             <tbody>
