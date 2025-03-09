@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 
 interface UserDetails {
   name: string;
@@ -55,10 +56,13 @@ const toggleFavorite = (user: UserDetails) => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full items-center justify-center">
-    <div class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100">
+  <div class="flex flex-col w-full items-center justify-start">
+
+    <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
+    <div class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
       <div class="overflow-x-auto mt-6">
         <div class="border border-amber-400/40 rounded-lg overflow-hidden shadow-lg">
+          <!-- Table without min-height so it won't stretch on small pages -->
           <table class="w-full bg-neutral-900 rounded-lg table-fixed">
             <thead>
               <tr class="text-gray-300 text-xl"> 
@@ -120,17 +124,31 @@ const toggleFavorite = (user: UserDetails) => {
           </table>
         </div>
       </div>
+    </div>
 
-      <!-- Pagination Controls -->
-      <div class="flex justify-center items-center gap-4 mt-6">
-        <button @click="currentPage--" :disabled="currentPage === 1" class="p-2 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50">
-          ⬅
-        </button>
-        <span class="text-gray-300">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button @click="currentPage++" :disabled="currentPage === totalPages" class="p-2 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50">
-          ➡
-        </button>
-      </div>
+    <!-- Pagination Controls -->
+    <div class="flex justify-center items-center gap-4 mt-6 mb-8">
+      <!-- Previous Button -->
+      <button
+        @click="currentPage--"
+        :disabled="currentPage === 1"
+        :class="{'cursor-pointer': currentPage !== 1, 'cursor-default': currentPage === 1}"
+        class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white"
+        :title="currentPage === 1 ? '' : 'Previous'">
+        <ChevronLeft class="w-5 h-5" />
+      </button>
+
+      <span class="text-gray-300">Page {{ currentPage }} of {{ totalPages }}</span>
+
+      <!-- Next Button -->
+      <button
+        @click="currentPage++"
+        :disabled="currentPage === totalPages"
+        :class="{'cursor-pointer': currentPage !== totalPages, 'cursor-default': currentPage === totalPages}"
+        class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white"
+        :title="currentPage === totalPages ? '' : 'Next'">
+        <ChevronRight class="w-5 h-5" />
+      </button>
     </div>
   </div>
 </template>
