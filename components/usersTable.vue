@@ -8,7 +8,7 @@ interface UserDetails {
   country: string;
   email: string;
   profilePicture: string;
-  openToWork: boolean;
+  openedToWork: boolean;
   isFavorite?: boolean;
 }
 
@@ -16,26 +16,37 @@ const props = defineProps<{ users: UserDetails[] }>();
 
 const currentPage = ref(1);
 const pageSize = 5;
-const totalPages = computed(() => Math.ceil(props.users.length / pageSize));
+const totalPages = computed(() => Math.ceil(sortedUsers.value.length / pageSize));
 
 const sortColumn = ref<keyof UserDetails | null>(null);
 const sortOrder = ref<'asc' | 'desc'>('asc');
 
+// Sort the entire users list (not just the current page)
 const sortedUsers = computed(() => {
-  if (!sortColumn.value) return props.users;
-  return [...props.users].sort((a, b) => {
+  let users = [...props.users];
+
+  if (!sortColumn.value) return users;
+
+  users.sort((a, b) => {
     let valueA = a[sortColumn.value!];
     let valueB = b[sortColumn.value!];
+
+    // Special handling for boolean columns
     if (typeof valueA === 'boolean' && typeof valueB === 'boolean') {
-      valueA = valueA ? 1 : 0;
-      valueB = valueB ? 1 : 0;
+      // If the column is a boolean (like 'openedToWork'), sort true values first
+      return sortOrder.value === 'asc' ? (valueA === valueB ? 0 : valueA ? -1 : 1) : (valueA === valueB ? 0 : valueA ? 1 : -1);
     }
+
+    // Compare other column types (strings, numbers)
     if (valueA < valueB) return sortOrder.value === 'asc' ? -1 : 1;
     if (valueA > valueB) return sortOrder.value === 'asc' ? 1 : -1;
     return 0;
   });
+
+  return users;
 });
 
+// Apply pagination after sorting the entire dataset
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * pageSize;
   return sortedUsers.value.slice(start, start + pageSize);
@@ -54,6 +65,10 @@ const toggleFavorite = (user: UserDetails) => {
   user.isFavorite = !user.isFavorite;
 };
 </script>
+
+
+
+
 
 <template>
   <div class="flex flex-col w-full items-center justify-start">
@@ -83,10 +98,10 @@ const toggleFavorite = (user: UserDetails) => {
                   Email
                   <span v-if="sortColumn === 'email'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                 </th>
-                <th class="px-2 py-4 text-center w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openToWork')" title="Sort">
+                <th class="px-2 py-4 text-center w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
-                    <span v-if="sortColumn === 'openToWork'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
+                    <span v-if="sortColumn === 'openedToWork'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
                   </span>
                 </th>
                 <th class="px-2 py-4 text-center w-[10%] border-b border-amber-400/40">Favorite</th>
@@ -101,13 +116,13 @@ const toggleFavorite = (user: UserDetails) => {
                     class="w-12 h-12 rounded-full border border-amber-400 object-cover"
                   />
                 </td>
-                <td class="p-3 text-white truncate">{{ user.name }}</td>
-                <td class="p-3 text-gray-300 truncate">{{ user.profession }}</td>
-                <td class="p-3 text-gray-300 truncate">{{ user.country }}</td>
-                <td class="p-3 text-gray-300 truncate">{{ user.email }}</td>
-                <td class="p-3 text-center">
-                  <span v-if="user.openToWork">✔</span>
-                  <span v-else class="text-sm">❌</span>
+                <td class="ps-3 pe-6 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
+                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
+                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.country">{{ user.country }}</td>
+                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.email">{{ user.email }}</td>
+                <td class="p-3 text-center cursor-default">
+                  <span v-if="user.openedToWork">✔</span>
+                  <span v-else class="text-sm cursor-default">❌</span>
                 </td>
                 <td class="p-3 text-center w-[10%]">
                   <button
@@ -127,7 +142,7 @@ const toggleFavorite = (user: UserDetails) => {
     </div>
 
     <!-- Pagination Controls -->
-    <div class="flex justify-center items-center gap-4 mt-6 mb-8">
+    <div class="flex justify-center items-center gap-4 mt-6 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
