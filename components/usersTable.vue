@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-vue-next';
 
 interface UserDetails {
   name: string;
@@ -78,24 +78,39 @@ const toggleFavorite = (user: UserDetails) => {
                 <th class="px-2 py-4 text-left w-[5%] border-b border-amber-400/40"></th> 
                 <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
-                  <span v-if="sortColumn === 'name'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
+                  <span v-if="sortColumn === 'name'">
+                    <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
+                    <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
+                  </span>
                 </th>
                 <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
-                  <span v-if="sortColumn === 'profession'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
+                  <span v-if="sortColumn === 'profession'">
+                    <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
+                    <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
+                  </span>
                 </th>
                 <th class="px-2 py-4 text-left w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
-                  <span v-if="sortColumn === 'country'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
+                  <span v-if="sortColumn === 'country'">
+                    <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
+                    <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
+                  </span>
                 </th>
                 <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
-                  <span v-if="sortColumn === 'email'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
+                  <span v-if="sortColumn === 'email'">
+                    <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
+                    <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
+                  </span>
                 </th>
                 <th class="px-2 py-4 text-center w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
-                    <span v-if="sortColumn === 'openedToWork'">{{ sortOrder === 'asc' ? '⬆' : '⬇' }}</span>
+                    <span v-if="sortColumn === 'openedToWork'">
+                      <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
+                      <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
+                    </span>
                   </span>
                 </th>
                 <th class="px-2 py-4 text-center w-[10%] border-b border-amber-400/40">Favorite</th>
@@ -123,8 +138,7 @@ const toggleFavorite = (user: UserDetails) => {
                     @click="toggleFavorite(user)"
                     class="text-2xl transition-colors cursor-pointer"
                     :class="user.isFavorite ? 'text-yellow-400' : 'text-gray-500 hover:text-gray-400'"
-                    :title="user.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'"
-                  >
+                    :title="user.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'">
                     ★
                   </button>
                 </td>
