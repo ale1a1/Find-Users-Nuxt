@@ -21,37 +21,34 @@ const totalPages = computed(() => Math.ceil(sortedUsers.value.length / pageSize)
 const sortColumn = ref<keyof UserDetails | null>(null);
 const sortOrder = ref<'asc' | 'desc'>('asc');
 
-// Sort the entire users list (not just the current page)
 const sortedUsers = computed(() => {
   let users = [...props.users];
-
   if (!sortColumn.value) return users;
-
   users.sort((a, b) => {
     let valueA = a[sortColumn.value!];
     let valueB = b[sortColumn.value!];
-
-    // Special handling for boolean columns
-    if (typeof valueA === 'boolean' && typeof valueB === 'boolean') {
-      // If the column is a boolean (like 'openedToWork'), sort true values first
-      return sortOrder.value === 'asc' ? (valueA === valueB ? 0 : valueA ? -1 : 1) : (valueA === valueB ? 0 : valueA ? 1 : -1);
+    // 🛠️ Fix boolean sorting across all pages
+    if (sortColumn.value === "openedToWork") {
+      return sortOrder.value === "asc"
+        ? (valueA === valueB ? 0 : valueA ? -1 : 1)
+        : (valueA === valueB ? 0 : valueA ? 1 : -1);
     }
-
-    // Compare other column types (strings, numbers)
-    if (valueA < valueB) return sortOrder.value === 'asc' ? -1 : 1;
-    if (valueA > valueB) return sortOrder.value === 'asc' ? 1 : -1;
+    // 🛠️ Sort strings/numbers
+    if (valueA < valueB) return sortOrder.value === "asc" ? -1 : 1;
+    if (valueA > valueB) return sortOrder.value === "asc" ? 1 : -1;
     return 0;
   });
-
-  return users;
+  // ✅ Returning a **new reference** to force Vue to update
+  return [...users];
 });
 
-// Apply pagination after sorting the entire dataset
+// 🚀 Apply pagination AFTER sorting
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * pageSize;
   return sortedUsers.value.slice(start, start + pageSize);
 });
 
+// 🛠️ Ensure sort order is persistent
 const setSortColumn = (column: keyof UserDetails) => {
   if (sortColumn.value === column) {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
@@ -59,16 +56,13 @@ const setSortColumn = (column: keyof UserDetails) => {
     sortColumn.value = column;
     sortOrder.value = 'asc';
   }
+  currentPage.value = 1;  // 🔥 Reset to first page on new sort
 };
 
 const toggleFavorite = (user: UserDetails) => {
   user.isFavorite = !user.isFavorite;
 };
 </script>
-
-
-
-
 
 <template>
   <div class="flex flex-col w-full items-center justify-start">
