@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, User } from 'lucide-vue-next';
 
 interface UserDetails {
   name: string;
@@ -118,13 +118,19 @@ const toggleFavorite = (user: UserDetails) => {
             </thead>
             <tbody>
               <tr v-for="user in paginatedUsers" :key="user.email" class="border-t border-gray-600 hover:bg-gray-700/50">
-                <td class="p-3 text-center">
+                <td class="p-3 text-center h-[60px] flex items-center justify-center">
                   <img 
+                    v-if="user.profilePicture && user.profilePicture !== ''" 
                     :src="user.profilePicture" 
                     alt="Profile" 
                     class="w-12 h-12 rounded-full border border-amber-400 object-cover"
                   />
-                </td>
+                  <User 
+                    v-else 
+                    class="w-9 h-9 text-amber-400/50"
+                    title="User Icon"
+                  />
+                </td>               
                 <td class="ps-3 pe-6 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
                 <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
                 <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.country">{{ user.country }}</td>
@@ -160,7 +166,7 @@ const toggleFavorite = (user: UserDetails) => {
         :title="currentPage === 1 ? '' : 'Previous'">
         <ChevronLeft class="w-5 h-5" />
       </button>
-
+a
       <span class="text-gray-300">Page {{ currentPage }} of {{ totalPages }}</span>
 
       <!-- Next Button -->
