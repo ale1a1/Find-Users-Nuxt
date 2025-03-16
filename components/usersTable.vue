@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, User } from 'lucide-vue-next';
+import { useUserStore } from '#imports';
+import { getAuth } from 'firebase/auth';
 
 interface UserDetails {
   name: string;
@@ -13,6 +15,13 @@ interface UserDetails {
 }
 
 const props = defineProps<{ users: UserDetails[] }>();
+
+const auth = getAuth(); 
+const user = auth.currentUser; 
+
+onMounted(() => {
+  console.log(user?.email)
+})
 
 const currentPage = ref(1);
 const pageSize = 5;
@@ -67,6 +76,10 @@ const toggleFavorite = (user: UserDetails) => {
 <template>
   <div class="flex flex-col w-full items-center justify-start">
 
+    <div v-if="!paginatedUsers.some(user => user.email === auth.currentUser?.email)" class="text-gray-300 mt-4">
+      TO BE VISIBLE ON THE LIST YOU NEED TO 
+      <NuxtLink to="/profile" class="text-amber-400 underline">UPDATE YOUR PROFILE</NuxtLink>
+    </div>
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
     <div class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
       <div class="overflow-x-auto mt-6">
@@ -117,7 +130,14 @@ const toggleFavorite = (user: UserDetails) => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="user in paginatedUsers" :key="user.email" class="border-t border-gray-600 hover:bg-gray-700/50">
+              <tr 
+                v-for="user in paginatedUsers" 
+                :key="user.email" 
+                class="border-t border-gray-600" 
+                :class="{
+                  'bg-blue-800 text-white cursor-default': user.email === auth.currentUser?.email,
+                  'hover:bg-gray-700/50': user.email !== auth.currentUser?.email
+                }">
                 <td class="p-3 text-center h-[60px] flex items-center justify-center">
                   <img 
                     v-if="user.profilePicture && user.profilePicture !== ''" 
@@ -142,9 +162,16 @@ const toggleFavorite = (user: UserDetails) => {
                 <td class="p-3 text-center w-[10%]">
                   <button
                     @click="toggleFavorite(user)"
-                    class="text-2xl transition-colors cursor-pointer"
-                    :class="user.isFavorite ? 'text-yellow-400' : 'text-gray-500 hover:text-gray-400'"
-                    :title="user.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'">
+                    :disabled="user.email === auth.currentUser?.email"
+                    class="text-2xl transition-colors"
+                    :class="{
+                      'text-yellow-400': user.isFavorite, 
+                      'text-gray-500 hover:text-gray-400': !user.isFavorite && user.email !== auth.currentUser?.email, 
+                      'cursor-not-allowed text-gray-500': user.email === auth.currentUser?.email,
+                      'cursor-pointer': user.email !== auth.currentUser?.email
+                    }"
+                    :title="user.email === auth.currentUser?.email ? 'Cannot favorite yourself' : (user.isFavorite ? 'Remove from Favorites' : 'Add to Favorites')"
+                  >
                     ★
                   </button>
                 </td>

@@ -116,14 +116,17 @@ const fetchFormData = async () => {
     } else {
       isLoading.value = false;
       isFormEmpty.value = true
+      if (user.email) {
+        form.email = user.email
+      }
       const toastErrorMessage = "No user data found for the logged-in user."
-      toast.error(toastErrorMessage, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: false
-      })
+      // toast.error(toastErrorMessage, {
+      //   position: 'top-right',
+      //   autoClose: 3000,
+      //   hideProgressBar: true,
+      //   closeOnClick: false,
+      //   pauseOnHover: false
+      // })
       console.error(toastErrorMessage);
     }
   } catch (error) {
@@ -362,7 +365,7 @@ onMounted(() => {
               :type="key === 'email' ? 'email' : 'text'"
               :id="key"
               required
-              :disabled="isSubmitting"
+              :disabled="key === 'email' || isSubmitting"
               class="disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500/80 sm:text-sm/6"
               @input="formTouched = true"
             />

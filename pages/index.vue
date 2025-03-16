@@ -27,8 +27,8 @@ onMounted(() => {
             <User class="size-8" />
           </NuxtLink>
           <div class="flex items-center gap-3">
-            <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">Creating</p>
-            <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">Update</p>
+            <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">managing</p>
+            <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">update</p>
             <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
               YOUR PROFILE
             </NuxtLink>
@@ -39,7 +39,7 @@ onMounted(() => {
             <Search class="size-8" />
           </NuxtLink>
           <div class="flex items-center gap-3">
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">Searching users from the</p>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">searching users from the</p>
             <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
               USERS LIST
             </NuxtLink>
@@ -50,7 +50,7 @@ onMounted(() => {
             <FileText class="size-8" />
           </NuxtLink>
           <div class="flex items-center gap-3">
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">Retrieving</p>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">retrieving</p>
             <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
               USERS INFORMATION
             </NuxtLink>
@@ -61,7 +61,7 @@ onMounted(() => {
             <Save class="size-8" />
           </NuxtLink>
           <div class="flex items-center gap-3">
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">Saving your</p>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">saving your</p>
             <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
               FAVOURITE USERS
             </NuxtLink>
