@@ -12,11 +12,39 @@ interface UserDetails {
   openToWork: boolean;
 }
 
+interface Country {
+  name: string;
+  alpha3Code: string;
+  flag: string;
+}
+
+
 const showContent = ref(false);
+const countries = ref<Country[]>([]);
+
+const fetchCountries = async () => {
+  try {
+    const response = await fetch("https://restcountries.com/v3.1/all");
+    if (!response.ok) {
+      throw new Error("Failed to fetch countries");
+    }
+    const data = await response.json();
+    countries.value = data
+      .map((country: any) => ({
+        name: country.name.common,
+        alpha3Code: country.cca3,
+        flag: country.flags.svg,
+      }))
+      .sort((a: Country, b: Country) => a.name.localeCompare(b.name));
+      console.log(countries.value)
+  } catch (error) {
+    console.error("Error fetching countries:", error);
+  }
+};
 
 const users = ref([
-  { name: 'John Doe', profession: 'Software Engineer', country: 'USA', email: 'john@example.com', profilePicture: 'https://randomuser.me/api/portraits/men/8.jpg', openedToWork: true },
-  { name: 'Jane Smith', profession: 'Product Designer', country: 'UK', email: 'jane@example.com', profilePicture: '', openedToWork: false },
+  { name: 'John Doe', profession: 'Software Engineer', country: 'United States', email: 'john@example.com', profilePicture: 'https://randomuser.me/api/portraits/men/8.jpg', openedToWork: true },
+  { name: 'Jane Smith', profession: 'Product Designer', country: 'United Kingdom', email: 'jane@example.com', profilePicture: '', openedToWork: false },
   { name: 'Alice Johnson Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name', profession: 'Data Scientist', country: 'Canada', email: 'alice@example.com', profilePicture: 'https://randomuser.me/api/portraits/women/1.jpg', openedToWork: true },
   { name: 'Bob Brown', profession: 'DevOps Engineer', country: 'Germany', email: 'bob@example.com', profilePicture: '', openedToWork: false },
   { name: 'Charlie White', profession: 'UX Researcher', country: 'France', email: 'charlie@example.com', profilePicture: 'https://randomuser.me/api/portraits/men/2.jpg', openedToWork: true },
@@ -48,15 +76,27 @@ const fetchAllUsers = async () => {
       fetchedUsers.push({ id: doc.id, ...doc.data() } as UserDetails); 
     });   
     users.value = [...fetchedUsers, ...users.value];
+    // Now map the users to include country flags
+    users.value = users.value.map((user) => {
+      const countryMatch = countries.value.find(
+        (c) => c.name.toLowerCase() === user.country.toLowerCase()
+      );
+      return {
+        ...user,
+        flag: countryMatch?.flag || "", // Add flag if country is found, else leave empty string
+      };
+    });
+    console.log(users.value)
   } catch (error) {
     console.error("Error fetching all users:", error);
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   setTimeout(() => {
     showContent.value = true;
   }, 300); 
+  await fetchCountries()
   fetchAllUsers()
 });
 </script>

@@ -5,6 +5,7 @@ import { useUserStore } from '#imports';
 import { getAuth } from 'firebase/auth';
 
 interface UserDetails {
+  flag?: any;
   name: string;
   profession: string;
   country: string;
@@ -153,7 +154,14 @@ const toggleFavorite = (user: UserDetails) => {
                 </td>               
                 <td class="ps-3 pe-6 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
                 <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.country">{{ user.country }}</td>
+                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.country">
+                  <img 
+                    v-if="user.flag" 
+                    :src="user.flag" 
+                    alt="Flag" 
+                    class="inline-block w-6 h-4 mr-2"
+                  />
+                  {{ user.country }}</td>
                 <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.email">{{ user.email }}</td>
                 <td class="p-3 text-center cursor-default">
                   <span v-if="user.openedToWork">✔</span>
