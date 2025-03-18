@@ -120,13 +120,6 @@ const fetchFormData = async () => {
         form.email = user.email
       }
       const toastErrorMessage = "No user data found for the logged-in user."
-      // toast.error(toastErrorMessage, {
-      //   position: 'top-right',
-      //   autoClose: 3000,
-      //   hideProgressBar: true,
-      //   closeOnClick: false,
-      //   pauseOnHover: false
-      // })
       console.error(toastErrorMessage);
     }
   } catch (error) {
@@ -185,8 +178,6 @@ const saveFormData = async (userProfileDetails: any) => {
     isSubmitting.value = false;
     isSubmitted.value = true
     form.openedToWork = userProfileDetails.openedToWork;
-    // formTouched.value = true
-    // isFormEmpty.value = false;
   } catch (error) {
     toast.error('Error updating profile.', {
       position: 'top-right',

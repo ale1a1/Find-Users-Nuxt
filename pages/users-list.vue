@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { toast } from 'vue3-toastify';
 
 interface UserDetails {
   id: string; 
@@ -21,6 +22,8 @@ interface Country {
 
 const showContent = ref(false);
 const countries = ref<Country[]>([]);
+const users = ref<UserDetails[]>([]);
+ 
 
 const fetchCountries = async () => {
   try {
@@ -42,7 +45,7 @@ const fetchCountries = async () => {
   }
 };
 
-const users = ref([
+const hardCodedusers = [
   { name: 'John Doe', profession: 'Software Engineer', country: 'United States', email: 'john@example.com', profilePicture: 'https://randomuser.me/api/portraits/men/8.jpg', openedToWork: true },
   { name: 'Jane Smith', profession: 'Product Designer', country: 'United Kingdom', email: 'jane@example.com', profilePicture: '', openedToWork: false },
   { name: 'Alice Johnson Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name Mega Long Name', profession: 'Data Scientist', country: 'Canada', email: 'alice@example.com', profilePicture: 'https://randomuser.me/api/portraits/women/1.jpg', openedToWork: true },
@@ -58,7 +61,7 @@ const users = ref([
   { name: 'Karen Bronze', profession: 'AI Researcher', country: 'Japan', email: 'karen@example.com', profilePicture: 'https://randomuser.me/api/portraits/women/6.jpg', openedToWork: true },
   { name: 'Leo Iron', profession: 'Embedded Systems Engineer', country: 'China', email: 'leo@example.com', profilePicture: '', openedToWork: false },
   { name: 'Mia Steel', profession: 'Game Developer', country: 'South Korea', email: 'mia@example.com', profilePicture: 'https://randomuser.me/api/portraits/women/7.jpg', openedToWork: true },
-]);
+];
 
 const fetchAllUsers = async () => {
   const auth = getAuth();
@@ -75,7 +78,7 @@ const fetchAllUsers = async () => {
     querySnapshot.forEach((doc) => {
       fetchedUsers.push({ id: doc.id, ...doc.data() } as UserDetails); 
     });   
-    users.value = [...fetchedUsers, ...users.value];
+    users.value = [...fetchedUsers, ...hardCodedusers];
     // Now map the users to include country flags
     users.value = users.value.map((user) => {
       const countryMatch = countries.value.find(
@@ -86,8 +89,14 @@ const fetchAllUsers = async () => {
         flag: countryMatch?.flag || "", // Add flag if country is found, else leave empty string
       };
     });
-    console.log(users.value)
   } catch (error) {
+    toast.error('Error fetching all users.', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
     console.error("Error fetching all users:", error);
   }
 };

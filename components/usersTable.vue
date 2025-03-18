@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, User } from 'lucide-vue-next';
-import { useUserStore } from '#imports';
 import { getAuth } from 'firebase/auth';
 
 interface UserDetails {
@@ -19,10 +18,6 @@ const props = defineProps<{ users: UserDetails[] }>();
 
 const auth = getAuth(); 
 const user = auth.currentUser; 
-
-onMounted(() => {
-  console.log(user?.email)
-})
 
 const currentPage = ref(1);
 const pageSize = 5;
@@ -51,13 +46,11 @@ const sortedUsers = computed(() => {
   // ✅ Returning a **new reference** to force Vue to update
   return [...users];
 });
-
 // 🚀 Apply pagination AFTER sorting
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * pageSize;
   return sortedUsers.value.slice(start, start + pageSize);
 });
-
 // 🛠️ Ensure sort order is persistent
 const setSortColumn = (column: keyof UserDetails) => {
   if (sortColumn.value === column) {
@@ -77,12 +70,17 @@ const toggleFavorite = (user: UserDetails) => {
 <template>
   <div class="flex flex-col w-full items-center justify-start">
 
-    <div v-if="!paginatedUsers.some(user => user.email === auth.currentUser?.email)" class="text-gray-300 mt-4">
+    <!-- Show this message if users list is empty -->
+    <div v-if="!props.users.length" class="text-gray-300 mt-12">
+      <p class="p-5 text-2xl font-semibold bg-neutral-900/10"  >Something went wrong while retrieving the users list, try again later.</p>
+    </div>
+
+    <div v-if="!users.some(user => user.email === auth.currentUser?.email) && props.users.length" class="text-gray-300 mt-4">
       TO BE VISIBLE ON THE LIST YOU NEED TO 
       <NuxtLink to="/profile" class="text-amber-400 underline">UPDATE YOUR PROFILE</NuxtLink>
     </div>
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <div class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
+    <div v-if="props.users.length" class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
       <div class="overflow-x-auto mt-6">
         <div class="border border-amber-400/40 rounded-lg overflow-hidden shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
@@ -191,7 +189,7 @@ const toggleFavorite = (user: UserDetails) => {
     </div>
 
     <!-- Pagination Controls -->
-    <div class="flex justify-center items-center gap-4 mt-6 mb-8 cursor-default">
+    <div v-if="props.users.length" class="flex justify-center items-center gap-4 mt-6 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
