@@ -2,10 +2,12 @@
 import { ref, computed } from 'vue';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, User } from 'lucide-vue-next';
 import { getAuth } from 'firebase/auth';
-import { collection, addDoc, getFirestore, getDocs, deleteDoc, doc, query, where } from "firebase/firestore";
+import { collection, getFirestore, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { toast } from 'vue3-toastify';
 
 const props = defineProps<{ users: UserDetails[] }>();
+
+const emit = defineEmits(["updateFavorites"]);
 
 const db = getFirestore();
 
@@ -20,8 +22,6 @@ interface UserDetails {
   isFavorite?: boolean;
 }
 
-const favorites = ref<UserDetails[]>([]);
-
 const auth = getAuth(); 
 const user = auth.currentUser; 
 
@@ -32,43 +32,17 @@ const totalPages = computed(() => Math.ceil(sortedUsers.value.length / pageSize)
 const sortColumn = ref<keyof UserDetails | null>(null);
 const sortOrder = ref<'asc' | 'desc'>('asc');
 
-const isTogglingFavorite = ref(false);
+const isRemovingFavorite = ref(false);
 
 onMounted(() => {
-  if (user) {
-    fetchFavorites(user.uid).then(() => {
-      syncFavoritesWithUsers(props.users); 
-    });
-  }
+  favAll(props.users);   
 });
 
-const fetchFavorites = async (loggedInUserId: string) => {
-  const favRef = collection(db, 'favorites');
-  const q = query(favRef, where('favoritedBy', '==', loggedInUserId));  // Get favorites for the logged-in user
-  try {
-    const querySnapshot = await getDocs(q);
-    const userFavorites = querySnapshot.docs.map(doc => doc.data());
-    favorites.value = userFavorites;
-  } catch (error) {
-    toast.error('Error fetching favorites.', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false
-    })
-    console.error('Error fetching favorites:', error);
-  }
-};
-
-const syncFavoritesWithUsers = (users: UserDetails[]) => {
-  users.forEach((user) => {
-    // If the user exists in favorites, mark as favorite
-    const isUserFavorite = favorites.value.some(fav => fav.email === user.email);
-    user.isFavorite = isUserFavorite;
+const favAll = (users: UserDetails[]) => {
+  users.forEach((user) => {  
+    user.isFavorite = true;
   });
 };
-
 
 const sortedUsers = computed(() => {
   let users = [...props.users];
@@ -106,70 +80,8 @@ const setSortColumn = (column: keyof UserDetails) => {
   currentPage.value = 1;  // 🔥 Reset to first page on new sort
 };
 
-const toggleFavorite = (user: UserDetails) => {
+const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
   const loggedInUserId = auth.currentUser?.uid;
-  if (!loggedInUserId) {
-    console.error("User not logged in!");
-    return;
-  }
-  if (isTogglingFavorite.value) return;
-  isTogglingFavorite.value = true;  // Start toggling state
-  // Toggle the local favorite state for UI purposes
-  const newFavoriteStatus = !user.isFavorite;
-  // Add or remove the user from the favorites collection
-  if (newFavoriteStatus) {
-    addToFavorites(loggedInUserId, user)
-      .then(() => {
-        // After success, update the UI
-        user.isFavorite = true;
-      })
-      .catch((error) => {
-        console.error("Error adding to favorites:", error);
-        user.isFavorite = false;  // Revert back if add to favorites failed
-      })
-      .finally(() => {
-        isTogglingFavorite.value = false;  // End toggling state
-      });
-  } else {
-    removeFromFavorites(loggedInUserId, user)
-      .then(() => {
-        // After success, update the UI
-        user.isFavorite = false;
-      })
-      .catch((error) => {
-        console.error("Error removing from favorites:", error);
-        user.isFavorite = true;  // Revert back if remove from favorites failed
-      })
-      .finally(() => {
-        isTogglingFavorite.value = false;  // End toggling state
-      });
-  }
-};
-
-const addToFavorites = async (loggedInUserId: string, userToFavorite: UserDetails) => {
-  try {
-    const favRef = collection(db, "favorites");
-    await addDoc(favRef, {
-      favoritedBy: loggedInUserId, // The user who favorited
-      ...userToFavorite, // Spreads all user data into the document
-      createdAt: new Date().toISOString(),
-    });
-    // If the addition is successful, return true to update the UI
-    return true;
-  } catch (error) {
-    console.error("Error adding to favorites:", error);
-    toast.error('Error adding to favorites.', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false
-    })
-    throw error;  // Throw error to handle it in the caller function
-  }
-};
-
-const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: UserDetails) => {
   try {
     const favRef = collection(db, "favorites");
     // Implement logic to find the document based on favoritedBy and userToUnfavorite fields
@@ -183,6 +95,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
     if (favoriteDocId) {
       // If a document was found, delete it
       await deleteDoc(doc(favRef, favoriteDocId));
+      emit("updateFavorites", userToUnfavorite.email);
       return true;
     } else {
       toast.error('Error removing from favorites.', {
@@ -203,7 +116,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
       closeOnClick: false,
       pauseOnHover: false
     })
-    throw error;  // Throw error to handle it in the caller function
+    throw error;  
   }
 };
 </script>
@@ -213,13 +126,9 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
 
     <!-- Show this message if users list is empty -->
     <div v-if="!props.users.length" class="text-gray-300 mt-12">
-      <p class="p-5 text-2xl font-semibold bg-neutral-900/10"  >Something went wrong while retrieving the users list, try again later.</p>
+      <p class="p-5 text-2xl font-semibold bg-neutral-900/10">You haven't added any favorites yet. Explore the user list and mark your favorites to see them here!</p>
     </div>
-
-    <div v-if="!users.some(user => user.email === auth.currentUser?.email) && props.users.length" class="text-gray-300 mt-4">
-      TO BE VISIBLE ON THE LIST YOU NEED TO 
-      <NuxtLink to="/profile" class="text-amber-400 underline">UPDATE YOUR PROFILE</NuxtLink>
-    </div>
+ 
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
     <div v-if="props.users.length" class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
       <div class="overflow-x-auto mt-6">
@@ -308,8 +217,8 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
                 </td>
                 <td class="p-3 text-center w-[10%]">
                   <button
-                    @click="toggleFavorite(user)"
-                    :disabled="user.email === auth.currentUser?.email || isTogglingFavorite"
+                    @click="removeFromFavorites(user)"
+                    :disabled="user.email === auth.currentUser?.email || isRemovingFavorite"
                     class="text-2xl transition-colors"
                     :class="{
                       'text-yellow-400': user.isFavorite, 
