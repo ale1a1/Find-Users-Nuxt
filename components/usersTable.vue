@@ -2,6 +2,10 @@
 import { ref, computed } from 'vue';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, User } from 'lucide-vue-next';
 import { getAuth } from 'firebase/auth';
+import { collection, addDoc, getFirestore, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { toast } from 'vue3-toastify';
+
+const db = getFirestore();
 
 interface UserDetails {
   flag?: any;
@@ -25,6 +29,8 @@ const totalPages = computed(() => Math.ceil(sortedUsers.value.length / pageSize)
 
 const sortColumn = ref<keyof UserDetails | null>(null);
 const sortOrder = ref<'asc' | 'desc'>('asc');
+
+const isTogglingFavorite = ref(false);
 
 const sortedUsers = computed(() => {
   let users = [...props.users];
@@ -63,7 +69,104 @@ const setSortColumn = (column: keyof UserDetails) => {
 };
 
 const toggleFavorite = (user: UserDetails) => {
-  user.isFavorite = !user.isFavorite;
+  const loggedInUserId = auth.currentUser?.uid;
+  if (!loggedInUserId) {
+    console.error("User not logged in!");
+    return;
+  }
+  if (isTogglingFavorite.value) return;
+  isTogglingFavorite.value = true;  // Start toggling state
+  // Toggle the local favorite state for UI purposes
+  const newFavoriteStatus = !user.isFavorite;
+  // Add or remove the user from the favorites collection
+  if (newFavoriteStatus) {
+    addToFavorites(loggedInUserId, user)
+      .then(() => {
+        // After success, update the UI
+        user.isFavorite = true;
+      })
+      .catch((error) => {
+        console.error("Error adding to favorites:", error);
+        user.isFavorite = false;  // Revert back if add to favorites failed
+      })
+      .finally(() => {
+        isTogglingFavorite.value = false;  // End toggling state
+      });
+  } else {
+    removeFromFavorites(loggedInUserId, user)
+      .then(() => {
+        // After success, update the UI
+        user.isFavorite = false;
+      })
+      .catch((error) => {
+        console.error("Error removing from favorites:", error);
+        user.isFavorite = true;  // Revert back if remove from favorites failed
+      })
+      .finally(() => {
+        isTogglingFavorite.value = false;  // End toggling state
+      });
+  }
+};
+
+const addToFavorites = async (loggedInUserId: string, userToFavorite: UserDetails) => {
+  try {
+    const favRef = collection(db, "favorites");
+    await addDoc(favRef, {
+      favoritedBy: loggedInUserId, // The user who favorited
+      ...userToFavorite, // Spreads all user data into the document
+      createdAt: new Date().toISOString(),
+    });
+    // If the addition is successful, return true to update the UI
+    return true;
+  } catch (error) {
+    console.error("Error adding to favorites:", error);
+    toast.error('Error adding to favorites.', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
+    throw error;  // Throw error to handle it in the caller function
+  }
+};
+
+const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: UserDetails) => {
+  try {
+    const favRef = collection(db, "favorites");
+    // Implement logic to find the document based on favoritedBy and userToUnfavorite fields
+    const querySnapshot = await getDocs(favRef);
+    let favoriteDocId: string | null = null;    
+    querySnapshot.forEach(doc => {
+      if (doc.data().favoritedBy === loggedInUserId && doc.data().email === userToUnfavorite.email) {
+        favoriteDocId = doc.id;  // Get the doc ID for removal
+      }
+    });
+    if (favoriteDocId) {
+      // If a document was found, delete it
+      await deleteDoc(doc(favRef, favoriteDocId));
+      return true;
+    } else {
+      toast.error('Error removing from favorites.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      })
+      throw new Error("Favorite not found");
+    }
+  } catch (error) {
+    console.error("Error removing from favorites:", error);
+    toast.error('Error removing from favorites.', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
+    throw error;  // Throw error to handle it in the caller function
+  }
 };
 </script>
 
@@ -168,7 +271,7 @@ const toggleFavorite = (user: UserDetails) => {
                 <td class="p-3 text-center w-[10%]">
                   <button
                     @click="toggleFavorite(user)"
-                    :disabled="user.email === auth.currentUser?.email"
+                    :disabled="user.email === auth.currentUser?.email || isTogglingFavorite"
                     class="text-2xl transition-colors"
                     :class="{
                       'text-yellow-400': user.isFavorite, 

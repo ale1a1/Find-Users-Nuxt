@@ -19,12 +19,10 @@ interface Country {
   flag: string;
 }
 
-
 const showContent = ref(false);
 const countries = ref<Country[]>([]);
 const users = ref<UserDetails[]>([]);
  
-
 const fetchCountries = async () => {
   try {
     const response = await fetch("https://restcountries.com/v3.1/all");
