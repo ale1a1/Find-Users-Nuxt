@@ -2,8 +2,10 @@
 import { ref, computed } from 'vue';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, User } from 'lucide-vue-next';
 import { getAuth } from 'firebase/auth';
-import { collection, addDoc, getFirestore, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getFirestore, getDocs, deleteDoc, doc, query, where } from "firebase/firestore";
 import { toast } from 'vue3-toastify';
+
+const props = defineProps<{ users: UserDetails[] }>();
 
 const db = getFirestore();
 
@@ -18,7 +20,7 @@ interface UserDetails {
   isFavorite?: boolean;
 }
 
-const props = defineProps<{ users: UserDetails[] }>();
+const favorites = ref<UserDetails[]>([]);
 
 const auth = getAuth(); 
 const user = auth.currentUser; 
@@ -31,6 +33,42 @@ const sortColumn = ref<keyof UserDetails | null>(null);
 const sortOrder = ref<'asc' | 'desc'>('asc');
 
 const isTogglingFavorite = ref(false);
+
+onMounted(() => {
+  if (user) {
+    fetchFavorites(user.uid).then(() => {
+      syncFavoritesWithUsers(props.users); 
+    });
+  }
+});
+
+const fetchFavorites = async (loggedInUserId: string) => {
+  const favRef = collection(db, 'favorites');
+  const q = query(favRef, where('favoritedBy', '==', loggedInUserId));  // Get favorites for the logged-in user
+  try {
+    const querySnapshot = await getDocs(q);
+    const userFavorites = querySnapshot.docs.map(doc => doc.data());
+    favorites.value = userFavorites;
+  } catch (error) {
+    toast.error('Error fetching favorites.', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false
+    })
+    console.error('Error fetching favorites:', error);
+  }
+};
+
+const syncFavoritesWithUsers = (users: UserDetails[]) => {
+  users.forEach((user) => {
+    // If the user exists in favorites, mark as favorite
+    const isUserFavorite = favorites.value.some(fav => fav.email === user.email);
+    user.isFavorite = isUserFavorite;
+  });
+};
+
 
 const sortedUsers = computed(() => {
   let users = [...props.users];
