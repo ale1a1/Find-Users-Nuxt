@@ -100,11 +100,9 @@ const fetchAllUsers = async () => {
 };
 
 onMounted(async () => {
-  setTimeout(() => {
-    showContent.value = true;
-  }, 300); 
   await fetchCountries()
-  fetchAllUsers()
+  await fetchAllUsers()
+  showContent.value = true  
 });
 </script>
 

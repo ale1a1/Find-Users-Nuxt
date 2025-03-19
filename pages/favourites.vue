@@ -22,12 +22,10 @@ const favorites = ref<UserDetails[]>([]);
 const auth = getAuth(); 
 const user = auth.currentUser; 
 
-onMounted(() => {
-  setTimeout(() => {
-    showContent.value = true;
-  }, 300); 
+onMounted(async () => {  
   if (user) {
-    fetchFavorites(user.uid)
+    await fetchFavorites(user.uid)
+    showContent.value = true  
   }
 });
 
