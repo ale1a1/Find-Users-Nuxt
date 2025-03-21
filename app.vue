@@ -10,6 +10,7 @@ import { useUserStore } from './stores/userStore';
 import { doc, getDoc, type DocumentData, type Firestore } from 'firebase/firestore';
 import Footer from './components/footer.vue';
 import { User } from "lucide-vue-next";
+import { useRoute } from 'vue-router';
 
 interface ProfilePicture {
   readonly lastModified: number;
@@ -29,6 +30,7 @@ interface UserVisibleDetails {
 }
 
 const router = useRouter();
+const route = useRoute();
 const auth = useNuxtApp().$auth;
 const { $db } = useNuxtApp();
 const userData = ref<DocumentData | null>(null); 
@@ -194,9 +196,9 @@ watchEffect(() => {
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
-                  <NuxtLink to="/" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Home</NuxtLink>
-                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-700">Users list</NuxtLink>
-                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-700">Favourites</NuxtLink>
+                  <NuxtLink to="/" class="rounded-md px-3 py-2 text-sm font-medium" aria-current="page" :class="route.path === '/' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'">Home</NuxtLink>
+                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium" :class="route.path === '/users-list' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'">Users list</NuxtLink>
+                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium" :class="route.path === '/favourites' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'">Favourites</NuxtLink>
                 </div>
               </div>
             </div>
