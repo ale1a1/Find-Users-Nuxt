@@ -75,7 +75,7 @@ const closeModal = () => {
         &times;
       </button>
       <!-- Title -->      
-      <h2 class="text-center text-2xl font-bold text-amber-400 mb-4">Forgot password?</h2>
+      <h2 class="text-center text-2xl font-bold text-gray-200 mb-4">Forgot password?</h2>
       <!-- Description -->
       <p class="text-center mt-10 mb-4">
         Enter your email below and click 'Send Email' to receive a password reset link.<link rel="stylesheet" href="" class="">

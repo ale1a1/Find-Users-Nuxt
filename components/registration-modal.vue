@@ -123,7 +123,7 @@ const passwordError = computed(() => {
         &times;
       </button>
       <!-- Title -->      
-      <h2 class="text-center text-2xl font-bold text-amber-400 mb-4">Create Your Profile</h2>      
+      <h2 class="text-center text-2xl font-bold text-gray-200 mb-4">Create Your Profile</h2>      
       <!-- Form -->
       <form @submit.prevent="submitForm" class="space-y-6 mt-10">
         <!-- Email address -->

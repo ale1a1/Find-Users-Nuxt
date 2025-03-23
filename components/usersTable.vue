@@ -221,43 +221,43 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
       <NuxtLink to="/profile" class="text-amber-400 underline">UPDATE YOUR PROFILE</NuxtLink>
     </div>
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <div v-if="props.users.length" class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
-      <div class="overflow-x-auto mt-6">
-        <div class="border border-amber-400/40 rounded-lg overflow-hidden shadow-lg">
+    <div v-if="props.users.length" class="sm:mx-auto sm:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px]">
+      <div class="mt-6">
+        <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
           <table class="w-full bg-neutral-900 rounded-lg table-fixed">
             <thead>
               <tr class="text-gray-300 text-xl"> 
-                <th class="px-2 py-4 text-left w-[5%] border-b border-amber-400/40"></th> 
-                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
+                <th class="px-2 py-4 text-left w-[75px] border-b border-amber-400/40"></th> 
+                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
                   <span v-if="sortColumn === 'name'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
+                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
                   <span v-if="sortColumn === 'profession'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
+                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
                   <span v-if="sortColumn === 'country'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
+                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
                   <span v-if="sortColumn === 'email'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
+                <th class="px-2 py-4 text-center w-[200px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
                     <span v-if="sortColumn === 'openedToWork'">
@@ -266,7 +266,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
                     </span>
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[10%] border-b border-amber-400/40">Favorite</th>
+                <th class="px-2 py-4 text-center w-[150px] border-b border-amber-400/40">Favorite</th>
               </tr>
             </thead>
             <tbody>
@@ -291,9 +291,9 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
                     title="User Icon"
                   />
                 </td>               
-                <td class="ps-3 pe-6 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.country">
+                <td class="ps-3 pe-8 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
+                <td class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
+                <td class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.country">
                   <img 
                     v-if="user.flag" 
                     :src="user.flag" 
@@ -301,7 +301,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
                     class="inline-block w-6 h-4 mr-2"
                   />
                   {{ user.country }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.email">{{ user.email }}</td>
+                <td class="ps-3 text-gray-300 truncate cursor-default" :title="user.email">{{ user.email }}</td>
                 <td class="p-3 text-center cursor-default">
                   <span v-if="user.openedToWork">✔</span>
                   <span v-else class="text-sm cursor-default">❌</span>

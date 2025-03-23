@@ -56,7 +56,7 @@ const handleUpdateFavorites = (email: string) => {
 <template>
   <div v-if="showContent" class="flex flex-col w-full gap-16">
     <div class="flex justify-center mt-12">
-      <h1 class="text-amber-400 text-4xl font-bold">FAVOURITES</h1>
+      <h1 class="text-gray-200 text-4xl font-bold">FAVORITES</h1>
     </div>
     <FavsTable :users="favorites" @updateFavorites="handleUpdateFavorites"/>
   </div>
