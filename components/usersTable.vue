@@ -229,35 +229,35 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
             <thead>
               <tr class="text-gray-300 text-xl"> 
                 <th class="px-2 py-4 text-left w-[75px] border-b border-amber-400/40"></th> 
-                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
                   <span v-if="sortColumn === 'name'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
                   <span v-if="sortColumn === 'profession'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
                   <span v-if="sortColumn === 'country'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
                   <span v-if="sortColumn === 'email'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[200px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
+                <th class="px-2 py-4 text-center w-[175px] xl:w-[200px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
                     <span v-if="sortColumn === 'openedToWork'">
@@ -266,7 +266,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
                     </span>
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[150px] border-b border-amber-400/40">Favorite</th>
+                <th class="px-2 py-4 text-center w-[125px] xl:w-[150px] border-b border-amber-400/40">Favorite</th>
               </tr>
             </thead>
             <tbody>
