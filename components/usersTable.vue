@@ -330,7 +330,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
     </div>
 
     <!-- Pagination Controls -->
-    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-6 mb-8 cursor-default">
+    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 xl:mt-6 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
