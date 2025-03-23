@@ -131,6 +131,7 @@ const toggleProfileMenu = () => {
 
 const toggleMobileNavMenu = () => {
   isMobileNavMenuOpen.value = !isMobileNavMenuOpen.value;
+  if (event) event.stopPropagation();
 };
 
 watch(() => userStore.token, (token) => {
@@ -234,7 +235,7 @@ watchEffect(() => {
           </div>
         </div>
         <!-- Mobile menu, show/hide based on menu state. -->
-        <div v-click-outside="toggleMobileNavMenu" v-if="isMobileNavMenuOpen" class="sm:hidden" id="mobile-menu" @click.stop>
+        <div v-click-outside="toggleMobileNavMenu" v-if="isMobileNavMenuOpen" class="sm:hidden" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
             <NuxtLink @click="toggleMobileNavMenu" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300" aria-current="page">Home</NuxtLink>
             <NuxtLink @click="toggleMobileNavMenu" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
