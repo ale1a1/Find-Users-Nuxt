@@ -34,12 +34,21 @@ const sortOrder = ref<'asc' | 'desc'>('asc');
 
 const isTogglingFavorite = ref(false);
 
+let currentTooltip: HTMLElement | null = null // Track the currently open tooltip
+const tooltipRef = ref<HTMLElement | null>(null) // Declare tooltipRef here
+const showTooltip = ref(false)
+
 onMounted(() => {
+  document.addEventListener("click", hideToolTip);
   if (user) {
     fetchFavorites(user.uid).then(() => {
       syncFavoritesWithUsers(props.users); 
     });
   }
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", hideToolTip);
 });
 
 const fetchFavorites = async (loggedInUserId: string) => {
@@ -206,6 +215,56 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
     throw error;  // Throw error to handle it in the caller function
   }
 };
+
+// const toggleTooltip = (event: MouseEvent) => {
+//   console.log("TOGGLE")
+//   const target = event.currentTarget as HTMLElement
+//   const tooltip = target.querySelector('.tooltip') as HTMLElement
+//   if (tooltip) {
+//     // Toggle the active class for the current tooltip
+//     tooltip.classList.toggle('active')
+//     // Update the currently open tooltip reference
+//     currentTooltip = tooltip.classList.contains('active') ? tooltip : null
+//     tooltipRef.value = target
+//   }
+// }
+
+const toggleTooltip = (event: MouseEvent) => {
+  const target = event.currentTarget as HTMLElement;
+  const tooltip = target.querySelector('.tooltip') as HTMLElement;
+
+  if (tooltip) {
+    // Close the previously opened tooltip (if any)
+    if (currentTooltip && currentTooltip !== tooltip) {
+      currentTooltip.classList.remove('active');
+    }
+
+    // Toggle the active class for the clicked tooltip
+    const isActive = tooltip.classList.contains('active');
+    tooltip.classList.toggle('active', !isActive);
+    
+    // Update current tooltip reference
+    currentTooltip = !isActive ? tooltip : null;
+  }
+  
+  // Prevent the click event from propagating to the document listener
+  event.stopPropagation();
+};
+
+// const hideToolTip = () => {
+//   console.log("HIDE")
+//   if (currentTooltip) {
+//     currentTooltip.classList.remove('active')
+//     currentTooltip = null
+//   }
+// }
+
+const hideToolTip = (event: Event) => {
+  if (currentTooltip && !currentTooltip.contains(event.target as Node)) {
+    currentTooltip.classList.remove('active');
+    currentTooltip = null;
+  }
+};
 </script>
 
 <template>
@@ -291,17 +350,36 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
                     title="User Icon"
                   />
                 </td>               
-                <td class="ps-3 pe-8 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
-                <td class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
-                <td class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.country">
-                  <img 
-                    v-if="user.flag" 
-                    :src="user.flag" 
-                    alt="Flag" 
-                    class="inline-block w-6 h-4 mr-2"
-                  />
-                  {{ user.country }}</td>
-                <td class="ps-3 text-gray-300 truncate cursor-default" :title="user.email">{{ user.email }}</td>
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.name">
+                    {{ user.name }}
+                  </div>
+                  <span class="tooltip" >{{ user.name }}</span>
+                </td>
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.profession">
+                    {{ user.profession }}
+                  </div>
+                  <span class="tooltip" >{{ user.profession }}</span>
+                </td>
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.country">
+                    <img 
+                      v-if="user.flag" 
+                      :src="user.flag" 
+                      alt="Flag" 
+                      class="inline-block w-6 h-4 mr-2"
+                    />
+                    {{ user.country }}
+                  </div>
+                  <span class="tooltip" >{{ user.country }}</span>
+                </td>
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.email">
+                    {{ user.email }}
+                  </div>
+                  <span class="tooltip" >{{ user.email }}</span>
+                </td>
                 <td class="p-3 text-center cursor-default">
                   <span v-if="user.openedToWork">✔</span>
                   <span v-else class="text-sm cursor-default">❌</span>
@@ -365,3 +443,36 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
     </div>
   </div>
 </template>
+
+<style scoped>
+  .tooltip {
+    display: none;
+  }
+
+/**************************/
+/* BELOW 944px (Tablets) */
+/**************************/
+
+@media (max-width: 59em) {
+  .td-container {
+    position: relative; 
+  }
+  .tooltip {
+    position: absolute;
+    background-color: #333;
+    color: red;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    top: 2rem;
+    left: 0;
+    white-space: nowrap;
+    z-index: 9999 !important;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  .tooltip.active {
+    display: block;
+    overflow: visible;
+  }
+}
+</style>

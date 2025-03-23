@@ -37,7 +37,6 @@ const fetchCountries = async () => {
         flag: country.flags.svg,
       }))
       .sort((a: Country, b: Country) => a.name.localeCompare(b.name));
-      console.log(countries.value)
   } catch (error) {
     console.error("Error fetching countries:", error);
   }
