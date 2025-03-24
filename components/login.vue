@@ -170,7 +170,7 @@ function isFirebaseError(error: unknown): error is { code: string } {
             <div class="flex items-center justify-between">
               <label for="password" class="block font-medium">Password</label>
               <div v-if="redirectFrom != 'reset-password' " class="text-sm">
-                <a @click="openModal('forgotPasswordModal')" class="font-semibold text-red-500 hover:text-red-500/80 cursor-pointer">Forgot password?</a>
+                <a @click="openModal('forgotPasswordModal')" class="font-semibold text-amber-400 hover:text-amber-400/80 cursor-pointer">Forgot password?</a>
               </div>
             </div>
             <div class="relative mt-2">
@@ -193,9 +193,9 @@ function isFirebaseError(error: unknown): error is { code: string } {
             </button>
           </div>
         </form>
-        <p v-if="!redirectFrom" class="mt-10 text-center text-sm/6">
+        <p v-if="!redirectFrom" class="flex flex-col mt-10 text-center text-sm/6">
           Not register yet?
-          <a @click="openModal('registerModal')" class="font-semibold text-red-500 hover:text-red-500/80 cursor-pointer">Click here to create your profile</a>
+          <a @click="openModal('registerModal')" class="font-semibold text-amber-400 hover:text-amber-400/80 cursor-pointer">Click here to create your profile</a>
         </p>
       </div>
     </div>
