@@ -34,9 +34,7 @@ const sortOrder = ref<'asc' | 'desc'>('asc');
 
 const isTogglingFavorite = ref(false);
 
-let currentTooltip: HTMLElement | null = null // Track the currently open tooltip
-const tooltipRef = ref<HTMLElement | null>(null) // Declare tooltipRef here
-const showTooltip = ref(false)
+let currentTooltip: HTMLElement | null = null 
 
 onMounted(() => {
   document.addEventListener("click", hideToolTip);
@@ -216,48 +214,23 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
   }
 };
 
-// const toggleTooltip = (event: MouseEvent) => {
-//   console.log("TOGGLE")
-//   const target = event.currentTarget as HTMLElement
-//   const tooltip = target.querySelector('.tooltip') as HTMLElement
-//   if (tooltip) {
-//     // Toggle the active class for the current tooltip
-//     tooltip.classList.toggle('active')
-//     // Update the currently open tooltip reference
-//     currentTooltip = tooltip.classList.contains('active') ? tooltip : null
-//     tooltipRef.value = target
-//   }
-// }
-
 const toggleTooltip = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLElement;
   const tooltip = target.querySelector('.tooltip') as HTMLElement;
-
   if (tooltip) {
     // Close the previously opened tooltip (if any)
     if (currentTooltip && currentTooltip !== tooltip) {
-      currentTooltip.classList.remove('active');
-    }
+      currentTooltip.classList.remove('active');    }
 
     // Toggle the active class for the clicked tooltip
     const isActive = tooltip.classList.contains('active');
-    tooltip.classList.toggle('active', !isActive);
-    
+    tooltip.classList.toggle('active', !isActive);    
     // Update current tooltip reference
     currentTooltip = !isActive ? tooltip : null;
-  }
-  
+  }  
   // Prevent the click event from propagating to the document listener
   event.stopPropagation();
 };
-
-// const hideToolTip = () => {
-//   console.log("HIDE")
-//   if (currentTooltip) {
-//     currentTooltip.classList.remove('active')
-//     currentTooltip = null
-//   }
-// }
 
 const hideToolTip = (event: Event) => {
   if (currentTooltip && !currentTooltip.contains(event.target as Node)) {

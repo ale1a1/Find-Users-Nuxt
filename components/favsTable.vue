@@ -34,6 +34,8 @@ const sortOrder = ref<'asc' | 'desc'>('asc');
 
 const isRemovingFavorite = ref(false);
 
+let currentTooltip: HTMLElement | null = null 
+
 onMounted(() => {
   favAll(props.users);   
 });
@@ -119,6 +121,31 @@ const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
     throw error;  
   }
 };
+
+const toggleTooltip = (event: MouseEvent) => {
+  const target = event.currentTarget as HTMLElement;
+  const tooltip = target.querySelector('.tooltip') as HTMLElement;
+  if (tooltip) {
+    // Close the previously opened tooltip (if any)
+    if (currentTooltip && currentTooltip !== tooltip) {
+      currentTooltip.classList.remove('active');    }
+
+    // Toggle the active class for the clicked tooltip
+    const isActive = tooltip.classList.contains('active');
+    tooltip.classList.toggle('active', !isActive);    
+    // Update current tooltip reference
+    currentTooltip = !isActive ? tooltip : null;
+  }  
+  // Prevent the click event from propagating to the document listener
+  event.stopPropagation();
+};
+
+const hideToolTip = (event: Event) => {
+  if (currentTooltip && !currentTooltip.contains(event.target as Node)) {
+    currentTooltip.classList.remove('active');
+    currentTooltip = null;
+  }
+};
 </script>
 
 <template>
@@ -130,43 +157,43 @@ const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
     </div>
  
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <div v-if="props.users.length" class="sm:mx-auto sm:w-[75vw] p-6 text-gray-100 flex-1 min-h-[500px]">
+    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px]">
       <div class="overflow-x-auto mt-6">
-        <div class="border border-amber-400/40 rounded-lg overflow-hidden shadow-lg">
+        <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
           <table class="w-full bg-neutral-900 rounded-lg table-fixed">
             <thead>
               <tr class="text-gray-300 text-xl"> 
-                <th class="px-2 py-4 text-left w-[5%] border-b border-amber-400/40"></th> 
-                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
+                <th class="px-2 py-4 text-left w-[75px] border-b border-amber-400/40"></th> 
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
                   <span v-if="sortColumn === 'name'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
                   <span v-if="sortColumn === 'profession'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
                   <span v-if="sortColumn === 'country'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[20%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
+                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
                   <span v-if="sortColumn === 'email'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[15%] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
+                <th class="px-2 py-4 text-center w-[175px] xl:w-[200px] cursor-pointer relative group border-b border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
                     <span v-if="sortColumn === 'openedToWork'">
@@ -175,7 +202,7 @@ const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
                     </span>
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[10%] border-b border-amber-400/40">Favorite</th>
+                <th class="px-2 py-4 text-center w-[125px] xl:w-[150px] border-b border-amber-400/40">Favorite</th>
               </tr>
             </thead>
             <tbody>
@@ -199,18 +226,37 @@ const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
                     class="w-9 h-9 text-amber-400/50"
                     title="User Icon"
                   />
-                </td>               
-                <td class="ps-3 pe-6 text-white truncate cursor-default" :title="user.name">{{ user.name }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.profession">{{ user.profession }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.country">
-                  <img 
-                    v-if="user.flag" 
-                    :src="user.flag" 
-                    alt="Flag" 
-                    class="inline-block w-6 h-4 mr-2"
-                  />
-                  {{ user.country }}</td>
-                <td class="ps-3 pe-6 text-gray-300 truncate cursor-default" :title="user.email">{{ user.email }}</td>
+                </td>  
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.name">
+                    {{ user.name }}
+                  </div>
+                  <span class="tooltip" >{{ user.name }}</span>
+                </td>     
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.profession">
+                    {{ user.profession }}
+                  </div>
+                  <span class="tooltip" >{{ user.profession }}</span>
+                </td>        
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.country">
+                    <img 
+                      v-if="user.flag" 
+                      :src="user.flag" 
+                      alt="Flag" 
+                      class="inline-block w-6 h-4 mr-2"
+                    />
+                    {{ user.country }}
+                  </div>
+                  <span class="tooltip" >{{ user.country }}</span>
+                </td>
+                <td class="td-container" @click="toggleTooltip($event)">
+                  <div class="ps-3 pe-8 text-gray-300 truncate cursor-default" :title="user.email">
+                    {{ user.email }}
+                  </div>
+                  <span class="tooltip" >{{ user.email }}</span>
+                </td>
                 <td class="p-3 text-center cursor-default">
                   <span v-if="user.openedToWork">✔</span>
                   <span v-else class="text-sm cursor-default">❌</span>
@@ -239,7 +285,7 @@ const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
     </div>
 
     <!-- Pagination Controls -->
-    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-6 mb-8 cursor-default">
+    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 xl:mt-6 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
@@ -274,3 +320,36 @@ const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+  .tooltip {
+    display: none;
+  }
+
+/**************************/
+/* BELOW 944px (Tablets) */
+/**************************/
+
+@media (max-width: 59em) {
+  .td-container {
+    position: relative; 
+  }
+  .tooltip {
+    position: absolute;
+    background-color: #333;
+    color: red;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    top: 2rem;
+    left: 0;
+    white-space: nowrap;
+    z-index: 9999 !important;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  .tooltip.active {
+    display: block;
+    overflow: visible;
+  }
+}
+</style>
