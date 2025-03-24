@@ -23,46 +23,46 @@ onMounted(() => {
         <p class="text-5xl font-semibold text-center text-white mb-20 mt-10">A handy app to find users and get in touch with them</p>  
         <ul class="grid grid-cols-1 sm:grid-cols-2 text-3xl list-none mt-10">
           <li class="flex items-center gap-4 mb-20">
-            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <NuxtLink to="/profile" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <User class="size-8" />
             </NuxtLink>
             <div class="flex items-center gap-3">
               <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">manage</p>
               <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">update</p>
-              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              <NuxtLink to="/profile" class="text-amber-400 font-bold hover:opacity-70">
                 YOUR PROFILE
               </NuxtLink>
             </div>
           </li> 
           <li class="flex items-center gap-4 mb-20">
-            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Search class="size-8" />
             </NuxtLink>
             <div class="flex items-center gap-3">
               <p class="text-base sm:text-lg md:text-xl lg:text-2xl">search users from the</p>
-              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70">
                 USERS LIST
               </NuxtLink>
             </div>
           </li>
           <li class="flex items-center gap-4 mb-20">
-            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <FileText class="size-8" />
             </NuxtLink>
             <div class="flex items-center gap-3">
               <p class="text-base sm:text-lg md:text-xl lg:text-2xl">retrieve</p>
-              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70">
                 USERS INFORMATION
               </NuxtLink>
             </div>
           </li>      
           <li class="flex items-center gap-4 mb-20">
-            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <NuxtLink to="/favourites" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Save class="size-8" />
             </NuxtLink>
             <div class="flex items-center gap-3">
               <p class="text-base sm:text-lg md:text-xl lg:text-2xl">browse through the</p>
-              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+              <NuxtLink to="/favourites" class="text-amber-400 font-bold hover:opacity-70">
                 FAVORITE USERS LIST
               </NuxtLink>
             </div>
