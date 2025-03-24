@@ -150,7 +150,7 @@ function isFirebaseError(error: unknown): error is { code: string } {
         <p class="text-green-800 ml-2 text-sm font-semibold" v-html="verificationMessage"></p>
       </div>
     </div>
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg border border-amber-400 rounded-lg p-8 bg-neutral-900  text-gray-100">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm shadow-lg border-2 border-amber-400/50 rounded-lg p-8 bg-neutral-900  text-gray-100">
       <!-- Title -->
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 class="mt-0 text-center text-2xl/9 font-bold tracking-tight text-gray-200">Sign in to your account</h2>

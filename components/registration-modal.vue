@@ -117,7 +117,7 @@ const passwordError = computed(() => {
 <template>
   <!-- Modal Overlay -->
   <div v-if="modalVisible" class="min-h-screen flex-col w-full px-6 py-12 lg:px-8 fixed inset-0 flex justify-center items-center z-50">
-    <div v-click-outside="closeModal" class="border border-amber-400 bg-neutral-900  text-gray-100 rounded-lg shadow-lg w-full sm:w-96 p-8 relative">
+    <div v-click-outside="closeModal" class="border-2 border-amber-400/50 bg-neutral-900  text-gray-100 rounded-lg shadow-lg w-full sm:w-96 p-8 relative">
       <!-- Close Button -->
       <button @click="closeModal" class="absolute top-0 right-3 text-red-500 hover:text-red-500/80 text-xl cursor-pointer">
         &times;
