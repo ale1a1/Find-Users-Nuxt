@@ -130,14 +130,16 @@ const passwordError = computed(() => {
         <div>
           <label for="email" class="block font-medium">Email address</label>
           <div class="mt-2">
-            <input type="email" @input="formTouchedAfterError = true" :disabled="isRegistering" id="username" v-model="email" required class="block w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  focus:outline-red-500/80 sm:text-sm/6"/>
+            <input type="email" @input="formTouchedAfterError = true" :disabled="isRegistering" id="username" v-model="email" required class="block w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  focus:outline-gray-400 sm:text-sm/6"/>
           </div>
         </div>
         <!-- Password -->
         <div>
           <label for="password" class="block font-medium">Password</label>
           <div class="relative mt-2">
-            <input :type="showPassword ? 'text' : 'password'"  @input="passwordTouched = true" :disabled="isRegistering" id="password" v-model="password" required class="block w-full rounded-md bg-gray-400/10 pl-3 pr-10 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500/80 sm:text-sm/6"/>
+            <input :type="showPassword ? 'text' : 'password'"  @input="passwordTouched = true" :disabled="isRegistering" id="password" v-model="password" required  
+              :class="{'focus:outline-red-500/80': passwordError}"
+              class="block w-full rounded-md bg-gray-400/10 pl-3 pr-10 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  focus:outline-gray-400 sm:text-sm/6"/>
             <!-- Eye Icon Toggle -->
             <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-2 flex items-center text-gray-300 hover:text-gray-400 cursor-pointer">
               <Eye v-if="!showPassword" class="w-5 h-5" />

@@ -86,7 +86,7 @@ const closeModal = () => {
         <div>
           <label for="username" class="block font-medium">Email address</label>
           <div class="mt-2">
-            <input type="email" :disabled="apiCall || emailSent" id="username" v-model="email" required class="block w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  focus:outline-red-500/80 sm:text-sm/6"/>
+            <input type="email" :disabled="apiCall || emailSent" id="username" v-model="email" required class="block w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2   focus:outline-gray-400 sm:text-sm/6"/>
           </div>
         </div>     
         <!-- Register Button -->
