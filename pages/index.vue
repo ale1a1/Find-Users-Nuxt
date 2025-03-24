@@ -18,56 +18,56 @@ onMounted(() => {
   <div class="flex flex-col w-full text-white">  
 
     <div v-if="showContent" class="flex-grow flex items-center justify-center">
-      <div class="w-auto min-h-[75vh] h-auto sm:h-[50vh] p-4 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">
-        <h1 class="text-6xl font-bold text-white text-center mb-20">Welcome to the Find Users App!</h1>
-        <p class="text-5xl font-semibold text-center text-white mb-12">Use our app for</p>  
-        <ul class="text-3xl list-none mb-8 space-y-8">
-        <li class="flex items-center gap-4">
-          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-            <User class="size-8" />
-          </NuxtLink>
-          <div class="flex items-center gap-3">
-            <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">managing</p>
-            <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">update</p>
-            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
-              YOUR PROFILE
+      <div class="w-auto min-h-[75vh] h-auto sm:h-[50vh] p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">
+        <h1 class="text-7xl font-bold text-white text-center mb-24 mt-20">FIND USERS APP</h1>
+        <p class="text-5xl font-semibold text-center text-white mb-20 mt-10">A handy app to find users and get in touch with them</p>  
+        <ul class="grid grid-cols-1 sm:grid-cols-2 text-3xl list-none mt-10">
+          <li class="flex items-center gap-4 mb-20">
+            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+              <User class="size-8" />
             </NuxtLink>
-          </div>
-        </li> 
-        <li class="flex items-center gap-4">
-          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-            <Search class="size-8" />
-          </NuxtLink>
-          <div class="flex items-center gap-3">
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">searching users from the</p>
-            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
-              USERS LIST
+            <div class="flex items-center gap-3">
+              <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">manage</p>
+              <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">update</p>
+              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+                YOUR PROFILE
+              </NuxtLink>
+            </div>
+          </li> 
+          <li class="flex items-center gap-4 mb-20">
+            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+              <Search class="size-8" />
             </NuxtLink>
-          </div>
-        </li>
-        <li class="flex items-center gap-4">
-          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-            <FileText class="size-8" />
-          </NuxtLink>
-          <div class="flex items-center gap-3">
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">retrieving</p>
-            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
-              USERS INFORMATION
+            <div class="flex items-center gap-3">
+              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">search users from the</p>
+              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+                USERS LIST
+              </NuxtLink>
+            </div>
+          </li>
+          <li class="flex items-center gap-4 mb-20">
+            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+              <FileText class="size-8" />
             </NuxtLink>
-          </div>
-        </li>      
-        <li class="flex items-center gap-4">
-          <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-            <Save class="size-8" />
-          </NuxtLink>
-          <div class="flex items-center gap-3">
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl">saving your</p>
-            <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
-              FAVOURITE USERS
+            <div class="flex items-center gap-3">
+              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">retrieve</p>
+              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+                USERS INFORMATION
+              </NuxtLink>
+            </div>
+          </li>      
+          <li class="flex items-center gap-4 mb-20">
+            <NuxtLink to="/users" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+              <Save class="size-8" />
             </NuxtLink>
-          </div>
-        </li>     
-      </ul>  
+            <div class="flex items-center gap-3">
+              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">browse through the</p>
+              <NuxtLink to="/users" class="text-amber-400 font-bold hover:opacity-70">
+                FAVORITE USERS LIST
+              </NuxtLink>
+            </div>
+          </li>     
+        </ul>  
       </div>
     </div>  
     <template v-else>
