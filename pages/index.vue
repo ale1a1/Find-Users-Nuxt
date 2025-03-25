@@ -22,10 +22,10 @@ onMounted(() => {
         <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
           mb-[5vh] lg:mb-16 mt-[3vh] lg:mt-10
           text-white tracking-widest uppercase relative 
-          animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-md before:opacity-30 before:-z-10">
+          animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
           FIND USERS APP
         </h1>
-        <p class="text-2xl lg:text-5xl font-semibold text-center text-white mb-[5vh] lg:mb-20 mt-[5vh] px-6 lg:px-0">A handy app to find users and get in touch with them</p>  
+        <p class="text-2xl lg:text-5xl font-semibold text-center text-gray-200/90 mb-[5vh] lg:mb-20 mt-[5vh] px-6 lg:px-0">A handy app to find users and get in touch with them</p>  
         <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 lg:gap-0">
           <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/profile" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">

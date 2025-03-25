@@ -14,7 +14,7 @@ const socialLinks = ref([
 
 <template>
   <footer class="border-t border-gray-300/80 py-4 bg-black text-gray-400 w-full">
-    <div class="w-full flex flex-col sm:flex-row justify-between items-center px-2 sm:px-6 lg:px-8 space-y-5 sm:space-y-0">
+    <div class="w-full flex flex-col sm:flex-row justify-between items-center px-2 sm:px-6 lg:px-8 space-y-6 sm:space-y-0">
       
       <!-- Left Side: Copyright -->
       <p class="sm:text-sm">© {{ new Date().getFullYear() }} ALW Media</p>
