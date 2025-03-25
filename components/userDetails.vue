@@ -102,6 +102,7 @@ const fetchFormData = async () => {
       form.profession = userData.profession
       form.profilePictureUrl = userData.profilePictureUrl
       form.openedToWork = userData.openedToWork
+      formInitialState.email = userData.email
       fileName.value = userData.profilePictureName
       selectedCountryName.value = userData.country
       setTimeout(() => {
