@@ -20,14 +20,14 @@ onMounted(() => {
     <div v-if="showContent" class="flex-grow flex items-center justify-center">
       <div class="w-auto p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">    
         <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
-          mb-6 lg:mb-16 mt-4 lg:mt-10
+          mb-[3vh] lg:mb-16 mt-[3vh] lg:mt-10
           text-white tracking-widest uppercase relative 
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-md before:opacity-30 before:-z-10">
           FIND USERS APP
         </h1>
-        <p class="text-xl sm:text-2xl lg:text-5xl font-semibold text-center text-white mb-10 lg:mb-20 mt-10 px-6 lg:px-0">A handy app to find users and get in touch with them</p>  
+        <p class="text-xl sm:text-2xl lg:text-5xl font-semibold text-center text-white mb-[3vh] lg:mb-20 mt-[3vh] px-6 lg:px-0">A handy app to find users and get in touch with them</p>  
         <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 lg:gap-0">
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-4 lg:mb-20">
+          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/profile" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <User class="size-8" />
             </NuxtLink>
@@ -39,7 +39,7 @@ onMounted(() => {
               </NuxtLink>
             </div>
           </li> 
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-4 lg:mb-20">
+          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Search class="size-8" />
             </NuxtLink>
@@ -50,7 +50,7 @@ onMounted(() => {
               </NuxtLink>
             </div>
           </li>
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-4 lg:mb-20">
+          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <FileText class="size-8" />
             </NuxtLink>
@@ -61,7 +61,7 @@ onMounted(() => {
               </NuxtLink>
             </div>
           </li>      
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-4 lg:mb-20">
+          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/favourites" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Save class="size-8" />
             </NuxtLink>
