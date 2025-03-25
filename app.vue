@@ -243,10 +243,10 @@ const toggleMobileNavMenu = (event?: Event) => {
                     <img v-else class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" alt="">
                   </button>
                 </div>        
-                <div v-if="isProfileMenuOpen" v-click-outside="toggleProfileMenu" class="bg-neutral-700 border-2 border-gray-300 absolute right-0 z-10 mt-2 w-30 origin-top-right rounded-md py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                  <NuxtLink @click="toggleProfileMenu" to="/profile" class="block px-4 py-2 text-sm text-gray-200 hover:underline hover:font-semibold" role="menuitem" tabindex="-1" id="user-menu-item-0">Profile</NuxtLink>
+                <div v-if="isProfileMenuOpen" v-click-outside="toggleProfileMenu" class="bg-red-500/90 border-2 border-gray-200 absolute right-0 z-10 mt-2 w-30 origin-top-right rounded-md py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                  <NuxtLink @click="toggleProfileMenu" to="/profile" class="block px-4 py-2 text-sm text-gray-100 hover:underline hover:font-semibold" role="menuitem" tabindex="-1" id="user-menu-item-0">Profile</NuxtLink>
                   <!-- <NuxtLink to="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</NuxtLink> -->
-                  <NuxtLink  @click="() => { logout(); toggleProfileMenu(); }" class="block px-4 py-2 text-sm text-gray-200 cursor-pointer hover:underline hover:font-semibold" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
+                  <NuxtLink  @click="() => { logout(); toggleProfileMenu(); }" class="block px-4 py-2 text-sm text-gray-100 cursor-pointer hover:underline hover:font-semibold" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
                 </div>
               </div>
             </div>
