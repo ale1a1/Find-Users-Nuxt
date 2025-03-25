@@ -58,6 +58,8 @@ const selectedCountryFlag = ref('');
 const isLoadingCountries = ref(false);
 const countryFetchError = ref<string | null>(null);
 
+const isDropdownOpen = ref(false);
+
 const error = ref(false);
 
 const isFormValid = computed(() => {  
@@ -316,6 +318,7 @@ const fetchCountries = async () => {
 const toggleCountriesDropdown = () => {
   isOpen.value = !isOpen.value;
   searchQuery.value = ""
+  isDropdownOpen.value = !isDropdownOpen.value;
 };
 
 const selectCountry = (country: any) => {
@@ -372,8 +375,9 @@ onMounted(() => {
             <button
               @click.prevent="toggleCountriesDropdown"
               :disabled="isSubmitting"
-              class="disabled:cursor-not-allowed w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  focus:outline-gray-400 flex justify-between items-center cursor-pointer"
-            >
+              class="disabled:cursor-not-allowed w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline  placeholder:text-gray-400 flex justify-between items-center cursor-pointer"
+              :class="isDropdownOpen ? 'outline-gray-400 outline-2' : 'outline-amber-400/50'"
+              >
               <span class="flex items-center">
                 <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
                 <span class="truncate w-full" :title="selectedCountryName">{{ selectedCountryName || 'select a country' }}</span>
