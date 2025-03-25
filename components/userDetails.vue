@@ -58,6 +58,8 @@ const selectedCountryFlag = ref('');
 const isLoadingCountries = ref(false);
 const countryFetchError = ref<string | null>(null);
 
+const error = ref(false);
+
 const isFormValid = computed(() => {  
   isSubmitted.value = false;
   return (
@@ -357,7 +359,8 @@ onMounted(() => {
               :id="key"
               required
               :disabled="key === 'email' || isSubmitting"
-              class="disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500/80 sm:text-sm/6"
+              :class="{'focus:outline-red-500/80': error}"
+              class="disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-gray-400 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6"
               @input="formTouched = true"
             />
             <p v-if="inputError[key]" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
@@ -368,7 +371,7 @@ onMounted(() => {
             <button
               @click.prevent="toggleCountriesDropdown"
               :disabled="isSubmitting"
-              class="disabled:cursor-not-allowed w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:outline-amber-400 focus:outline-offset-2 flex justify-between items-center cursor-pointer"
+              class="disabled:cursor-not-allowed w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline outline-amber-400/50 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2  focus:outline-gray-400 flex justify-between items-center cursor-pointer"
             >
               <span class="flex items-center">
                 <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
@@ -376,14 +379,14 @@ onMounted(() => {
               </span>
               <ChevronDown class="w-4 h-4 text-amber-400" />
             </button>
-            <div v-if="isOpen" v-click-outside="toggleCountriesDropdown" class="absolute left-0 right-0 mt-1 bg-neutral-800 border border-amber-400 rounded-md shadow-lg z-10">
+            <div v-if="isOpen" v-click-outside="toggleCountriesDropdown" class="absolute left-0 right-0 mt-1 bg-neutral-800 border border-gray-400 rounded-md shadow-lg z-10">
               <!-- Search Input for Filtering Countries -->
               <div class="px-3 py-2">
                 <input
                   v-model="searchQuery"
                   type="text"
                   placeholder="Search country..."
-                  class="w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-amber-400/50 focus:outline-amber-400/50 focus:outline-2"
+                  class="w-full rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 focus:outline-2 focus:-outline-offset-2  focus:outline-gray-400"
                 />
               </div>
               <ul class="max-h-60 overflow-auto">
