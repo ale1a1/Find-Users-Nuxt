@@ -264,7 +264,7 @@ const toggleMobileNavMenu = (event?: Event) => {
     </template>
     <!-- Main page content -->
     <div class="flex flex-1 flex-col items-center">      
-      <div v-if="!currentUser" class="max-w-[90vw] max-h-[10vh] absolute inset-y-0 top-[5vh] flex flex-col items-center justify-center">
+      <div v-if="!currentUser" class="max-w-[90vw] max-h-[10vh] absolute inset-y-0 top-[6.5vh] flex flex-col items-center justify-center">
         <h1 
           class="p-2 text-white tracking-widest uppercase relative text-4xl md:text-5xl lg:text-7xl font-bold text-center pointer-events-none
                 animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-md before:opacity-30 before:-z-10">
