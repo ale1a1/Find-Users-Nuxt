@@ -17,7 +17,7 @@ onMounted(() => {
 
   <div class="flex flex-col w-full text-white">  
 
-    <div v-if="showContent" class="flex-grow flex items-center justify-center mb-4">
+    <div v-if="showContent" class="flex-grow flex items-center justify-center">
       <div class="w-auto p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">    
         <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
           mb-6 lg:mb-16 mt-4 lg:mt-10
