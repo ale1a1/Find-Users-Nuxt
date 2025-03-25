@@ -264,9 +264,17 @@ const toggleMobileNavMenu = (event?: Event) => {
     </template>
     <!-- Main page content -->
     <div class="flex flex-1 flex-col items-center">
+      <!--
       <div v-if="!currentUser" class="max-w-[90vw] max-h-[10vh] absolute inset-y-0 top-[5vh] flex flex-col items-center justify-center">
         <h1 class="p-2 text-gray-200 text-3xl sm:text-4xl lg:text-5xl font-bold bg-neutral-900/10 pointer-events-none text-center">Find Users App</h1>
       </div>
+      -->
+      <h1 v-if="!currentUser" class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
+          mb-6 lg:mb-16 mt-4 lg:mt-10
+          text-white tracking-widest uppercase relative 
+          animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-md before:opacity-30 before:-z-10">
+          FIND USERS APP
+        </h1>
       <NuxtPage/>
     </div>
     <!-- Footer only if user is authenticated -->
