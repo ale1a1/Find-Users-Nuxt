@@ -315,6 +315,7 @@ const fetchCountries = async () => {
 
 const toggleCountriesDropdown = () => {
   isOpen.value = !isOpen.value;
+  searchQuery.value = ""
 };
 
 const selectCountry = (country: any) => {
