@@ -17,7 +17,7 @@ onMounted(() => {
 
   <div class="flex flex-col w-full text-white">  
 
-    <div v-if="showContent" class="flex-grow flex items-center justify-center mb-8">
+    <div v-if="showContent" class="flex-grow flex items-center justify-center mb-4">
       <div class="w-auto p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">    
         <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
           mb-6 lg:mb-16 mt-4 lg:mt-10
@@ -26,7 +26,7 @@ onMounted(() => {
           FIND USERS APP
         </h1>
         <p class="text-xl sm:text-2xl lg:text-5xl font-semibold text-center text-white mb-10 lg:mb-20 mt-10 px-6 lg:px-0">A handy app to find users and get in touch with them</p>  
-        <ul class="grid grid-cols-2 sm:grid-cols-2 list-none mt-10 lg:space-x-24">
+        <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 lg:gap-0">
           <li class="flex flex-col sm:flex-row items-center gap-4 mb-10 lg:mb-20">
             <NuxtLink to="/profile" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <User class="size-8" />
@@ -44,8 +44,8 @@ onMounted(() => {
               <Search class="size-8" />
             </NuxtLink>
             <div class="flex flex-col sm:flex-row items-center gap-3">
-              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">check the</p>
-              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+              <p class="text-lg md:text-xl lg:text-2xl">check the</p>
+              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 USERS LIST
               </NuxtLink>
             </div>
@@ -55,8 +55,8 @@ onMounted(() => {
               <FileText class="size-8" />
             </NuxtLink>
             <div class="flex flex-col sm:flex-row items-center gap-3">
-              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">retrieve</p>
-              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+              <p class="text-lg md:text-xl lg:text-2xl">retrieve</p>
+              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 INFORMATION
               </NuxtLink>
             </div>
@@ -66,8 +66,8 @@ onMounted(() => {
               <Save class="size-8" />
             </NuxtLink>
             <div class="flex flex-col sm:flex-row items-center gap-3">
-              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">save your</p>
-              <NuxtLink to="/favourites" class="text-amber-400 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+              <p class="text-lg md:text-xl lg:text-2xl">save your</p>
+              <NuxtLink to="/favourites" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 FAVORITES 
               </NuxtLink>
             </div>
