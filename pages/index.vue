@@ -25,13 +25,13 @@ onMounted(() => {
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
           FIND USERS APP
         </h1>
-        <p class="text-2xl lg:text-5xl font-semibold text-center text-gray-200/90 mb-[5vh] lg:mb-20 mt-[5vh] px-6 lg:px-0">A handy app to find users and get in touch with them</p>  
-        <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 lg:gap-0">
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+        <p class="text-2xl md:text-3xl lg:text-5xl font-semibold text-center text-gray-200/90 mb-[5vh] lg:mb-20 mt-[5vh] px-6 sm:px-20 md:px-50 lg:px-0 sm:leading-normal">A handy app to find users and get in touch with them</p>  
+        <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 sm:gap-16 md:gap-20 lg:gap-0">
+          <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/profile" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <User class="size-8" />
             </NuxtLink>
-            <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="flex flex-col lg:flex-row items-center gap-3">
               <p v-if="!profile" class="text-lg md:text-xl lg:text-2xl">manage your</p>
               <p v-else class="text-lg md:text-xl lg:text-2xl">update your</p>
               <NuxtLink to="/profile" class="text-amber-400/90 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
@@ -39,33 +39,33 @@ onMounted(() => {
               </NuxtLink>
             </div>
           </li> 
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+          <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Search class="size-8" />
             </NuxtLink>
-            <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="flex flex-col lg:flex-row items-center gap-3">
               <p class="text-lg md:text-xl lg:text-2xl">check the</p>
               <NuxtLink to="/users-list" class="text-amber-400/90 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 USERS LIST
               </NuxtLink>
             </div>
           </li>
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+          <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/users-list" class="text-amber-400/90 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <FileText class="size-8" />
             </NuxtLink>
-            <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="flex flex-col lg:flex-row items-center gap-3">
               <p class="text-lg md:text-xl lg:text-2xl">retrieve</p>
               <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 INFORMATION
               </NuxtLink>
             </div>
           </li>      
-          <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+          <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
             <NuxtLink to="/favourites" class="text-amber-400/90 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Save class="size-8" />
             </NuxtLink>
-            <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="flex flex-col lg:flex-row items-center gap-3">
               <p class="text-lg md:text-xl lg:text-2xl">save your</p>
               <NuxtLink to="/favourites" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 FAVORITES 
