@@ -350,7 +350,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="!isLoading" class="flex flex-col items-center justify-center px-6 py-12 lg:px-8">
+  <div v-if="!isLoading" class="flex flex-col items-center justify-center px-6 py-12 lg:px-8 mb-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-2xl shadow-lg border-2 border-amber-400/50 rounded-lg p-8 bg-neutral-900 text-gray-100">
       <form @submit.prevent="submitForm" class="space-y-8">
         <!--------------------- Form Fields ---------------------->
