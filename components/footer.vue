@@ -13,7 +13,7 @@ const socialLinks = ref([
 </script>
 
 <template>
-  <footer class="border-t border-amber-400/30 py-4 bg-neutral-950 text-gray-400 w-full">
+  <footer class="border-t-2 border-amber-400/40 py-4 bg-neutral-950 text-gray-400 w-full">
     <div class="w-full flex flex-col sm:flex-row justify-between items-center px-2 sm:px-6 lg:px-8 space-y-6 sm:space-y-0">
       
       <!-- Left Side: Copyright -->
