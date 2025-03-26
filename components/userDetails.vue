@@ -461,7 +461,7 @@ onMounted(() => {
           <button
             type="submit"
             :disabled="!isFormValid || isSubmitting || isSubmitted || !formTouched"
-            class="w-full bg-amber-400 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40 cursor-pointer"
+            class="w-full bg-amber-400/90 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40 cursor-pointer"
           >
             {{ isSubmitting ? 'Saving...' : 'Save' }}
           </button>
@@ -469,7 +469,7 @@ onMounted(() => {
             type="button"
             @click="resetForm"
             :disabled="isFormEmpty || isSubmitting"
-            class="w-full bg-red-500 text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900 cursor-pointer"
+            class="w-full bg-red-500/90 text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900 cursor-pointer"
           >
             Clear
           </button>

@@ -184,7 +184,7 @@ function isFirebaseError(error: unknown): error is { code: string } {
           </div>
           <!-- Submit Button -->
           <div>
-            <button type="submit" :disabled="isLogging" class="flex w-full justify-center font-bold items-center rounded-md mt-8 bg-amber-400 px-3 py-1.5 text-sm/6 text-neutral-950 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
+            <button type="submit" :disabled="isLogging" class="flex w-full justify-center font-bold items-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 text-neutral-950 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
               <svg v-if="apiCall" class="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>

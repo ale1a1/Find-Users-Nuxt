@@ -150,10 +150,10 @@ const passwordError = computed(() => {
         </div>   
         <!-- Register Button -->
         <div>
-          <button v-if="!registered"  type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-amber-400 px-3 py-1.5 text-sm/6  text-neutral-950 font-bold shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
+          <button v-if="!registered"  type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6  text-neutral-950 font-bold shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
             {{ apiCall ? 'Registering...' : 'Register' }}
           </button>
-          <button v-else type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-amber-400 px-3 py-1.5 text-sm/6  text-neutral-950 font-bold shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
+          <button v-else type="submit" :disabled="isRegistering || !!passwordError" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6  text-neutral-950 font-bold shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
             Registered
           </button>
         </div>
