@@ -34,7 +34,7 @@ onMounted(() => {
             <div class="flex flex-col sm:flex-row items-center gap-3">
               <p v-if="!profile" class="text-lg md:text-xl lg:text-2xl">manage your</p>
               <p v-else class="text-lg md:text-xl lg:text-2xl">update your</p>
-              <NuxtLink to="/profile" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
+              <NuxtLink to="/profile" class="text-amber-400/90 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                PROFILE
               </NuxtLink>
             </div>
@@ -45,13 +45,13 @@ onMounted(() => {
             </NuxtLink>
             <div class="flex flex-col sm:flex-row items-center gap-3">
               <p class="text-lg md:text-xl lg:text-2xl">check the</p>
-              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
+              <NuxtLink to="/users-list" class="text-amber-400/90 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
                 USERS LIST
               </NuxtLink>
             </div>
           </li>
           <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
-            <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <NuxtLink to="/users-list" class="text-amber-400/90 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <FileText class="size-8" />
             </NuxtLink>
             <div class="flex flex-col sm:flex-row items-center gap-3">
@@ -62,7 +62,7 @@ onMounted(() => {
             </div>
           </li>      
           <li class="flex flex-col sm:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
-            <NuxtLink to="/favourites" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
+            <NuxtLink to="/favourites" class="text-amber-400/90 transition-transform duration-300 hover:scale-150 hover:opacity-70">
               <Save class="size-8" />
             </NuxtLink>
             <div class="flex flex-col sm:flex-row items-center gap-3">
