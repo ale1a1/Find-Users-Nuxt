@@ -20,7 +20,7 @@ onMounted(() => {
     <div v-if="showContent" class="flex-grow flex items-center justify-center">
       <div class="w-auto p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">    
         <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
-          mb-[5vh] lg:mb-16 mt-[3vh] lg:mt-10
+          mb-[5vh] lg:mb-16 mt-[3vh] lg:mt-16
           text-white tracking-widest uppercase relative 
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
           FIND USERS APP
