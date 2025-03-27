@@ -106,7 +106,7 @@ const logout = async () => {
     }, 2000);   
     loginRedirectStore.setRedirectFrom(null)
     toast.success('Logging out...', {
-      position: 'bottom-right',
+      position: 'top-right',
       autoClose: 1000,       
       hideProgressBar: false,
       closeOnClick: false,

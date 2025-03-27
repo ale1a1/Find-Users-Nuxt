@@ -175,7 +175,7 @@ const saveFormData = async (userProfileDetails: any) => {
     toast.success('Profile updated successfully!', {
       position: 'top-right',
       autoClose: 2000,       
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: false,
       pauseOnHover: true
     })

@@ -58,7 +58,7 @@ const resetPassword = async () => {
     toast.error(toastErrorMessage, {
       position: 'top-right',
       autoClose: 5500,       
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: false,
       pauseOnHover: false
     })
