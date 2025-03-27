@@ -186,6 +186,13 @@ const toggleMobileNavMenu = (event?: Event) => {
 
   isMobileNavMenuOpen.value = !isMobileNavMenuOpen.value;
 };
+
+// Ensure clicking outside properly closes the menu
+const closeMobileNavMenu = () => {
+  if (!isMenuRecentlyOpened.value) {
+    isMobileNavMenuOpen.value = false;
+  }
+};
 </script>
 
 <template >
@@ -254,7 +261,7 @@ const toggleMobileNavMenu = (event?: Event) => {
           </div>
         </div>
         <!-- Mobile menu, show/hide based on menu state. -->
-        <div   v-click-outside="() => { if (!isMenuRecentlyOpened) isMobileNavMenuOpen = false }"  v-if="isMobileNavMenuOpen" class="sm:hidden" id="mobile-menu">
+        <div   v-click-outside="closeMobileNavMenu"  v-if="isMobileNavMenuOpen" class="sm:hidden" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
             <NuxtLink @click="toggleMobileNavMenu" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-white" aria-current="page">Home</NuxtLink>
             <NuxtLink @click="toggleMobileNavMenu" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
