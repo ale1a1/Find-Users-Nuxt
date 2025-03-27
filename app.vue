@@ -193,7 +193,7 @@ const toggleMobileNavMenu = (event?: Event) => {
   <div  v-if="isAuthChecked" class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="currentUser">
-      <nav class="z-20 bg-amber-400/60 border-b-2 border-gray-400/80">
+      <nav class="z-20 bg-[#b5811a] border-b-2 border-gray-30/80">
         <div class="px-2 sm:px-6 lg:px-8">
           <div class="relative flex h-12 items-center justify-between">
             <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -215,9 +215,9 @@ const toggleMobileNavMenu = (event?: Event) => {
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
-                  <NuxtLink to="/" class="rounded-md px-3 py-2 text-sm font-medium" aria-current="page" :class="route.path === '/' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'">Home</NuxtLink>
-                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium" :class="route.path === '/users-list' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'">Users list</NuxtLink>
-                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium" :class="route.path === '/favourites' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'">Favorites</NuxtLink>
+                  <NuxtLink to="/" class="rounded-md px-3 py-2 text-sm font-medium text-white" aria-current="page" :class="route.path === '/' ? 'bg-gray-900' : 'hover:underline hover:text-gray-800 hover:font-bold'">Home</NuxtLink>
+                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium text-white" :class="route.path === '/users-list' ? 'bg-gray-900' : 'hover:underline hover:text-gray-800 hover:font-bold'">Users list</NuxtLink>
+                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium text-white" :class="route.path === '/favourites' ? 'bg-gray-900' : 'hover:underline hover:text-gray-800 hover:font-bold'">Favorites</NuxtLink>
                 </div>
               </div>
             </div>
@@ -234,7 +234,7 @@ const toggleMobileNavMenu = (event?: Event) => {
               <!-- Profile dropdown -->
               <div class="relative ml-3">
                 <div>
-                  <button @click="toggleProfileMenu" type="button" class="relative flex rounded-full bg-gray-800 border border-neutral-800 text-sm focus:ring focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                  <button @click="toggleProfileMenu" type="button" class="relative flex rounded-full bg-gray-800 border border-neutral-800 text-sm cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
                     <template v-if="!userData?.profilePictureUrl || !userVisibleDetails?.profilePictureUrl">
@@ -243,10 +243,11 @@ const toggleMobileNavMenu = (event?: Event) => {
                     <img v-else class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" alt="">
                   </button>
                 </div>        
-                <div v-if="isProfileMenuOpen" v-click-outside="toggleProfileMenu" class="bg-amber-400/60 border-2 border-gray-400/80  border-t-2  border-t-amber-500/10 absolute right-0 z-10 mt-2 w-30 origin-top-right rounded-md py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                  <NuxtLink @click="toggleProfileMenu" to="/profile" class="block px-4 py-2 text-sm text-gray-200 hover:underline hover:text-gray-800 hover:font-bold" role="menuitem" tabindex="-1" id="user-menu-item-0">Profile</NuxtLink>
+                <div v-if="isProfileMenuOpen" v-click-outside="toggleProfileMenu" class=" bg-[#b5811a] border-1 border-black border-t-0 absolute right-0 z-10 mt-2 w-30 origin-top-right rounded-md py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+
+                  <NuxtLink @click="toggleProfileMenu" to="/profile" class="block px-4 py-2 text-sm text-white hover:underline hover:text-gray-800 hover:font-bold" role="menuitem" tabindex="-1" id="user-menu-item-0">Profile</NuxtLink>
                   <!-- <NuxtLink to="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</NuxtLink> -->
-                  <NuxtLink  @click="() => { logout(); toggleProfileMenu(); }" class="block px-4 py-2 text-sm text-gray-200 cursor-pointer hover:underline hover:text-gray-800 hover:font-bold" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
+                  <NuxtLink  @click="() => { logout(); toggleProfileMenu(); }" class="block px-4 py-2 text-sm text-white cursor-pointer hover:underline hover:text-gray-800 hover:font-bold" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</NuxtLink>
                 </div>
               </div>
             </div>
@@ -255,9 +256,9 @@ const toggleMobileNavMenu = (event?: Event) => {
         <!-- Mobile menu, show/hide based on menu state. -->
         <div   v-click-outside="() => { if (!isMenuRecentlyOpened) isMobileNavMenuOpen = false }"  v-if="isMobileNavMenuOpen" class="sm:hidden" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
-            <NuxtLink @click="toggleMobileNavMenu" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300" aria-current="page">Home</NuxtLink>
-            <NuxtLink @click="toggleMobileNavMenu" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
-            <NuxtLink @click="toggleMobileNavMenu" to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Favourites</NuxtLink>
+            <NuxtLink @click="toggleMobileNavMenu" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-white" aria-current="page">Home</NuxtLink>
+            <NuxtLink @click="toggleMobileNavMenu" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
+            <NuxtLink @click="toggleMobileNavMenu" to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">Favourites</NuxtLink>
           </div>
         </div>
       </nav>  
