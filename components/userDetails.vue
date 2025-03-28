@@ -58,6 +58,8 @@ const selectedCountryFlag = ref('');
 const isLoadingCountries = ref(false);
 const countryFetchError = ref<string | null>(null);
 
+const isProfilePicChanged = ref(false);
+
 const isDropdownOpen = ref(false);
 
 const error = ref(false);
@@ -145,7 +147,7 @@ const fetchFormData = async () => {
 const submitForm = async () => { 
   isSubmitting.value = true;
   formTouched.value = false
-  if (!fileName.value) {
+  if (!fileName.value || !isProfilePicChanged.value) {
     saveFormData(form)
   } else {
     uploadToImgur()   
@@ -155,9 +157,9 @@ const submitForm = async () => {
 const saveFormData = async (userProfileDetails: any) => {
   if (!user) {
     console.error("User not logged in!");
+    // isSubmitting.value = false;
+    // formTouched.value = true
     return;
-    isSubmitting.value = false;
-    formTouched.value = true
   }
   try {
     const db = $db as Firestore;
@@ -200,6 +202,7 @@ const saveFormData = async (userProfileDetails: any) => {
 const handleFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0] || null;
+  isProfilePicChanged.value = true;
   if (file && !file.type.startsWith("image/")) {
     toast.error("Only image files are allowed!", { position: "top-right" });
     return;
@@ -231,6 +234,8 @@ const uploadToImgur = async () => {
           pauseOnHover: false
       });
       console.error("Invalid profile picture file.");
+      isSubmitting.value = false;
+      formTouched.value = true
       return;
     }
     const formData = new FormData();
