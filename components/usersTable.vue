@@ -259,7 +259,7 @@ const hideToolTip = (event: Event) => {
       <NuxtLink to="/profile" class="text-amber-400 underline text-sm md:text-base">UPDATE YOUR PROFILE</NuxtLink>
     </div>
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px]">
+    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px] table-wrapper">
       <div class="mt-6">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
