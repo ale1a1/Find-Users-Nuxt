@@ -157,7 +157,7 @@ const hideToolTip = (event: Event) => {
     </div>
  
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px]">
+    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px] table-wrapper">
       <div class="overflow-x-auto mt-6">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
@@ -331,6 +331,28 @@ const hideToolTip = (event: Event) => {
 /**************************/
 
 @media (max-width: 59em) {
+  .table-wrapper {
+    overflow-x: scroll !important; /* Ensure the horizontal scrollbar is always visible */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: rgba(255, 165, 0, 0.7) rgba(0, 0, 0, 0.1); /* For Firefox */
+  }
+  /* Make the scrollbar thicker */
+  .table-wrapper::-webkit-scrollbar {
+    height: 12px; /* Adjust this value to make the scrollbar thicker */
+  }
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 165, 0, 0.7); /* Customize thumb color */
+    border-radius: 10px;
+  }
+  .table-wrapper::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1); /* Optional track styling */
+  }
+  /* Ensure the scrollbar remains visible at all times */
+  .table-wrapper {
+    overflow-x: scroll !important; /* Forces scroll always */
+    -webkit-overflow-scrolling: auto; /* Prevents the scrollbar from disappearing */
+  }
   .td-container {
     position: relative; 
   }
