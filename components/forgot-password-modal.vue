@@ -92,10 +92,16 @@ const closeModal = () => {
         <!-- Register Button -->
         <div>
           <button v-if="!emailSent"  :disabled="apiCall" type="submit" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 font-bold  text-neutral-950 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
-            {{ apiCall ? 'Sending email...' : 'Send email' }}
+            <svg v-if="apiCall" class="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+            </svg>
+            <span>
+              {{ apiCall ? 'Sending email...' : 'Send email' }}
+            </span>
           </button>
-          <button v-else type="submit" :disabled="emailSent" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 font-bold text-white shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
-            Email sent
+          <button v-else type="submit" :disabled="emailSent" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 font-bold text-gray-200 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
+            Reset password email sent
           </button>
         </div>
       </form>
