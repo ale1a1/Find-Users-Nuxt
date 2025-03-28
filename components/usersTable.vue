@@ -254,9 +254,9 @@ const hideToolTip = (event: Event) => {
       <p class="p-5 text-2xl font-semibold bg-neutral-900/10"  >Something went wrong while retrieving the users list, try again later.</p>
     </div>
 
-    <div v-if="!users.some(user => user.email === auth.currentUser?.email) && props.users.length" class="text-gray-300 mt-4">
-      TO BE VISIBLE ON THE LIST YOU NEED TO 
-      <NuxtLink to="/profile" class="text-amber-400 underline">UPDATE YOUR PROFILE</NuxtLink>
+    <div v-if="!users.some(user => user.email === auth.currentUser?.email) && props.users.length" class="flex flex-col md:flex-row md:gap-2 text-gray-300 mt-4 px-8 text-center">
+      <span class="text-sm md:text-base">TO BE VISIBLE ON THE LIST YOU NEED TO</span>
+      <NuxtLink to="/profile" class="text-amber-400 underline text-sm md:text-base">UPDATE YOUR PROFILE</NuxtLink>
     </div>
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
     <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px]">
