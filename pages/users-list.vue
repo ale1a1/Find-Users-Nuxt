@@ -71,11 +71,25 @@ const fetchAllUsers = async () => {
     const db = getFirestore();
     const usersCollection = collection(db, "UsersProfileDetails");
     const querySnapshot = await getDocs(usersCollection);
-    const fetchedUsers: UserDetails[] = []; 
+    const fetchedUsers: any = []; 
     querySnapshot.forEach((doc) => {
       fetchedUsers.push({ id: doc.id, ...doc.data() } as UserDetails); 
     });   
-    users.value = [...fetchedUsers, ...hardCodedusers];
+    // Map fetched users to match the structure of hardcoded users
+    users.value = fetchedUsers.map((user: any) => {
+      const countryMatch = countries.value.find(
+        (c) => c.name.toLowerCase() === user.country.toLowerCase()
+      );
+      return {
+        name: user.name,
+        profession: user.profession,
+        country: user.country,
+        email: user.email,
+        profilePicture: user.profilePictureUrl,
+        openedToWork: user.openedToWork,  // Map 'openToWork' to 'openedToWork'
+      };
+    });
+    users.value = [...users.value, ...hardCodedusers];
     // Now map the users to include country flags
     users.value = users.value.map((user) => {
       const countryMatch = countries.value.find(
