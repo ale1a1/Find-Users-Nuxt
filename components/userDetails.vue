@@ -469,9 +469,15 @@ onMounted(() => {
           <button
             type="submit"
             :disabled="!isFormValid || isSubmitting || isSubmitted || !formTouched"
-            class="w-full bg-amber-400/90 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40 cursor-pointer"
+            class="flex justify-center w-full bg-amber-400/90 px-3 py-1.5 text-sm font-bold text-neutral-900 rounded-md shadow hover:bg-amber-400/80 disabled:cursor-not-allowed disabled:bg-amber-400/40 cursor-pointer"
           >
-            {{ isSubmitting ? 'Saving...' : 'Save' }}
+            <svg v-if="isSubmitting" class="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+            </svg>
+            <span>
+              {{ isSubmitting ? 'Saving...' : 'Save' }}
+            </span>
           </button>
           <button
             type="button"
