@@ -100,7 +100,7 @@ const closeModal = () => {
               {{ apiCall ? 'Sending email...' : 'Send email' }}
             </span>
           </button>
-          <button v-else type="submit" :disabled="emailSent" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 font-bold text-gray-200 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
+          <button v-else type="submit" :disabled="emailSent" class="flex w-full justify-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 font-bold  text-neutral-950 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
             Reset password email sent
           </button>
         </div>
