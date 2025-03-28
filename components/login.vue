@@ -219,4 +219,11 @@ input.autofill {
   color: #d1d5db !important;
   -webkit-text-fill-color: #d1d5db !important;
 }
+input::selection {
+  background-color: rgba(255, 140, 0, 0.8); /* Selection background color */
+  color: #d1d5db; /* Selection text color */
+}
+input {
+  caret-color:rgba(251, 190, 36, 0.918); 
+}
 </style>

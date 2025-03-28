@@ -512,6 +512,9 @@ input.autofill {
   color: #d1d5db !important;
   -webkit-text-fill-color: #d1d5db !important;
 }
+input {
+  caret-color:rgba(251, 190, 36, 0.918); 
+}
 /* Open to work check box */
 .custom-checkbox {
   position: relative;
