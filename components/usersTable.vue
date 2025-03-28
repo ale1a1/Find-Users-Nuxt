@@ -433,6 +433,9 @@ const hideToolTip = (event: Event) => {
 /**************************/
 
 @media (max-width: 59em) {
+  .table-wrapper {
+    overflow-x: scroll !important; /* Always show horizontal scrollbar */
+  }
   .td-container {
     position: relative; 
   }
