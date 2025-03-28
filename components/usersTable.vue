@@ -119,7 +119,13 @@ const toggleFavorite = (user: UserDetails) => {
     console.error("User not logged in!");
     return;
   }
-  if (isTogglingFavorite.value) return;
+  if (user.email === auth.currentUser?.email) {
+    console.error("Cannot favourite yourself");
+    return;
+  }
+  if (isTogglingFavorite.value) {
+    return
+  }
   isTogglingFavorite.value = true;  // Start toggling state
   // Toggle the local favorite state for UI purposes
   const newFavoriteStatus = !user.isFavorite;
@@ -214,7 +220,7 @@ const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: Use
   }
 };
 
-const toggleTooltip = (event: MouseEvent) => {
+const toggleTooltip = (event: MouseEvent) => {  
   const target = event.currentTarget as HTMLElement;
   const tooltip = target.querySelector('.tooltip') as HTMLElement;
   if (tooltip) {
@@ -357,10 +363,9 @@ const hideToolTip = (event: Event) => {
                   <span class="text-green-500" v-if="user.openedToWork">✔</span>
                   <span v-else class="text-xs cursor-default">❌</span>
                 </td>
-                <td class="p-3 text-center w-[10%]">
+                <td class="p-3 text-center w-[10%] td-container">
                   <button
-                    @click="toggleFavorite(user)"
-                    :disabled="user.email === auth.currentUser?.email || isTogglingFavorite"
+                    @click="(event) => { toggleFavorite(user); toggleTooltip(event); }"                  
                     class="text-2xl transition-colors"
                     :class="{
                       'text-yellow-400': user.isFavorite, 
@@ -371,8 +376,9 @@ const hideToolTip = (event: Event) => {
                     :title="user.email === auth.currentUser?.email ? 'Cannot favorite yourself' : (user.isFavorite ? 'Remove from Favorites' : 'Add to Favorites')"
                   >
                     ★
+                    <span v-if="user.email === auth.currentUser?.email" class="tooltip" >Can't favorite yourself</span>
                   </button>
-                </td>
+                </td>           
               </tr>
             </tbody>
           </table>
