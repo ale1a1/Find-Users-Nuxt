@@ -355,7 +355,7 @@ const hideToolTip = (event: Event) => {
                 </td>
                 <td class="p-3 text-center cursor-default">
                   <span class="text-green-500" v-if="user.openedToWork">✔</span>
-                  <span v-else class="text-sm cursor-default">❌</span>
+                  <span v-else class="text-xs cursor-default">❌</span>
                 </td>
                 <td class="p-3 text-center w-[10%]">
                   <button
