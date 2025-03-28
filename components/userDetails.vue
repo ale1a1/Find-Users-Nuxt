@@ -57,6 +57,7 @@ const selectedCountryName = ref('');
 const selectedCountryFlag = ref('');
 const isLoadingCountries = ref(false);
 const countryFetchError = ref<string | null>(null);
+const defaultCountrySelection = ref(true);
 
 const isProfilePicChanged = ref(false);
 
@@ -328,12 +329,14 @@ const toggleCountriesDropdown = () => {
 };
 
 const selectCountry = (country: any) => {
+  if (!defaultCountrySelection.value) isDropdownOpen.value = !isDropdownOpen.value;
   selectedCountryName.value = country.name;
   selectedCountryFlag.value = country.flag;
   form.country = country.name
   formTouched.value = true
   isOpen.value = false;
   searchQuery.value = '';
+  defaultCountrySelection.value = false
 };
 
 watch(isLoadingCountries, (newValue) => {
