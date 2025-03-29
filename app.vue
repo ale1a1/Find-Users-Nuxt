@@ -192,9 +192,10 @@ watchEffect(() => {
                 </svg>
               </div>
             </div>
-            <div class="flex flex-1 gap-24 items-center justify-center sm:items-stretch sm:justify-start">
-              <div class="flex shrink-0 items-center cursor-default">
-                <p class="text-white text-lg">Find Users App</p>
+            <div class="flex flex-1 gap-30 items-center justify-center sm:items-stretch sm:justify-start">
+              <div class="flex gap-1.5 shrink-0 items-center cursor-default">
+                <img alt="app icon" src="/public/favicon.ico" class="w-6 h-6">
+                <p class="text-gray-900 text-lg">Find Users App</p>
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
