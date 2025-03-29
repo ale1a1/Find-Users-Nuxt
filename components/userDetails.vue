@@ -288,14 +288,14 @@ const uploadToImgur = async () => {
 
 const inputError = computed(() => {
   const errors: Record<string, string> = {};
-  if (form.name.length > 20) {
-    errors.username = `Username must be at most 20 characters.`;  }
+  if (form.name.length > 30) {
+    errors.name = `Username must be at most 30 characters.`;  }
   if (form.profession.length > 20) {
-    errors.job = `Job title must be at most 20 characters.`;
+    errors.profession = `Job title must be at most 30 characters.`;
   }
-  if (form.email.length > 20) {
-    errors.email = `Email must be at most 20 characters.`;
-  }
+  // if (form.email.length > 20) {
+  //   errors.email = `Email must be at most 30 characters.`;
+  // }
   return errors;
 });
 
@@ -372,11 +372,12 @@ onMounted(() => {
               :id="key"
               required
               :disabled="key === 'email' || isSubmitting"
-              :class="{'focus:outline-red-500/80': error}"
+              :class="{'focus:outline-red-500/80 outline-red-500/80': inputError[key]}"
               class="disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-gray-400 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6"
               @input="formTouched = true"
+              @blur="formTouched = true"
             />
-            <p v-if="inputError[key]" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
+            <p v-if="inputError" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
           </div>
           <!-- Country  -->
           <div class="relative inline-block w-full">
@@ -500,6 +501,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.absolute {
+  position: absolute;
+  z-index: 100; /* Ensure it's on top of other elements */
+}
 input:-webkit-autofill {
   background-color: rgba(16, 16, 16, 0.1) !important;
   color: #d1d5db !important;

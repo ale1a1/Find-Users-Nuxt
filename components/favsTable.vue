@@ -153,7 +153,7 @@ const hideToolTip = (event: Event) => {
 
     <!-- Show this message if users list is empty -->
     <div v-if="!props.users.length" class="text-gray-300 mt-12">
-      <p class="p-20 lg:p-5 text-2xl font-semibold bg-neutral-900/10">You don't have any favorites. Explore the user list and mark your favorites to see them here!</p>
+      <p class="p-20 lg:p-5 text-2xl font-semibold bg-neutral-900/10">You don't have any favorites. Explore the users list and mark your favorites to see them here!</p>
     </div>
  
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
