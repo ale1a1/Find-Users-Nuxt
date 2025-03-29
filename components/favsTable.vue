@@ -292,8 +292,8 @@ const hideToolTip = (event: Event) => {
         :disabled="currentPage === 1"
         :class="{'cursor-pointer': currentPage !== 1,
                 'cursor-default': currentPage === 1,
-                'border border-2 border-amber-400/90' : currentPage !== 1,
-                'border border-2 border-amber-400/60' : currentPage === 1,
+                'border-2 border-amber-400/90' : currentPage !== 1,
+                'border-2 border-amber-400/60' : currentPage === 1,
                 'hover:bg-gray-700 hover:text-white' : currentPage !== 1   
                 }"
         class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out"
@@ -309,8 +309,8 @@ const hideToolTip = (event: Event) => {
         :disabled="currentPage === totalPages"
         :class="{'cursor-pointer': currentPage !== totalPages, 
                   'cursor-default': currentPage === totalPages, 
-                  'border border-2 border-amber-400/90' : currentPage !== totalPages,
-                  'border border-2 border-amber-400/60' : currentPage === totalPages,
+                  'border-2 border-amber-400/90' : currentPage !== totalPages,
+                  'border-2 border-amber-400/60' : currentPage === totalPages,
                   'hover:bg-gray-700 hover:text-white' : currentPage !== totalPages                  
                   }"
         class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out "

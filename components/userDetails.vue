@@ -308,12 +308,12 @@ const fetchCountries = async () => {
       throw new Error('Failed to fetch countries');
     }   
     const data = await response.json();
-    countries.value = data.map(country => ({
+    countries.value = data.map((country: { name: { common: any; }; alpha3Code: any; flags: { svg: any; }; }) => ({
       name: country.name.common,
       alpha3Code: country.alpha3Code,
       flag: country.flags.svg
     }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a:any, b:any) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error('Error fetching countries:', error);
     countryFetchError.value = 'Something went wrong while retrieving the country list.';
@@ -340,7 +340,7 @@ const selectCountry = (country: any) => {
 };
 
 watch(isLoadingCountries, (newValue) => {
-  console.log('Loading state changed:', newValue);
+  // console.log('Loading state changed:', newValue);
 });
 
 const searchQuery = ref(''); 

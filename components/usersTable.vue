@@ -5,7 +5,7 @@ import { getAuth } from 'firebase/auth';
 import { collection, addDoc, getFirestore, getDocs, deleteDoc, doc, query, where } from "firebase/firestore";
 import { toast } from 'vue3-toastify';
 
-const props = defineProps<{ users: UserDetails[] }>();
+const props = defineProps<{ users: any[] }>();
 
 const db = getFirestore();
 
@@ -20,7 +20,18 @@ interface UserDetails {
   isFavorite?: boolean;
 }
 
-const favorites = ref<UserDetails[]>([]);
+const favorites = ref<Array<{
+  country: string;
+  name: string;
+  profilePicture: string | null;
+  favoritedBy: string;
+  isFavorite: boolean;
+  flag: string;
+  openedToWork: boolean;
+  email: string;
+  createdAt: string;
+  profession: string;
+}>>([]);
 
 const auth = getAuth(); 
 const user = auth.currentUser; 
@@ -54,8 +65,21 @@ const fetchFavorites = async (loggedInUserId: string) => {
   const q = query(favRef, where('favoritedBy', '==', loggedInUserId));  // Get favorites for the logged-in user
   try {
     const querySnapshot = await getDocs(q);
-    const userFavorites = querySnapshot.docs.map(doc => doc.data());
-    favorites.value = userFavorites;
+    favorites.value = querySnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      country: data.country || "",
+      name: data.name || "",
+      profilePicture: data.profilePicture || null,
+      favoritedBy: data.favoritedBy || "",
+      isFavorite: data.isFavorite || false,
+      flag: data.flag || "",
+      openedToWork: data.openedToWork || false,
+      email: data.email || "",
+      createdAt: data.createdAt || "",
+      profession: data.profession || "",
+    };
+  });
   } catch (error) {
     toast.error('Error fetching favorites.', {
       position: 'top-right',
@@ -394,8 +418,8 @@ const hideToolTip = (event: Event) => {
         :disabled="currentPage === 1"
         :class="{'cursor-pointer': currentPage !== 1,
                 'cursor-default': currentPage === 1,
-                'border border-2 border-amber-400/90' : currentPage !== 1,
-                'border border-2 border-amber-400/60' : currentPage === 1,
+                'border-2 border-amber-400/90' : currentPage !== 1,
+                'border-2 border-amber-400/60' : currentPage === 1,
                 'hover:bg-gray-700 hover:text-white' : currentPage !== 1   
                 }"
         class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out"
@@ -411,8 +435,8 @@ const hideToolTip = (event: Event) => {
         :disabled="currentPage === totalPages"
         :class="{'cursor-pointer': currentPage !== totalPages, 
                   'cursor-default': currentPage === totalPages, 
-                  'border border-2 border-amber-400/90' : currentPage !== totalPages,
-                  'border border-2 border-amber-400/60' : currentPage === totalPages,
+                  'border-2 border-amber-400/90' : currentPage !== totalPages,
+                  'border-2 border-amber-400/60' : currentPage === totalPages,
                   'hover:bg-gray-700 hover:text-white' : currentPage !== totalPages                  
                   }"
         class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out "

@@ -136,7 +136,7 @@ const closeMobileNavMenu = () => {
 }
 
 watch(() => userStore.token, (token) => {
-  console.log("Token value changed:", token);
+  // console.log("Token value changed:", token);
   onAuthStateChanged(auth, (user) => {
     const token = sessionStorage.getItem('find-users-Token') ? sessionStorage.getItem('find-users-Token') : userStore.token;
     if (user?.emailVerified && token) {
@@ -192,7 +192,7 @@ watchEffect(() => {
                 </svg>
               </div>
             </div>
-            <div class="flex flex-1 gap-30 items-center justify-center sm:items-stretch sm:justify-start">
+            <div class="flex flex-1 gap-24 md:gap-30 items-center justify-center sm:items-stretch sm:justify-start">
               <div class="flex gap-1.5 shrink-0 items-center cursor-default">
                 <img alt="app icon" src="/public/favicon.ico" class="w-6 h-6">
                 <p class="text-gray-900 text-lg">Find Users App</p>

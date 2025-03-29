@@ -4,13 +4,14 @@ import { getAuth } from "firebase/auth";
 import { toast } from 'vue3-toastify';
 
 interface UserDetails {
-  id: string; 
+  id?: string; 
   name: string;
   profession: string;
   country: string;
   email: string;
-  profilePicture: string;
-  openToWork: boolean;
+  profilePicture?: string;
+  openToWork?: boolean;
+  flag?: string;
 }
 
 interface Country {

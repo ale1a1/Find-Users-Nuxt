@@ -34,8 +34,21 @@ const fetchFavorites = async (loggedInUserId: string) => {
   const q = query(favRef, where('favoritedBy', '==', loggedInUserId)); 
   try {
     const querySnapshot = await getDocs(q);
-    const userFavorites = querySnapshot.docs.map(doc => doc.data());
-    favorites.value = userFavorites;
+    favorites.value = querySnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      country: data.country || "",
+      name: data.name || "",
+      profilePicture: data.profilePicture || null,
+      favoritedBy: data.favoritedBy || "",
+      isFavorite: data.isFavorite || false,
+      flag: data.flag || "",
+      openedToWork: data.openedToWork || false,
+      email: data.email || "",
+      createdAt: data.createdAt || "",
+      profession: data.profession || "",
+    };
+  });
   } catch (error) {
     toast.error('Error fetching favorites.', {
       position: 'top-right',

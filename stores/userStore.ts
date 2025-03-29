@@ -54,7 +54,7 @@ export const useUserStore = defineStore('userStore', {
       this.token = null;
       sessionStorage.removeItem('find-users-Token'); 
     },
-    setCurrentUser(user: User) {
+    setCurrentUser(user: User | any) {
       this.currentUser = user;
     },
     setVisibleDetails(visibleDetails: VisibleDetails) {
