@@ -373,9 +373,10 @@ onMounted(() => {
               required
               :disabled="key === 'email' || isSubmitting"
               :class="{'focus:outline-red-500/80 outline-red-500/80': inputError[key]}"
-              class="disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-gray-400 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6"
+              class="truncate disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-gray-400 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6"
               @input="formTouched = true"
               @blur="formTouched = true"
+              :title="key === 'email' && form[key].length > 30 ? form[key] : ''"
             />
             <p v-if="inputError" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
           </div>
@@ -503,7 +504,7 @@ onMounted(() => {
 <style scoped>
 .absolute {
   position: absolute;
-  z-index: 100; /* Ensure it's on top of other elements */
+  z-index: 100; 
 }
 input:-webkit-autofill {
   background-color: rgba(16, 16, 16, 0.1) !important;
