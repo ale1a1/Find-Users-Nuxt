@@ -40,6 +40,13 @@ const showPassword = ref(false);
 const isLogging = ref(false);
 const apiCall = ref(false);
 
+const testEmail = "ale1a184@gmail.com";
+const testPassword = "Test123";
+
+const testCredentialsMatch = computed(() => {
+  return email.value === testEmail && password.value === testPassword;
+});
+
 const modals = reactive({
   registerModalOpen: false,
   forgotPasswordModalOpen: false
@@ -135,6 +142,11 @@ const login = async () => {
 function isFirebaseError(error: unknown): error is { code: string } {
   return typeof error === "object" && error !== null && "code" in error;
 }
+
+const fillTestCredentials = () => {
+  email.value = "ale1a184@gmail.com";
+  password.value = "Test123";
+};
 </script>
 
 
@@ -184,18 +196,30 @@ function isFirebaseError(error: unknown): error is { code: string } {
           </div>
           <!-- Submit Button -->
           <div>
-            <button type="submit" :disabled="isLogging" class="flex w-full justify-center font-bold items-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 text-neutral-950 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
-              <svg v-if="apiCall" class="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
-              </svg>
-              <span>{{ apiCall ? 'Signing in...' : 'Sign in' }}</span>
+            <button 
+              type="submit" 
+              :disabled="isLogging" 
+              :class="!testCredentialsMatch ? 'text-amber-400/90' : 'padding-5 animate-[pulse_0.8s_ease-in-out_infinite] text-amber-400/90 drop-shadow-[0_0_10px_rgba(255,191,36,0.95)]'"
+              class="flex w-full justify-center font-bold items-center rounded-md mt-8 bg-amber-400/90 px-3 py-1.5 text-sm/6 text-neutral-950 shadow-xs hover:bg-amber-400/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:bg-amber-400/40 disabled:hover:bg-amber-400/40">
+                <svg v-if="apiCall" class="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+                </svg>
+                <span>{{ apiCall ? 'Signing in...' : 'Sign in' }}</span>
             </button>
           </div>
         </form>
         <p v-if="!redirectFrom" class="flex flex-col mt-10 text-center text-sm/6">
           Not register yet?
-          <a @click="openModal('registerModal')" class="font-semibold text-amber-400 hover:text-amber-400/80 cursor-pointer">Click here to create your profile</a>
+          <a @click="openModal('registerModal')" class="font-semibold text-amber-400 hover:text-amber-400/90 cursor-pointer">Click here to create your profile</a>
+          or 
+          <a 
+            @click="fillTestCredentials" 
+            :class="testCredentialsMatch ? 'text-amber-400/90' : 'padding-5 animate-[pulse_0.8s_ease-in-out_infinite] text-amber-400/90 drop-shadow-[0_0_10px_rgba(255,191,36,0.95)]'"
+            class="font-semibold cursor-pointer"
+            >
+              use test credentials
+          </a>
         </p>
       </div>
     </div>
