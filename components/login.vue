@@ -152,7 +152,7 @@ const fillTestCredentials = () => {
 
 <template>
 
-  <div v-if="!modals.registerModalOpen && !modals.forgotPasswordModalOpen" class="flex min-h-screen flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
+  <div v-if="!modals.registerModalOpen && !modals.forgotPasswordModalOpen" class="flex h-[90vh] flex-col w-full items-center justify-center px-6 py-12 lg:px-8">
     <!-- Verification message -->
     <div v-if="verificationMessage" class="sm:mx-auto sm:w-full sm:max-w-sm">
       <div class="flex items-center mb-4 p-4 bg-green-50 border border-green-200 rounded-lg shadow-md">
