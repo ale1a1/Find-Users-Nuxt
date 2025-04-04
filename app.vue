@@ -96,32 +96,37 @@ const getProfileData = async (user: any) => {
 };
 
 const logout = async () => {
+  currentUser.value = null;
+  userStore.clearToken()
+  userStore.clearCurrentUser()
+  sessionStorage.removeItem("find-users-Token")   
+  loginRedirectStore.setRedirectFrom(null)
   try {
     await signOut(auth); 
-    setTimeout(() => { 
-      userStore.clearToken()
-      userStore.clearCurrentUser()
-      sessionStorage.removeItem("find-users-Token")   
-      currentUser.value = null; 
-    }, 2000);   
-    loginRedirectStore.setRedirectFrom(null)
-    toast.success('Logging out...', {
-      position: 'top-right',
-      autoClose: 1000,       
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true
-    })
+    // setTimeout(() => { 
+    //   userStore.clearToken()
+    //   userStore.clearCurrentUser()
+    //   sessionStorage.removeItem("find-users-Token")   
+    //   currentUser.value = null; 
+    // }, 2000);   
+    // loginRedirectStore.setRedirectFrom(null)
+    // toast.success('Logging out...', {
+    //   position: 'top-right',
+    //   autoClose: 1000,       
+    //   hideProgressBar: false,
+    //   closeOnClick: false,
+    //   pauseOnHover: true
+    // })
   } catch (error) {
     const toastErrorMessage = "Logout Error: " + error
     console.error(toastErrorMessage);
-    toast.error(toastErrorMessage, {
-      position: 'top-right',
-      autoClose: 7000,       
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false
-    })
+    // toast.error(toastErrorMessage, {
+    //   position: 'top-right',
+    //   autoClose: 7000,       
+    //   hideProgressBar: true,
+    //   closeOnClick: false,
+    //   pauseOnHover: false
+    // })
   }
 };
 
