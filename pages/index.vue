@@ -23,7 +23,7 @@ onMounted(() => {
           mb-[5vh] 2xl:mb-16 mt-[3vh] 2xl:mt-16
           text-white tracking-widest uppercase relative 
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
-          FIND USERS APP
+          FIND USERS APP TEST
         </h1>
         <p class="text-2xl md:text-3xl 2xltext-5xl font-semibold text-center text-gray-200/90 mb-[4vh] md:mb-[5vh] 2xl:mb-20 mt-[4vh] md:mt-[5vh] px-6 sm:px-20 md:px-50 lg:px-0 sm:leading-normal">A handy app to find users and get in touch with them</p>  
         <!-- <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 sm:gap-16 md:gap-20 lg:gap-0">    -->
