@@ -19,13 +19,13 @@ onMounted(() => {
 
     <div v-if="showContent" class="flex-grow flex items-center justify-center">
       <div class="w-auto p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">    
-        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-center 
-          mb-[5vh] lg:mb-16 mt-[3vh] lg:mt-16
+        <h1 class="text-4xl md:text-5xl 2xl:text-7xl font-bold text-center 
+          mb-[5vh] 2xl:mb-16 mt-[3vh] 2xl:mt-16
           text-white tracking-widest uppercase relative 
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
           FIND USERS APP
         </h1>
-        <p class="text-2xl md:text-3xl lg:text-5xl font-semibold text-center text-gray-200/90 mb-[4vh] md:mb-[5vh] lg:mb-20 mt-[4vh] md:mt-[5vh] px-6 sm:px-20 md:px-50 lg:px-0 sm:leading-normal">A handy app to find users and get in touch with them</p>  
+        <p class="text-2xl md:text-3xl 2xltext-5xl font-semibold text-center text-gray-200/90 mb-[4vh] md:mb-[5vh] 2xl:mb-20 mt-[4vh] md:mt-[5vh] px-6 sm:px-20 md:px-50 lg:px-0 sm:leading-normal">A handy app to find users and get in touch with them</p>  
         <!-- <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 sm:gap-16 md:gap-20 lg:gap-0">    -->
         <ul class="grid grid-cols-2 justify-items-end mt-10 gap-10 sm:gap-16 md:gap-20 lg:gap-0 lg:gap-x-14"> 
           <!-- <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20"> -->

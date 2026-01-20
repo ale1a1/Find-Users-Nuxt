@@ -283,8 +283,8 @@ const hideToolTip = (event: Event) => {
       <NuxtLink to="/profile" class="text-amber-400 underline text-sm md:text-base">UPDATE YOUR PROFILE</NuxtLink>
     </div>
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px] table-wrapper">
-      <div class="mt-6">
+    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] xl:w-[95vw] 2xl:w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
+      <div class="mt-4">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
           <table class="w-full bg-neutral-900 rounded-lg table-fixed">
@@ -411,7 +411,7 @@ const hideToolTip = (event: Event) => {
     </div>
 
     <!-- Pagination Controls -->
-    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 xl:mt-6 mb-8 cursor-default">
+    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
