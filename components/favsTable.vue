@@ -159,7 +159,7 @@ const hideToolTip = (event: Event) => {
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
     <!-- <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px] table-wrapper"> -->
       <!-- <div class="overflow-x-auto mt-6"> -->
-    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] xl:w-[95vw] 2xl:w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
+    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] 2xl:w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
       <div class="mt-4">    
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <!-- Table without min-height so it won't stretch on small pages -->
