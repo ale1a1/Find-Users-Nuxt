@@ -151,7 +151,7 @@ const submitForm = async () => {
   if (!fileName.value || !isProfilePicChanged.value) {
     saveFormData(form)
   } else {
-    uploadToImgur()   
+    uploadToCloudinary()   
   }    
 };
 
@@ -225,65 +225,118 @@ const clearProfilePicture = () => {
   }
 };
 
-const uploadToImgur = async () => {  
-    if (!form.profilePicture || !(form.profilePicture instanceof File)) {
-      toast.error('Please select a valid image file.', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: false
-      });
-      console.error("Invalid profile picture file.");
+// const uploadToImgur = async () => {  
+//     if (!form.profilePicture || !(form.profilePicture instanceof File)) {
+//       toast.error('Please select a valid image file.', {
+//           position: 'top-right',
+//           autoClose: 5000,
+//           hideProgressBar: true,
+//           closeOnClick: false,
+//           pauseOnHover: false
+//       });
+//       console.error("Invalid profile picture file.");
+//       isSubmitting.value = false;
+//       formTouched.value = true
+//       return;
+//     }
+//     const formData = new FormData();
+//     formData.append("image", form.profilePicture);
+//     const clientId = "56f415c0bdf60ec"; 
+//     try {
+//       const response = await fetch("https://api.imgur.com/3/image", {
+//           method: "POST",
+//           headers: {
+//               "Authorization": `Client-ID ${clientId}`
+//           },
+//           body: formData
+//       });
+//       const data = await response.json();
+//       if (!response.ok) {
+//         console.error('Imgur error:', response.status, data);
+//       }
+//       if (data.success) {    
+//         form.profilePictureUrl = data.data.link; 
+//         saveFormData(form)
+//       } else {
+//         toast.error('Error uploading profile picture.', {
+//           position: 'top-right',
+//           autoClose: 5000,
+//           hideProgressBar: true,
+//           closeOnClick: false,
+//           pauseOnHover: false
+//         })
+//         isSubmitting.value = false;
+//         setTimeout(() => {
+//           formTouched.value = true
+//           isFormEmpty.value = false;
+//         }, 5000)       
+//         console.error("Error uploading profile picture.");
+//       }
+//     } catch (error) {
+//         toast.error('Error uploading profile picture.', {
+//         position: 'top-right',
+//         autoClose: 5000,
+//         hideProgressBar: true,
+//         closeOnClick: false,
+//         pauseOnHover: false
+//       })
+//       isSubmitting.value = false;
+//       setTimeout(() => {
+//           formTouched.value = true
+//           isFormEmpty.value = false;
+//         }, 5000)  
+//       console.error("Error uploading profile picture:", error);
+//     }
+// };
+
+
+const uploadToCloudinary = async () => {
+  if (!form.profilePicture || !(form.profilePicture instanceof File)) {
+    toast.error('Please select a valid image file.');
+    console.error("Invalid file");
+    isSubmitting.value = false;
+    formTouched.value = true;
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", form.profilePicture);
+  formData.append("upload_preset", "profile_upload");
+
+  try {
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/dnuoy3ij0/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Cloudinary error:", data);
+
+      toast.error('Error uploading profile picture.');
+
       isSubmitting.value = false;
-      formTouched.value = true
+      formTouched.value = true;
+
       return;
     }
-    const formData = new FormData();
-    formData.append("image", form.profilePicture);
-    const clientId = "56f415c0bdf60ec"; 
-    try {
-      const response = await fetch("https://api.imgur.com/3/image", {
-          method: "POST",
-          headers: {
-              "Authorization": `Client-ID ${clientId}`
-          },
-          body: formData
-      });
-      const data = await response.json();
-      if (data.success) {    
-        form.profilePictureUrl = data.data.link; 
-        saveFormData(form)
-      } else {
-        toast.error('Error uploading profile picture.', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: false
-        })
-        isSubmitting.value = false;
-        setTimeout(() => {
-          formTouched.value = true
-          isFormEmpty.value = false;
-        }, 5000)       
-        console.error("Error uploading profile picture.");
-      }
-    } catch (error) {
-        toast.error('Error uploading profile picture.', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: false
-      })
-      isSubmitting.value = false;
-      setTimeout(() => {
-          formTouched.value = true
-          isFormEmpty.value = false;
-        }, 5000)  
-      console.error("Error uploading profile picture:", error);
-    }
+
+    form.profilePictureUrl = data.secure_url;
+
+    return saveFormData(form);
+
+  } catch (error) {
+    console.error("Upload error:", error);
+
+    toast.error('Error uploading profile picture.');
+
+    isSubmitting.value = false;
+    formTouched.value = true;
+  }
 };
 
 const inputError = computed(() => {
@@ -303,8 +356,10 @@ const fetchCountries = async () => {
   isLoadingCountries.value = true;
   countryFetchError.value = null;
   try {
-    const response = await fetch('https://restcountries.com/v3.1/all');
+    const response = await fetch('https://restcountries.com/v3.1/all?fields=name,cca3,flags');
     if (!response.ok) {
+        const errorText = await response.text(); // 👈 add this
+  console.error('API error:', response.status, errorText);
       throw new Error('Failed to fetch countries');
     }   
     const data = await response.json();
