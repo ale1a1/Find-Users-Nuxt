@@ -212,7 +212,7 @@ watchEffect(() => {
             </div>
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <!--
-              <button type="button" class="cursor-pointer relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+              <button type="button" class="cursor-pointer relative rounded-full bg-gray-900 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">View notifications</span>
                 <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
@@ -223,7 +223,7 @@ watchEffect(() => {
               <!-- Profile dropdown -->
               <div class="relative ml-3">
                 <div>
-                  <button @click="toggleProfileMenu" type="button" class="relative flex rounded-full bg-gray-800 border border-neutral-800 text-sm cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                  <button @click="toggleProfileMenu" type="button" class="relative flex rounded-full bg-gray-900 border border-neutral-800 text-sm cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
                     <template v-if="!userData?.profilePictureUrl || !userVisibleDetails?.profilePictureUrl">
@@ -245,9 +245,9 @@ watchEffect(() => {
         <!-- Mobile menu, show/hide based on menu state. -->
         <div v-click-outside="closeMobileNavMenu" v-if="isMobileNavMenuOpen" class="sm:hidden" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
-            <NuxtLink @click="isMobileNavMenuOpen = false" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-white" aria-current="page">Home</NuxtLink>
-            <NuxtLink @click="isMobileNavMenuOpen = false" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">Users list</NuxtLink>
-            <NuxtLink @click="isMobileNavMenuOpen = false" to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">Favorites</NuxtLink>
+            <NuxtLink @click="isMobileNavMenuOpen = false" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/' ? 'bg-gray-900' : 'hover:bg-gray-700 hover:text-white'" aria-current="page">Home</NuxtLink>
+            <NuxtLink @click="isMobileNavMenuOpen = false" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/users-list' ? 'bg-gray-900' : 'hover:bg-gray-700 hover:text-white'">Users list</NuxtLink>
+            <NuxtLink @click="isMobileNavMenuOpen = false" to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/favourites' ? 'bg-gray-900' : 'hover:bg-gray-700 hover:text-white'">Favorites</NuxtLink>
           </div>
         </div>
       </nav>  

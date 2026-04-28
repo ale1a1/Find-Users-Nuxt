@@ -18,65 +18,61 @@ onMounted(() => {
   <div class="flex flex-col w-full text-white">  
 
     <div v-if="showContent" class="flex-grow flex items-center justify-center">
-      <div class="w-auto p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">    
-        <h1 class="text-4xl 2xl:text-7xl font-bold text-center 
-          mb-[5vh] 2xl:mb-16 mt-[3vh] xl:mt-[1.5vh] 2xl:mt-16
-          text-white tracking-widest uppercase relative 
+      <div class="w-auto px-5 py-6 sm:p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">
+        <h1 class="text-3xl sm:text-4xl 2xl:text-7xl font-bold text-center
+          mb-[4vh] 2xl:mb-16 mt-[2vh] xl:mt-[1.5vh] 2xl:mt-16
+          text-white tracking-widest uppercase relative
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
           FIND USERS APP
         </h1>
-        <p class="text-2xl 2xltext-5xl font-semibold text-center text-gray-200/90 mb-[4vh] md:mb-[4vh] 2xl:mb-20 mt-[4vh] md:mt-[4vh] px-6 sm:px-20 md:px-50 lg:px-0 sm:leading-normal">A handy app to find users and get in touch with them</p>  
-        <!-- <ul class="grid grid-cols-2 list-none mt-10 lg:space-x-24 gap-8 sm:gap-16 md:gap-20 lg:gap-0">    -->
-        <ul class="grid grid-cols-2 justify-items-end mt-10 gap-10 sm:gap-16 md:gap-20 lg:gap-0 lg:gap-x-14"> 
-          <!-- <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20"> -->
-          <li class="justify-self-start w-fit flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">  
+        <p class="text-lg sm:text-xl md:text-2xl 2xl:text-5xl font-semibold text-center text-gray-200/90 mb-[3vh] md:mb-[4vh] 2xl:mb-20 mt-[3vh] md:mt-[4vh] px-2 sm:px-12 md:px-50 lg:px-0 leading-snug sm:leading-normal">A handy app to find users and get in touch with them</p>
+        <ul class="grid grid-cols-2 mt-6 sm:mt-10 gap-6 sm:gap-16 md:gap-20 lg:gap-0 lg:gap-x-14">
+          <li class="flex flex-col lg:flex-row items-center gap-3 lg:gap-4 mb-[2vh] lg:mb-20 lg:justify-self-start">
             <NuxtLink to="/profile" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-              <User class="size-8" />
+              <User class="size-7 sm:size-8" />
             </NuxtLink>
-            <div class="flex flex-col lg:flex-row items-center gap-3">
-              <p v-if="!profile" class="text-lg md:text-xl lg:text-2xl">manage your</p>
-              <p v-else class="text-lg md:text-xl lg:text-2xl">update your</p>
-              <NuxtLink to="/profile" class="text-amber-400/90 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
-               PROFILE
+            <div class="flex flex-col lg:flex-row items-center gap-2 lg:gap-3">
+              <p v-if="!profile" class="text-base sm:text-lg md:text-xl lg:text-2xl">manage your</p>
+              <p v-else class="text-base sm:text-lg md:text-xl lg:text-2xl">update your</p>
+              <NuxtLink to="/profile" class="text-amber-400/90 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+                PROFILE
               </NuxtLink>
             </div>
-          </li> 
-          <!-- <li class="ml-auto flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20"> -->
-          <li class="justify-self-end w-fit flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+          </li>
+          <li class="flex flex-col lg:flex-row items-center gap-3 lg:gap-4 mb-[2vh] lg:mb-20 lg:justify-self-end">
             <NuxtLink to="/users-list" class="text-amber-400 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-              <Search class="size-8" />
+              <Search class="size-7 sm:size-8" />
             </NuxtLink>
-            <div class="flex flex-col lg:flex-row items-center gap-3">
-              <p class="text-lg md:text-xl lg:text-2xl">check the</p>
-              <NuxtLink to="/users-list" class="text-amber-400/90 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
+            <div class="flex flex-col lg:flex-row items-center gap-2 lg:gap-3">
+              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">check the</p>
+              <NuxtLink to="/users-list" class="text-amber-400/90 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
                 USERS LIST
               </NuxtLink>
             </div>
           </li>
-          <li class="flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+          <li class="flex flex-col lg:flex-row items-center gap-3 lg:gap-4 mb-[2vh] lg:mb-20 lg:justify-self-start">
             <NuxtLink to="/users-list" class="text-amber-400/90 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-              <FileText class="size-8" />
+              <FileText class="size-7 sm:size-8" />
             </NuxtLink>
-            <div class="flex flex-col lg:flex-row items-center gap-3">
-              <p class="text-lg md:text-xl lg:text-2xl">retrieve</p>
-              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
+            <div class="flex flex-col lg:flex-row items-center gap-2 lg:gap-3">
+              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">retrieve</p>
+              <NuxtLink to="/users-list" class="text-amber-400 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
                 INFORMATION
               </NuxtLink>
             </div>
-          </li>      
-          <!-- <li class="ml-auto flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20"> -->
-          <li class="justify-self-end w-fit flex flex-col lg:flex-row items-center gap-4 mb-[3vh] lg:mb-20">
+          </li>
+          <li class="flex flex-col lg:flex-row items-center gap-3 lg:gap-4 mb-[2vh] lg:mb-20 lg:justify-self-end">
             <NuxtLink to="/favourites" class="text-amber-400/90 transition-transform duration-300 hover:scale-150 hover:opacity-70">
-              <Save class="size-8" />
+              <Save class="size-7 sm:size-8" />
             </NuxtLink>
-            <div class="flex flex-col lg:flex-row items-center gap-3">
-              <p class="text-lg md:text-xl lg:text-2xl">save your</p>
-              <NuxtLink to="/favourites" class="text-amber-400 font-bold hover:opacity-70 text-xl md:text-2xl lg:text-3xl">
-                FAVORITES 
+            <div class="flex flex-col lg:flex-row items-center gap-2 lg:gap-3">
+              <p class="text-base sm:text-lg md:text-xl lg:text-2xl">save your</p>
+              <NuxtLink to="/favourites" class="text-amber-400 font-bold hover:opacity-70 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+                FAVORITES
               </NuxtLink>
             </div>
-          </li>     
-        </ul>  
+          </li>
+        </ul>
       </div>
     </div>  
     <template v-else>
