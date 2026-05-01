@@ -286,32 +286,32 @@ const hideToolTip = (event: Event) => {
     <div v-if="props.users.length" class="sm:mx-auto w-full max-w-[97.5vw] 2xl:max-w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
       <div class="mt-4">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
-          <table class="w-full bg-neutral-900 rounded-lg table-auto">
+          <table class="w-full bg-neutral-900 rounded-lg table-fixed">
             <thead>
               <tr class="text-gray-300 text-xl">
                 <th class="px-2 py-4 text-left w-[60px] border-b-2 border-amber-400/40"></th>
-                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" title="Sort">
+                <th class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
                   <span v-if="sortColumn === 'name'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
+                <th class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
                   <span v-if="sortColumn === 'profession'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" title="Sort">
+                <th class="px-2 py-4 text-left w-[16%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
                   <span v-if="sortColumn === 'country'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" title="Sort">
+                <th class="px-2 py-4 text-left w-[22%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
                   <span v-if="sortColumn === 'email'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
