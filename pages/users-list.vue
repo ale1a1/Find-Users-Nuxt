@@ -121,9 +121,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="showContent" class="flex flex-col w-full gap-2 2xl:gap-16 mb-8">
-    <div class="flex justify-center mt-12">
-      <h1 class="text-gray-200 text-4xl font-bold">USERS LIST</h1>
+  <div v-if="showContent" class="flex flex-col w-full mb-8">
+    <div class="flex justify-center mt-6 mb-2">
+      <h1 class="text-gray-200 text-2xl font-bold">USERS LIST</h1>
     </div>
     <UsersTable :users="users"/>
   </div>

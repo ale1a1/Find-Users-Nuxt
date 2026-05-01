@@ -159,43 +159,42 @@ const hideToolTip = (event: Event) => {
     <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
     <!-- <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px] table-wrapper"> -->
       <!-- <div class="overflow-x-auto mt-6"> -->
-    <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] 2xl:w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
-      <div class="mt-4">    
+    <div v-if="props.users.length" class="sm:mx-auto w-full max-w-[97.5vw] 2xl:max-w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
+      <div class="mt-4">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
-          <!-- Table without min-height so it won't stretch on small pages -->
-          <table class="w-full bg-neutral-900 rounded-lg table-fixed">
+          <table class="w-full bg-neutral-900 rounded-lg table-auto">
             <thead>
-              <tr class="text-gray-300 text-xl"> 
-                <th class="px-2 py-4 text-left w-[75px] border-b-2 border-amber-400/40"></th> 
-                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" title="Sort">
+              <tr class="text-gray-300 text-xl">
+                <th class="px-2 py-4 text-left w-[60px] border-b-2 border-amber-400/40"></th>
+                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" title="Sort">
                   Name
                   <span v-if="sortColumn === 'name'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
+                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
                   Profession
                   <span v-if="sortColumn === 'profession'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" title="Sort">
+                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" title="Sort">
                   Country
                   <span v-if="sortColumn === 'country'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[175px] xl:w-[275px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" title="Sort">
+                <th class="px-2 py-4 text-left cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" title="Sort">
                   Email
                   <span v-if="sortColumn === 'email'">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[175px] xl:w-[200px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
+                <th class="px-2 py-4 text-center w-[130px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
                     <span v-if="sortColumn === 'openedToWork'">
@@ -204,7 +203,7 @@ const hideToolTip = (event: Event) => {
                     </span>
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[125px] xl:w-[150px] border-b-2 border-amber-400/40">Favorite</th>
+                <th class="px-2 py-4 text-center w-[90px] border-b-2 border-amber-400/40">Favorite</th>
               </tr>
             </thead>
             <tbody>
@@ -288,7 +287,7 @@ const hideToolTip = (event: Event) => {
 
     <!-- Pagination Controls -->
     <!-- <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 xl:mt-6 mb-8 cursor-default"> -->
-    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 mb-8 cursor-default">
+    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-4 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
