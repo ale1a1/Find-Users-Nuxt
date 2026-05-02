@@ -286,7 +286,7 @@ const hideToolTip = (event: Event) => {
     <div v-if="props.users.length" class="sm:mx-auto w-full max-w-[97.5vw] 2xl:max-w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
       <div class="mt-4">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
-          <table class="w-full bg-neutral-900 rounded-lg table-fixed">
+          <table class="w-full min-w-[700px] bg-neutral-900 rounded-lg table-fixed">
             <thead>
               <tr class="text-gray-300 text-xl">
                 <th class="px-2 py-4 text-left w-[60px] border-b-2 border-amber-400/40"></th>
