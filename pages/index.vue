@@ -19,7 +19,7 @@ onMounted(() => {
 
     <div v-if="showContent" class="flex-grow flex items-center justify-center">
       <div class="w-auto px-5 py-6 sm:p-8 flex flex-col items-center justify-center rounded-lg backdrop-blur-[6px]">
-        <h1 class="text-xl sm:text-2xl 2xl:text-7xl font-bold text-center
+        <h1 class="text-3xl sm:text-4xl 2xl:text-7xl font-bold text-center
           mt-[5vh] mb-[4vh] 2xl:mb-16
           text-white tracking-widest uppercase relative
           animate-pulse before:absolute before:-inset-1 before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:blur-sm before:opacity-40 before:-z-10">
