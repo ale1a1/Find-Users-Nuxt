@@ -71,8 +71,9 @@ const handleUpdateFavorites = (email: string) => {
 <template>
   <!-- <div v-if="showContent" class="flex flex-col w-full gap-6 lg:gap-16 mb-8"> -->
   <div v-if="showContent" class="flex flex-col w-full mb-8">
-    <div class="flex justify-center mt-6 mb-2">
-      <h1 class="text-gray-200 text-2xl font-bold">FAVORITES</h1>
+    <div class="flex flex-col items-center mt-8 mb-2 gap-2">
+      <h1 class="text-white text-2xl sm:text-3xl font-bold tracking-widest uppercase">Favorites</h1>
+      <div class="w-12 h-[2px] bg-amber-400/70 rounded-full"></div>
     </div>
     <FavsTable :users="favorites" @updateFavorites="handleUpdateFavorites"/>
   </div>

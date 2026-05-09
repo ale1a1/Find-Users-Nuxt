@@ -169,7 +169,10 @@ watchEffect(() => {
 
 <template >
 
-  <div  v-if="isAuthChecked" class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
+  <div v-if="isAuthChecked" class="min-h-screen flex flex-col relative">
+    <!-- Blurred background — always present, independent of content loading -->
+    <div class="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }"></div>
+    <div class="fixed inset-0 -z-10 backdrop-blur-[6px]"></div>
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="currentUser">
       <nav class="relative z-20 bg-[#b5811a] border-b-2 border-gray-30/80">
@@ -195,9 +198,9 @@ watchEffect(() => {
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
-                  <NuxtLink to="/" class="rounded-md px-3 py-2 text-sm font-medium text-white" aria-current="page" :class="route.path === '/' ? 'bg-gray-900' : 'hover:underline hover:text-gray-800 hover:font-bold'">Home</NuxtLink>
-                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium text-white" :class="route.path === '/users-list' ? 'bg-gray-900' : 'hover:underline hover:text-gray-800 hover:font-bold'">Users list</NuxtLink>
-                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium text-white" :class="route.path === '/favourites' ? 'bg-gray-900' : 'hover:underline hover:text-gray-800 hover:font-bold'">Favorites</NuxtLink>
+                  <NuxtLink to="/" class="rounded-md px-3 py-2 text-sm font-medium text-white" aria-current="page" :class="route.path === '/' ? 'bg-black/90' : 'hover:underline hover:text-gray-800 hover:font-bold'">Home</NuxtLink>
+                  <NuxtLink to="/users-list" class="rounded-md px-3 py-2 text-sm font-medium text-white" :class="route.path === '/users-list' ? 'bg-black/90' : 'hover:underline hover:text-gray-800 hover:font-bold'">Users list</NuxtLink>
+                  <NuxtLink to="/favourites" class="rounded-md px-3 py-2 text-sm font-medium text-white" :class="route.path === '/favourites' ? 'bg-black/90' : 'hover:underline hover:text-gray-800 hover:font-bold'">Favorites</NuxtLink>
                 </div>
               </div>
             </div>
@@ -234,12 +237,16 @@ watchEffect(() => {
           </div>
         </div>
       </nav>
+        <!-- Mobile menu backdrop -->
+        <Transition name="fade">
+          <div v-if="isMobileNavMenuOpen" class="sm:hidden fixed inset-0 top-12 z-20 bg-black/40 backdrop-blur-sm" @click="closeMobileNavMenu"></div>
+        </Transition>
         <!-- Mobile menu — absolutely positioned so it overlaps page content -->
         <div v-click-outside="closeMobileNavMenu" v-if="isMobileNavMenuOpen" class="sm:hidden absolute top-12 left-0 right-0 z-30 bg-[#b5811a] border-b-2 border-gray-300/30 shadow-lg" id="mobile-menu">
           <div class="space-y-1 px-2 pt-2 pb-3">
-            <NuxtLink @click="isMobileNavMenuOpen = false" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/' ? 'bg-gray-900' : 'hover:bg-gray-700 hover:text-white'">Home</NuxtLink>
-            <NuxtLink @click="isMobileNavMenuOpen = false" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/users-list' ? 'bg-gray-900' : 'hover:bg-gray-700 hover:text-white'">Users list</NuxtLink>
-            <NuxtLink @click="isMobileNavMenuOpen = false" to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/favourites' ? 'bg-gray-900' : 'hover:bg-gray-700 hover:text-white'">Favorites</NuxtLink>
+            <NuxtLink @click="isMobileNavMenuOpen = false" to="/" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/' ? 'bg-black/90' : 'hover:bg-gray-700 hover:text-white'">Home</NuxtLink>
+            <NuxtLink @click="isMobileNavMenuOpen = false" to="/users-list" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/users-list' ? 'bg-black/90' : 'hover:bg-gray-700 hover:text-white'">Users list</NuxtLink>
+            <NuxtLink @click="isMobileNavMenuOpen = false" to="/favourites" class="block rounded-md px-3 py-2 text-base font-medium text-white" :class="route.path === '/favourites' ? 'bg-black/90' : 'hover:bg-gray-700 hover:text-white'">Favorites</NuxtLink>
           </div>
         </div>  
     </template>
@@ -267,3 +274,14 @@ watchEffect(() => {
   </template>
 
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

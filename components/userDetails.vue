@@ -413,36 +413,36 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="!isLoading" class="flex flex-col items-center justify-center px-6 py-12 lg:px-8 mb-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-2xl shadow-lg border-2 border-amber-400/50 rounded-lg p-8 bg-neutral-900 text-gray-100">
+  <div v-if="!isLoading" class="flex flex-col items-center justify-center px-6 py-8 lg:px-8 mb-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-2xl shadow-2xl border border-amber-400/30 rounded-xl p-8 bg-neutral-900/90 backdrop-blur-sm text-gray-100">
       <form @submit.prevent="submitForm" class="space-y-8">
         <!--------------------- Form Fields ---------------------->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-10">
           <!-- Username, job and email -->
           <div v-for="(label, key) in { name: 'Name', profession: 'Profession', email: 'Email' }" :key="key" class="relative">
-            <label :for="key" class="block font-medium">{{ label }}</label>
+            <label :for="key" class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">{{ label }}</label>
             <input
               v-model="form[key]"
               :type="key === 'email' ? 'email' : 'text'"
               :id="key"
               required
               :disabled="key === 'email' || isSubmitting"
-              :class="{'focus:outline-red-500/80 outline-red-500/80': inputError[key]}"
-              class="truncate disabled:cursor-not-allowed block w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline-1 -outline-offset-1 outline-amber-400/50 placeholder:text-gray-400 focus:outline-gray-400 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6"
+              :class="{'outline-red-500/80': inputError[key]}"
+              class="truncate disabled:cursor-not-allowed block w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30 transition-colors"
               @input="formTouched = true"
               @blur="formTouched = true"
               :title="key === 'email' && form[key].length > 30 ? form[key] : ''"
             />
-            <p v-if="inputError" class="absolute text-red-500 text-sm mt-1 left-0">{{ inputError[key] }}</p>
+            <p v-if="inputError" class="absolute text-red-400 text-xs mt-1 left-0">{{ inputError[key] }}</p>
           </div>
           <!-- Country  -->
           <div class="relative inline-block w-full">
-            <label class="block font-medium">Country</label>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Country</label>
             <button
               @click.prevent="toggleCountriesDropdown"
               :disabled="isSubmitting"
-              class="disabled:cursor-not-allowed w-full mt-2 rounded-md bg-gray-400/10 px-3 py-1.5 text-base text-gray-300 outline  placeholder:text-gray-400 flex justify-between items-center cursor-pointer"
-              :class="isDropdownOpen ? 'outline-gray-400 outline-2' : 'outline-amber-400/50'"
+              class="disabled:cursor-not-allowed w-full rounded-lg bg-white/5 border px-3 py-2 text-sm text-gray-200 flex justify-between items-center cursor-pointer transition-colors"
+              :class="isDropdownOpen ? 'border-amber-400/60 ring-1 ring-amber-400/30' : 'border-white/10'"
               >
               <span class="flex items-center">
                 <img v-if="selectedCountryFlag" :src="selectedCountryFlag" alt="" class="inline-block w-5 h-5 mr-2" />
@@ -478,9 +478,9 @@ onMounted(() => {
           <!-- Profile Picture -->
           <div class="flex flex-col gap-1">
             <div class="flex items-center space-x-2">
-              <label class="font-medium">Profile Picture <span class="text-xs text-gray-400">(optional)</span> </label>
-              <label class="font-medium">-</label>
-              <label  class="text-amber-400 hover:text-amber-400/80 text-sm cursor-pointer italic">
+              <label class="text-xs font-semibold uppercase tracking-wider text-gray-400">Profile Picture <span class="text-gray-500 normal-case">(optional)</span></label>
+              <label class="text-gray-500">—</label>
+              <label class="text-amber-400 hover:text-amber-400/80 text-xs cursor-pointer italic">
                 choose file
                 <input
                   ref="fileInput"
@@ -506,7 +506,7 @@ onMounted(() => {
             </div>
           </div>
           <!-- Opened to work checkbox -->
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-3">
             <input
               v-model="form.openedToWork"
               type="checkbox"
@@ -518,7 +518,7 @@ onMounted(() => {
             <label for="openedToWork" class="custom-checkbox">
               <span class="checkmark"></span>
             </label>
-            <span>Opened to work</span>
+            <span class="text-sm text-gray-300">Open to work</span>
           </div>
         </div>
         <!--------------------- Save and Cancek buttons ---------------------->
@@ -540,7 +540,7 @@ onMounted(() => {
             type="button"
             @click="resetForm"
             :disabled="isFormEmpty || isSubmitting"
-            class="w-full bg-red-500/90 text-neutral-900 px-3 py-1.5 text-sm font-bold rounded-md shadow hover:bg-red-500/80 disabled:cursor-not-allowed disabled:bg-red-500/40  disabled:text-neutral-900 cursor-pointer"
+            class="w-full bg-red-500/90 text-neutral-900 border border-transparent px-3 py-1.5 text-sm font-bold rounded-md shadow hover:text-white hover:border-white disabled:cursor-not-allowed disabled:bg-red-500/40 disabled:text-neutral-900 cursor-pointer transition-all"
           >
             Clear
           </button>

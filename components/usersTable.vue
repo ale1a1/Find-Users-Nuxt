@@ -305,10 +305,11 @@ const hideToolTip = (event: Event) => {
 <template>
   <div class="flex flex-col w-full items-center justify-start">
 
-    <!-- Show this message if users list is empty -->
+    <!-- Fetch error -->
     <div v-if="!props.users.length" class="text-gray-300 mt-12">
-      <p class="p-5 text-2xl font-semibold bg-neutral-900/10"  >Something went wrong while retrieving the users list, try again later.</p>
+      <p class="p-5 text-2xl font-semibold bg-neutral-900/10">Something went wrong while retrieving the users list, try again later.</p>
     </div>
+
 
     <div v-if="!users.some(user => user.email === auth.currentUser?.email) && props.users.length" class="flex flex-col md:flex-row md:gap-2 text-gray-300 mt-4 px-8 text-center">
       <span class="text-sm md:text-base">TO BE VISIBLE ON THE LIST YOU NEED TO</span>
@@ -399,40 +400,40 @@ const hideToolTip = (event: Event) => {
     <!-- Desktop/tablet: full table -->
     <div v-if="props.users.length" class="hidden sm:block sm:mx-auto w-full max-w-[97.5vw] 2xl:max-w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
       <div class="mt-4">
-        <div class="border-2 border-amber-400/50 rounded-lg shadow-lg overflow-x-auto">
-          <table class="w-full min-w-[700px] bg-neutral-900 rounded-lg table-fixed">
+        <div class="border border-amber-400/30 rounded-xl shadow-2xl overflow-x-auto backdrop-blur-sm">
+          <table class="w-full min-w-[700px] bg-neutral-900/90 rounded-xl table-fixed">
             <thead>
-              <tr class="text-gray-300 text-xl">
-                <th scope="col" class="px-2 py-4 text-left w-[60px] border-b-2 border-amber-400/40"></th>
-                <th scope="col" class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" :aria-sort="sortColumn === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
+              <tr class="text-gray-400 text-sm uppercase tracking-wider">
+                <th scope="col" class="px-2 py-4 text-left w-[60px] border-b border-amber-400/20"></th>
+                <th scope="col" class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b border-amber-400/20" @click="setSortColumn('name')" :aria-sort="sortColumn === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Name
                   <span v-if="sortColumn === 'name'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th scope="col" class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" :aria-sort="sortColumn === 'profession' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
+                <th scope="col" class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b border-amber-400/20" @click="setSortColumn('profession')" :aria-sort="sortColumn === 'profession' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Profession
                   <span v-if="sortColumn === 'profession'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th scope="col" class="px-2 py-4 text-left w-[16%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" :aria-sort="sortColumn === 'country' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
+                <th scope="col" class="px-2 py-4 text-left w-[16%] cursor-pointer relative group border-b border-amber-400/20" @click="setSortColumn('country')" :aria-sort="sortColumn === 'country' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Country
                   <span v-if="sortColumn === 'country'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th scope="col" class="px-2 py-4 text-left w-[22%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" :aria-sort="sortColumn === 'email' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
+                <th scope="col" class="px-2 py-4 text-left w-[22%] cursor-pointer relative group border-b border-amber-400/20" @click="setSortColumn('email')" :aria-sort="sortColumn === 'email' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Email
                   <span v-if="sortColumn === 'email'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th scope="col" class="px-2 py-4 text-center w-[130px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('openedToWork')" :aria-sort="sortColumn === 'openedToWork' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
+                <th scope="col" class="px-2 py-4 text-center w-[130px] cursor-pointer relative group border-b border-amber-400/20" @click="setSortColumn('openedToWork')" :aria-sort="sortColumn === 'openedToWork' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
                     <span v-if="sortColumn === 'openedToWork'" aria-hidden="true">
@@ -441,14 +442,26 @@ const hideToolTip = (event: Event) => {
                     </span>
                   </span>
                 </th>
-                <th scope="col" class="px-2 py-4 text-center w-[90px] border-b-2 border-amber-400/40">Favorite</th>
+                <th scope="col" class="px-2 py-4 text-center w-[90px] border-b border-amber-400/20">Favorite</th>
               </tr>
             </thead>
             <tbody>
-              <tr 
+              <tr v-if="!sortedUsers.length">
+                <td colspan="7" class="py-16 text-center">
+                  <p class="text-gray-300 text-base font-medium mb-1">No users match your current filters.</p>
+                  <p class="text-gray-500 text-sm mb-4">Try adjusting or removing some filters to broaden your search.</p>
+                  <button
+                    @click="filterProfession = ''; filterCountry = ''; filterOpenToWork = 'all'"
+                    class="bg-neutral-800 text-gray-400 text-xs border border-gray-600 rounded-lg px-3 py-1.5 hover:text-white hover:border-gray-400 transition-colors"
+                  >
+                    Clear all filters
+                  </button>
+                </td>
+              </tr>
+              <tr
                 v-for="user in paginatedUsers" 
                 :key="user.email" 
-                class="border-t border-gray-600" 
+                class="border-t border-white/5 transition-colors duration-150"
                 :class="{
                   'bg-blue-800 text-white cursor-default': user.email === auth.currentUser?.email,
                   'hover:bg-gray-700/50': user.email !== auth.currentUser?.email
@@ -497,7 +510,7 @@ const hideToolTip = (event: Event) => {
                   <span class="tooltip" >{{ user.email }}</span>
                 </td>
                 <td class="p-3 text-center cursor-default">
-                  <span class="text-green-500" v-if="user.openedToWork">✔</span>
+                  <span class="text-green-400 text-lg" v-if="user.openedToWork">✔</span>
                   <span v-else class="text-xs cursor-default">❌</span>
                 </td>
                 <td class="p-3 text-center w-[10%] td-container">
