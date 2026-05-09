@@ -23,6 +23,8 @@ export default defineNuxtConfig({
       firebaseAppId: process.env.NUXT_FIREBASE_APP_ID,
       firebaseMeasurementId: process.env.NUXT_FIREBASE_MEASRAMENT_ID,
       imgurKey: process.env.NUXT_FIREBASE_IMGUR_KEY,
+      cloudinaryCloudName: process.env.NUXT_CLOUDINARY_CLOUD_NAME,
+      cloudinaryUploadPreset: process.env.NUXT_CLOUDINARY_UPLOAD_PRESET,
     }    
   }
 })

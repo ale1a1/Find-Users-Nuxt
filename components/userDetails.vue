@@ -13,7 +13,8 @@ const auth = getAuth();
 const user = auth.currentUser; 
 
 const config = useRuntimeConfig();
-const imgurKey = config.public.imgurKey; 
+const cloudinaryCloudName = config.public.cloudinaryCloudName;
+const cloudinaryUploadPreset = config.public.cloudinaryUploadPreset;
 
 interface UserDetails {
   name: string;
@@ -49,8 +50,7 @@ const isFormEmpty = ref(false);
 const formTouched = ref(false);
 const userStore = useUserStore();
 const fileName = ref('');
-const fileInput = ref<HTMLInputElement | null>(null); 
-const { currentUser } = userStore;
+const fileInput = ref<HTMLInputElement | null>(null);
 const countries = ref<Country[]>([]);
 const isOpen = ref(false);
 const selectedCountryName = ref('');
@@ -62,8 +62,6 @@ const defaultCountrySelection = ref(true);
 const isProfilePicChanged = ref(false);
 
 const isDropdownOpen = ref(false);
-
-const error = ref(false);
 
 const isFormValid = computed(() => {  
   isSubmitted.value = false;
@@ -301,11 +299,11 @@ const uploadToCloudinary = async () => {
 
   const formData = new FormData();
   formData.append("file", form.profilePicture);
-  formData.append("upload_preset", "profile_upload");
+  formData.append("upload_preset", cloudinaryUploadPreset as string);
 
   try {
     const response = await fetch(
-      "https://api.cloudinary.com/v1_1/dnuoy3ij0/image/upload",
+      `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
       {
         method: "POST",
         body: formData,
@@ -394,8 +392,8 @@ const selectCountry = (country: any) => {
   defaultCountrySelection.value = false
 };
 
-watch(isLoadingCountries, (newValue) => {
-  // console.log('Loading state changed:', newValue);
+watch(isLoadingCountries, () => {
+  // console.log('Loading state changed');
 });
 
 const searchQuery = ref(''); 
