@@ -233,7 +233,18 @@ const hideToolTip = (event: Event) => {
           {{ sortOrder === 'asc' ? '↑' : '↓' }}
         </button>
       </div>
-      <ul class="divide-y divide-gray-700 border border-amber-400/40 rounded-lg overflow-hidden">
+      <!-- Mobile no-results -->
+      <div v-if="!sortedUsers.length" class="border border-amber-400/30 rounded-lg bg-neutral-900/90 py-12 text-center">
+        <p class="text-gray-300 text-base font-medium mb-1">No favorites match your current filters.</p>
+        <p class="text-gray-500 text-sm mb-4">Try adjusting or removing some filters.</p>
+        <button
+          @click="filterProfession = ''; filterCountry = ''; filterOpenToWork = 'all'"
+          class="bg-neutral-800 text-gray-400 text-xs border border-gray-600 rounded-lg px-3 py-1.5 hover:text-white hover:border-gray-400 transition-colors"
+        >
+          Clear all filters
+        </button>
+      </div>
+      <ul v-else class="divide-y divide-gray-700 border border-amber-400/40 rounded-lg overflow-hidden">
         <li
           v-for="user in mobilePaginatedUsers"
           :key="user.email"
