@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, getFirestore, getDocs, query, where } from "firebase/firestore";
 import { toast } from 'vue3-toastify';
 
@@ -19,14 +19,16 @@ interface UserDetails {
 }
 
 const favorites = ref<UserDetails[]>([]);
-const auth = getAuth(); 
-const user = auth.currentUser; 
+const auth = getAuth();
 
-onMounted(async () => {  
-  if (user) {
-    await fetchFavorites(user.uid)
-    showContent.value = true  
-  }
+onMounted(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    unsubscribe();
+    if (user) {
+      await fetchFavorites(user.uid);
+    }
+    showContent.value = true;
+  });
 });
 
 const fetchFavorites = async (loggedInUserId: string) => {
@@ -75,8 +77,8 @@ const handleUpdateFavorites = (email: string) => {
     <FavsTable :users="favorites" @updateFavorites="handleUpdateFavorites"/>
   </div>
   <template v-else>
-    <div class="absolute inset-0 flex flex-col items-center justify-center">
-      <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"> </div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center" role="status" aria-live="polite" aria-label="Loading favorites">
+      <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
   </template>
 </template>

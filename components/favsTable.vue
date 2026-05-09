@@ -29,15 +29,27 @@ const currentPage = ref(1);
 const pageSize = 5;
 const totalPages = computed(() => Math.ceil(sortedUsers.value.length / pageSize));
 
-const sortColumn = ref<keyof UserDetails | null>(null);
+const sortColumn = ref<keyof UserDetails | null>('name');
 const sortOrder = ref<'asc' | 'desc'>('asc');
 
 const isRemovingFavorite = ref(false);
+const selectedUser = ref<UserDetails | null>(null);
 
-let currentTooltip: HTMLElement | null = null 
+const filterProfession = ref('');
+const filterCountry = ref('');
+const filterOpenToWork = ref<'all' | 'yes' | 'no'>('all');
+
+const uniqueProfessions = computed(() =>
+  [...new Set(props.users.map(u => u.profession).filter(Boolean))].sort()
+);
+const uniqueCountries = computed(() =>
+  [...new Set(props.users.map(u => u.country).filter(Boolean))].sort()
+);
+
+let currentTooltip: HTMLElement | null = null
 
 onMounted(() => {
-  favAll(props.users);   
+  favAll(props.users);
 });
 
 const favAll = (users: UserDetails[]) => {
@@ -47,7 +59,13 @@ const favAll = (users: UserDetails[]) => {
 };
 
 const sortedUsers = computed(() => {
-  let users = [...props.users];
+  let users = props.users.filter(u => {
+    if (filterProfession.value && u.profession !== filterProfession.value) return false;
+    if (filterCountry.value && u.country !== filterCountry.value) return false;
+    if (filterOpenToWork.value === 'yes' && !u.openedToWork) return false;
+    if (filterOpenToWork.value === 'no' && u.openedToWork) return false;
+    return true;
+  });
   if (!sortColumn.value) return users;
   users.sort((a, b) => {
     let valueA = a[sortColumn.value!];
@@ -72,15 +90,27 @@ const paginatedUsers = computed(() => {
   return sortedUsers.value.slice(start, start + pageSize);
 });
 // 🛠️ Ensure sort order is persistent
-const setSortColumn = (column: keyof UserDetails) => {
-  if (sortColumn.value === column) {
+const setSortColumn = (column: keyof UserDetails | '') => {
+  if (!column) {
+    sortColumn.value = null;
+    sortOrder.value = 'asc';
+  } else if (sortColumn.value === column) {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
   } else {
     sortColumn.value = column;
     sortOrder.value = 'asc';
   }
-  currentPage.value = 1;  // 🔥 Reset to first page on new sort
+  currentPage.value = 1;
+  mobileCurrentPage.value = 1;
 };
+
+const mobileCurrentPage = ref(1);
+const mobilePageSize = 10;
+const mobileTotalPages = computed(() => Math.ceil(sortedUsers.value.length / mobilePageSize));
+const mobilePaginatedUsers = computed(() => {
+  const start = (mobileCurrentPage.value - 1) * mobilePageSize;
+  return sortedUsers.value.slice(start, start + mobilePageSize);
+});
 
 const removeFromFavorites = async (userToUnfavorite: UserDetails) => {
   const loggedInUserId = auth.currentUser?.uid;
@@ -151,59 +181,138 @@ const hideToolTip = (event: Event) => {
 <template>
   <div class="flex flex-col w-full items-center justify-start">
 
-    <!-- Show this message if users list is empty -->
+    <!-- Empty state -->
     <div v-if="!props.users.length" class="text-gray-300 mt-12">
       <p class="p-20 lg:p-5 text-2xl font-semibold bg-neutral-900/10">You don't have any favorites. Explore the users list and mark your favorites to see them here!</p>
     </div>
- 
-    <!-- Table Wrapper with scrollable max height and fixed height for pagination -->
-    <!-- <div v-if="props.users.length" class="sm:mx-auto w-[97.5vw] md:w-[85vw] p-6 text-gray-100 flex-1 min-h-[500px] table-wrapper"> -->
-      <!-- <div class="overflow-x-auto mt-6"> -->
-    <div v-if="props.users.length" class="sm:mx-auto w-full max-w-[97.5vw] 2xl:max-w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
+
+    <!-- Filters (mobile + desktop) -->
+    <div v-if="props.users.length" class="w-full max-w-[97.5vw] 2xl:max-w-[85vw] px-3.5 mt-12 flex flex-wrap gap-2 sm:justify-end">
+      <select
+        v-model="filterProfession"
+        class="bg-neutral-800 text-gray-200 text-xs border border-amber-400/40 rounded-lg pl-2.5 pr-7 py-1.5 focus:outline-none focus:border-amber-400"
+      >
+        <option value="">All Professions</option>
+        <option v-for="p in uniqueProfessions" :key="p" :value="p">{{ p }}</option>
+      </select>
+      <select
+        v-model="filterCountry"
+        class="bg-neutral-800 text-gray-200 text-xs border border-amber-400/40 rounded-lg pl-2.5 pr-7 py-1.5 focus:outline-none focus:border-amber-400"
+      >
+        <option value="">All Countries</option>
+        <option v-for="c in uniqueCountries" :key="c" :value="c">{{ c }}</option>
+      </select>
+      <select
+        v-model="filterOpenToWork"
+        class="bg-neutral-800 text-gray-200 text-xs border border-amber-400/40 rounded-lg pl-2.5 pr-7 py-1.5 focus:outline-none focus:border-amber-400"
+      >
+        <option value="all">Open to Work: All</option>
+        <option value="yes">Open to Work: Yes</option>
+        <option value="no">Open to Work: No</option>
+      </select>
+      <button
+        v-if="filterProfession || filterCountry || filterOpenToWork !== 'all'"
+        @click="filterProfession = ''; filterCountry = ''; filterOpenToWork = 'all'"
+        class="bg-neutral-800 text-gray-400 text-sm border border-gray-600 rounded-lg px-3 py-2 hover:text-white hover:border-gray-400"
+      >
+        Clear filters
+      </button>
+    </div>
+
+    <!-- Mobile: names-only list -->
+    <div v-if="props.users.length" class="sm:hidden w-full px-4 mt-3">
+      <!-- Sort: arrow button only -->
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-gray-400 text-sm">A–Z</span>
+        <button
+          @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; sortColumn = 'name'"
+          class="bg-neutral-800 border border-amber-400/40 rounded-lg px-3 py-2 text-amber-400 text-sm"
+          :title="sortOrder === 'asc' ? 'A→Z' : 'Z→A'"
+        >
+          {{ sortOrder === 'asc' ? '↑' : '↓' }}
+        </button>
+      </div>
+      <ul class="divide-y divide-gray-700 border border-amber-400/40 rounded-lg overflow-hidden">
+        <li
+          v-for="user in mobilePaginatedUsers"
+          :key="user.email"
+          @click="selectedUser = user"
+          class="flex items-center gap-3 px-4 py-3 bg-neutral-900 cursor-pointer hover:bg-gray-700/60 transition-colors"
+        >
+          <img v-if="user.profilePicture" :src="user.profilePicture" alt="Profile" class="w-9 h-9 rounded-full border border-amber-400/60 object-cover shrink-0" />
+          <User v-else class="w-8 h-8 text-amber-400/50 shrink-0" />
+          <span class="text-gray-200 truncate">{{ user.name }}</span>
+          <span class="ml-auto text-yellow-400 text-lg shrink-0">★</span>
+        </li>
+      </ul>
+      <!-- Mobile pagination -->
+      <div v-if="mobileTotalPages > 1" class="flex justify-center items-center gap-4 mt-4 mb-6">
+        <button
+          @click="mobileCurrentPage--"
+          :disabled="mobileCurrentPage === 1"
+          class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 transition-all duration-200"
+          :class="{ 'border-2 border-amber-400/90 hover:bg-gray-700': mobileCurrentPage !== 1, 'border-2 border-amber-400/60': mobileCurrentPage === 1 }"
+        >
+          <ChevronLeft class="w-5 h-5" />
+        </button>
+        <span class="text-gray-300 text-sm">Page {{ mobileCurrentPage }} of {{ mobileTotalPages }}</span>
+        <button
+          @click="mobileCurrentPage++"
+          :disabled="mobileCurrentPage === mobileTotalPages"
+          class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 transition-all duration-200"
+          :class="{ 'border-2 border-amber-400/90 hover:bg-gray-700': mobileCurrentPage !== mobileTotalPages, 'border-2 border-amber-400/60': mobileCurrentPage === mobileTotalPages }"
+        >
+          <ChevronRight class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop/tablet: full table -->
+    <div v-if="props.users.length" class="hidden sm:block sm:mx-auto w-full max-w-[97.5vw] 2xl:max-w-[85vw] p-3.5 text-gray-100 flex-1 min-h-[500px] xl:min-h-[400px] table-wrapper">
       <div class="mt-4">
         <div class="border-2 border-amber-400/50 rounded-lg overflow-x-auto shadow-lg">
           <table class="w-full min-w-[700px] bg-neutral-900 rounded-lg table-fixed">
             <thead>
               <tr class="text-gray-300 text-xl">
-                <th class="px-2 py-4 text-left w-[60px] border-b-2 border-amber-400/40"></th>
-                <th class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" title="Sort">
+                <th scope="col" class="px-2 py-4 text-left w-[60px] border-b-2 border-amber-400/40"></th>
+                <th scope="col" class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('name')" :aria-sort="sortColumn === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Name
-                  <span v-if="sortColumn === 'name'">
+                  <span v-if="sortColumn === 'name'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" title="Sort">
+                <th scope="col" class="px-2 py-4 text-left w-[18%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('profession')" :aria-sort="sortColumn === 'profession' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Profession
-                  <span v-if="sortColumn === 'profession'">
+                  <span v-if="sortColumn === 'profession'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[16%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" title="Sort">
+                <th scope="col" class="px-2 py-4 text-left w-[16%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('country')" :aria-sort="sortColumn === 'country' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Country
-                  <span v-if="sortColumn === 'country'">
+                  <span v-if="sortColumn === 'country'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-left w-[22%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" title="Sort">
+                <th scope="col" class="px-2 py-4 text-left w-[22%] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('email')" :aria-sort="sortColumn === 'email' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   Email
-                  <span v-if="sortColumn === 'email'">
+                  <span v-if="sortColumn === 'email'" aria-hidden="true">
                     <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                     <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[130px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('openedToWork')" title="Sort">
+                <th scope="col" class="px-2 py-4 text-center w-[130px] cursor-pointer relative group border-b-2 border-amber-400/40" @click="setSortColumn('openedToWork')" :aria-sort="sortColumn === 'openedToWork' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'">
                   <span class="flex items-center justify-center gap-1">
                     Open to Work
-                    <span v-if="sortColumn === 'openedToWork'">
+                    <span v-if="sortColumn === 'openedToWork'" aria-hidden="true">
                       <ChevronUp v-if="sortOrder === 'asc'" class="inline-block w-5 h-5 text-amber-400" />
                       <ChevronDown v-if="sortOrder === 'desc'" class="inline-block w-5 h-5 text-amber-400" />
                     </span>
                   </span>
                 </th>
-                <th class="px-2 py-4 text-center w-[90px] border-b-2 border-amber-400/40">Favorite</th>
+                <th scope="col" class="px-2 py-4 text-center w-[90px] border-b-2 border-amber-400/40">Favorite</th>
               </tr>
             </thead>
             <tbody>
@@ -283,11 +392,10 @@ const hideToolTip = (event: Event) => {
           </table>
         </div>
       </div>
-    </div>
+    </div><!-- end desktop table wrapper -->
 
-    <!-- Pagination Controls -->
-    <!-- <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-0 xl:mt-6 mb-8 cursor-default"> -->
-    <div v-if="props.users.length && totalPages > 1" class="flex justify-center items-center gap-4 mt-4 mb-8 cursor-default">
+    <!-- Pagination Controls (desktop only) -->
+    <div v-if="props.users.length && totalPages > 1" class="hidden sm:flex justify-center items-center gap-4 mt-4 mb-8 cursor-default">
       <!-- Previous Button -->
       <button
         @click="currentPage--"
@@ -320,10 +428,73 @@ const hideToolTip = (event: Event) => {
         <ChevronRight class="w-5 h-5" />
       </button>
     </div>
+    <!-- User detail modal -->
+    <Teleport to="body">
+      <div v-if="selectedUser" class="modal-overlay" @click.self="selectedUser = null">
+        <div class="modal-sheet">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-white text-lg font-semibold">User Details</h2>
+            <button @click="selectedUser = null" class="text-gray-400 hover:text-white text-3xl leading-none" aria-label="Close">&times;</button>
+          </div>
+          <!-- Avatar + name -->
+          <div class="flex items-center gap-3 mb-3">
+            <img v-if="selectedUser.profilePicture" :src="selectedUser.profilePicture" alt="Profile" class="w-12 h-12 rounded-full border-2 border-amber-400/70 object-cover shrink-0" />
+            <User v-else class="w-11 h-11 text-amber-400/50 shrink-0" />
+            <div>
+              <p class="text-white font-semibold">{{ selectedUser.name }}</p>
+              <p class="text-gray-400 text-sm">{{ selectedUser.profession }}</p>
+            </div>
+          </div>
+          <!-- Details -->
+          <div class="flex flex-col gap-2 text-sm text-gray-300 mb-4">
+            <div class="flex items-center gap-2">
+              <img v-if="selectedUser.flag" :src="selectedUser.flag" alt="Flag" class="w-6 h-4 shrink-0" />
+              <span>{{ selectedUser.country }}</span>
+            </div>
+            <div class="break-all">{{ selectedUser.email }}</div>
+            <div>
+              Open to work:
+              <span v-if="selectedUser.openedToWork" class="text-green-400 font-semibold">Yes</span>
+              <span v-else class="text-red-400 font-semibold">No</span>
+            </div>
+          </div>
+          <!-- Remove from favourites button -->
+          <button
+            @click="removeFromFavorites(selectedUser!); selectedUser = null"
+            class="w-full py-3 rounded-lg text-base font-semibold transition-colors bg-red-900/40 text-red-300 border border-red-500/40 hover:bg-red-900/60"
+          >
+            ★ Remove from Favorites
+          </button>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-sheet {
+  background: #171717;
+  border: 2px solid rgba(251, 191, 36, 0.4);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 420px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
   .tooltip {
     display: none;
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { toast } from 'vue3-toastify';
 
 interface UserDetails {
@@ -61,57 +61,54 @@ const hardCodedusers = [
   { name: 'Mia Steel', profession: 'Game Developer', country: 'South Korea', email: 'mia@example.com', profilePicture: 'https://randomuser.me/api/portraits/women/7.jpg', openedToWork: true },
 ];
 
-const fetchAllUsers = async () => {
+const fetchAllUsers = (): Promise<void> => new Promise((resolve) => {
   const auth = getAuth();
-  const user = auth.currentUser;
-  if (!user) {
-    console.error("User not logged in!");
-    return;
-  }
-  try {
-    const db = getFirestore();
-    const usersCollection = collection(db, "UsersProfileDetails");
-    const querySnapshot = await getDocs(usersCollection);
-    const fetchedUsers: any = []; 
-    querySnapshot.forEach((doc) => {
-      fetchedUsers.push({ id: doc.id, ...doc.data() } as UserDetails); 
-    });   
-    // Map fetched users to match the structure of hardcoded users
-    users.value = fetchedUsers.map((user: any) => {
-      const countryMatch = countries.value.find(
-        (c) => c.name.toLowerCase() === user.country.toLowerCase()
-      );
-      return {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    unsubscribe();
+    if (!user) {
+      console.error("User not logged in!");
+      resolve();
+      return;
+    }
+    try {
+      const db = getFirestore();
+      const usersCollection = collection(db, "UsersProfileDetails");
+      const querySnapshot = await getDocs(usersCollection);
+      const fetchedUsers: any = [];
+      querySnapshot.forEach((doc) => {
+        fetchedUsers.push({ id: doc.id, ...doc.data() } as UserDetails);
+      });
+      users.value = fetchedUsers.map((user: any) => ({
         name: user.name,
         profession: user.profession,
         country: user.country,
         email: user.email,
         profilePicture: user.profilePictureUrl,
-        openedToWork: user.openedToWork,  // Map 'openToWork' to 'openedToWork'
-      };
-    });
-    users.value = [...users.value, ...hardCodedusers];
-    // Now map the users to include country flags
-    users.value = users.value.map((user) => {
-      const countryMatch = countries.value.find(
-        (c) => c.name.toLowerCase() === user.country.toLowerCase()
-      );
-      return {
-        ...user,
-        flag: countryMatch?.flag || "", // Add flag if country is found, else leave empty string
-      };
-    });
-  } catch (error) {
-    toast.error('Error fetching all users.', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false
-    })
-    console.error("Error fetching all users:", error);
-  }
-};
+        openedToWork: user.openedToWork,
+      }));
+      users.value = [...users.value, ...hardCodedusers];
+      users.value = users.value.map((user) => {
+        const countryMatch = countries.value.find(
+          (c) => c.name.toLowerCase() === user.country.toLowerCase()
+        );
+        return {
+          ...user,
+          flag: countryMatch?.flag || "",
+        };
+      });
+    } catch (error) {
+      toast.error('Error fetching all users.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false
+      });
+      console.error("Error fetching all users:", error);
+    }
+    resolve();
+  });
+});
 
 onMounted(async () => {
   await fetchCountries()
@@ -128,8 +125,8 @@ onMounted(async () => {
     <UsersTable :users="users"/>
   </div>
   <template v-else>
-    <div class="absolute inset-0 flex flex-col items-center justify-center">
-      <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"> </div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center" role="status" aria-live="polite" aria-label="Loading users">
+      <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
   </template>
 </template>
