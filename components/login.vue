@@ -208,18 +208,23 @@ const fillTestCredentials = () => {
             </button>
           </div>
         </form>
-        <p v-if="!redirectFrom" class="flex flex-col mt-10 text-center text-sm/6">
+        <p v-if="!redirectFrom" class="mt-10 text-center text-sm/6">
           Not register yet?
           <a @click="openModal('registerModal')" class="font-semibold text-amber-400 hover:text-amber-400/90 cursor-pointer">Click here to create your profile</a>
-          or 
-          <a 
-            @click="fillTestCredentials" 
-            :class="testCredentialsMatch ? 'text-amber-400/90' : 'padding-5 animate-[pulse_0.8s_ease-in-out_infinite] text-amber-400/90 drop-shadow-[0_0_10px_rgba(255,191,36,0.95)]'"
-            class="font-semibold cursor-pointer"
-            >
-              use test credentials
-          </a>
         </p>
+        <button
+          v-if="!redirectFrom"
+          type="button"
+          @click="fillTestCredentials"
+          :class="testCredentialsMatch
+            ? 'border-amber-400/40 bg-amber-400/5 text-amber-400/70'
+            : 'border-amber-400/70 bg-amber-400/10 text-amber-300 hover:bg-amber-400/20 hover:border-amber-400 animate-[pulse_1.4s_ease-in-out_infinite] shadow-[0_0_12px_rgba(255,191,36,0.35)]'"
+          class="mt-4 mx-auto flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors cursor-pointer"
+        >
+          <Check v-if="testCredentialsMatch" class="w-3.5 h-3.5" />
+          <User v-else class="w-3.5 h-3.5" />
+          {{ testCredentialsMatch ? 'Test credentials filled' : 'Use test credentials' }}
+        </button>
       </div>
     </div>
   </div>
