@@ -14,7 +14,6 @@ onMounted(() => {
   userStore.clearCurrentUser()
   userStore.clearToken()
   sessionStorage.removeItem('find-users-Token')
-  signOut(auth)  
 })
 
 const auth = useNuxtApp().$auth as Auth;
