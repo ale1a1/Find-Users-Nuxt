@@ -50,7 +50,7 @@ const mobilePaginatedUsers = computed(() => {
 const sortColumn = ref<keyof UserDetails | null>('name');
 const sortOrder = ref<'asc' | 'desc'>('asc');
 
-const isTogglingFavorite = ref(false);
+const togglingFavoriteEmail = ref<string | null>(null);
 const selectedUser = ref<UserDetails | null>(null);
 
 const filterProfession = ref('');
@@ -179,10 +179,10 @@ const toggleFavorite = (user: UserDetails) => {
     console.error("Cannot favourite yourself");
     return;
   }
-  if (isTogglingFavorite.value) {
+  if (togglingFavoriteEmail.value) {
     return
   }
-  isTogglingFavorite.value = true;  // Start toggling state
+  togglingFavoriteEmail.value = user.email;  // Start toggling state
   // Toggle the local favorite state for UI purposes
   const newFavoriteStatus = !user.isFavorite;
   // Add or remove the user from the favorites collection
@@ -197,7 +197,7 @@ const toggleFavorite = (user: UserDetails) => {
         user.isFavorite = false;  // Revert back if add to favorites failed
       })
       .finally(() => {
-        isTogglingFavorite.value = false;  // End toggling state
+        togglingFavoriteEmail.value = null;  // End toggling state
       });
   } else {
     removeFromFavorites(loggedInUserId, user)
@@ -210,7 +210,7 @@ const toggleFavorite = (user: UserDetails) => {
         user.isFavorite = true;  // Revert back if remove from favorites failed
       })
       .finally(() => {
-        isTogglingFavorite.value = false;  // End toggling state
+        togglingFavoriteEmail.value = null;  // End toggling state
       });
   }
 };
@@ -241,13 +241,16 @@ const addToFavorites = async (loggedInUserId: string, userToFavorite: UserDetail
 const removeFromFavorites = async (loggedInUserId: string, userToUnfavorite: UserDetails) => {
   try {
     const favRef = collection(db, "favorites");
-    // Implement logic to find the document based on favoritedBy and userToUnfavorite fields
-    const querySnapshot = await getDocs(favRef);
-    let favoriteDocId: string | null = null;    
+    // Only fetch the docs for this user+favorite pair, instead of scanning the whole collection
+    const q = query(
+      favRef,
+      where('favoritedBy', '==', loggedInUserId),
+      where('email', '==', userToUnfavorite.email)
+    );
+    const querySnapshot = await getDocs(q);
+    let favoriteDocId: string | null = null;
     querySnapshot.forEach(doc => {
-      if (doc.data().favoritedBy === loggedInUserId && doc.data().email === userToUnfavorite.email) {
-        favoriteDocId = doc.id;  // Get the doc ID for removal
-      }
+      favoriteDocId = doc.id;  // Get the doc ID for removal
     });
     if (favoriteDocId) {
       // If a document was found, delete it
@@ -526,17 +529,19 @@ const hideToolTip = (event: Event) => {
                 </td>
                 <td class="p-3 text-center w-[10%] td-container">
                   <button
-                    @click="(event) => { toggleFavorite(user); toggleTooltip(event); }"                  
-                    class="text-2xl transition-colors"
+                    @click="(event) => { toggleFavorite(user); toggleTooltip(event); }"
+                    :disabled="togglingFavoriteEmail === user.email || user.email === auth.currentUser?.email"
+                    class="text-2xl transition-colors inline-flex items-center justify-center w-8 h-8"
                     :class="{
-                      'text-yellow-400': user.isFavorite, 
-                      'text-gray-500 hover:text-gray-400': !user.isFavorite && user.email !== auth.currentUser?.email, 
+                      'text-yellow-400': user.isFavorite,
+                      'text-gray-500 hover:text-gray-400': !user.isFavorite && user.email !== auth.currentUser?.email,
                       'cursor-not-allowed text-gray-500': user.email === auth.currentUser?.email,
                       'cursor-pointer': user.email !== auth.currentUser?.email
                     }"
                     :title="user.email === auth.currentUser?.email ? 'Cannot favorite yourself' : (user.isFavorite ? 'Remove from Favorites' : 'Add to Favorites')"
                   >
-                    ★
+                    <span v-if="togglingFavoriteEmail === user.email" class="block size-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></span>
+                    <template v-else>★</template>
                     <span v-if="user.email === auth.currentUser?.email" class="tooltip" >Can't favorite yourself</span>
                   </button>
                 </td>           
@@ -559,9 +564,9 @@ const hideToolTip = (event: Event) => {
                 'border-2 border-amber-400/60' : currentPage === 1,
                 'hover:bg-gray-700 hover:text-white' : currentPage !== 1   
                 }"
-        class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out"
+        class="p-2 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out"
         :title="currentPage === 1 ? '' : 'Previous'">
-        <ChevronLeft class="w-5 h-5" />
+        <ChevronLeft class="w-4 h-4" />
       </button>
 
       <span class="text-gray-300">Page {{ currentPage }} of {{ totalPages }}</span>
@@ -576,9 +581,9 @@ const hideToolTip = (event: Event) => {
                   'border-2 border-amber-400/60' : currentPage === totalPages,
                   'hover:bg-gray-700 hover:text-white' : currentPage !== totalPages                  
                   }"
-        class="p-3 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out "
+        class="p-2 rounded-full bg-gray-600 text-gray-300 disabled:opacity-50 relative transition-all duration-200 ease-in-out "
         :title="currentPage === totalPages ? '' : 'Next'">
-        <ChevronRight class="w-5 h-5" />
+        <ChevronRight class="w-4 h-4" />
       </button>
     </div>
     <!-- User detail modal -->
@@ -616,12 +621,14 @@ const hideToolTip = (event: Event) => {
           <button
             v-if="selectedUser.email !== auth.currentUser?.email"
             @click="toggleFavorite(selectedUser!)"
-            class="w-full py-3 rounded-lg text-base font-semibold transition-colors"
+            :disabled="togglingFavoriteEmail === selectedUser.email"
+            class="w-full py-3 rounded-lg text-base font-semibold transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             :class="selectedUser.isFavorite
               ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/60 hover:bg-yellow-400/30'
               : 'bg-gray-700 text-gray-300 border border-gray-500 hover:bg-gray-600'"
           >
-            {{ selectedUser.isFavorite ? '★ Remove from Favorites' : '☆ Add to Favorites' }}
+            <span v-if="togglingFavoriteEmail === selectedUser.email" class="block size-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+            <template v-else>{{ selectedUser.isFavorite ? '★ Remove from Favorites' : '☆ Add to Favorites' }}</template>
           </button>
           <p v-else class="text-center text-gray-500 text-sm">This is you</p>
         </div>
