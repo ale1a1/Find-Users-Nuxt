@@ -26,16 +26,16 @@ const users = ref<UserDetails[]>([]);
  
 const fetchCountries = async () => {
   try {
-    const response = await fetch("https://restcountries.com/v3.1/all?fields=name,cca3,flags");
+    const response = await fetch("https://countriesnow.space/api/v0.1/countries/flag/images");
     if (!response.ok) {
       throw new Error("Failed to fetch countries");
     }
-    const data = await response.json();
+    const { data } = await response.json();
     countries.value = data
       .map((country: any) => ({
-        name: country.name.common,
-        alpha3Code: country.cca3,
-        flag: country.flags.svg,
+        name: country.name,
+        alpha3Code: country.iso3,
+        flag: country.flag,
       }))
       .sort((a: Country, b: Country) => a.name.localeCompare(b.name));
   } catch (error) {
@@ -121,7 +121,7 @@ onMounted(async () => {
   <div v-if="showContent" class="flex flex-col w-full mb-8">
     <div class="flex flex-col items-center mt-8 mb-2 gap-2">
       <h1 class="text-white text-2xl sm:text-3xl font-bold tracking-widest uppercase">Users List</h1>
-      <div class="w-12 h-[2px] bg-amber-400/70 rounded-full"></div>
+      <div class="w-16 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full"></div>
     </div>
     <UsersTable :users="users"/>
   </div>

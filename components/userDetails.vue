@@ -354,17 +354,17 @@ const fetchCountries = async () => {
   isLoadingCountries.value = true;
   countryFetchError.value = null;
   try {
-    const response = await fetch('https://restcountries.com/v3.1/all?fields=name,cca3,flags');
+    const response = await fetch('https://countriesnow.space/api/v0.1/countries/flag/images');
     if (!response.ok) {
-        const errorText = await response.text(); // 👈 add this
-  console.error('API error:', response.status, errorText);
+      const errorText = await response.text();
+      console.error('API error:', response.status, errorText);
       throw new Error('Failed to fetch countries');
-    }   
-    const data = await response.json();
-    countries.value = data.map((country: { name: { common: any; }; alpha3Code: any; flags: { svg: any; }; }) => ({
-      name: country.name.common,
-      alpha3Code: country.alpha3Code,
-      flag: country.flags.svg
+    }
+    const { data } = await response.json();
+    countries.value = data.map((country: { name: string; iso3: string; flag: string; }) => ({
+      name: country.name,
+      alpha3Code: country.iso3,
+      flag: country.flag
     }))
     .sort((a:any, b:any) => a.name.localeCompare(b.name));
   } catch (error) {
