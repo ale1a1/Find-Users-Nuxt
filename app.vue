@@ -39,15 +39,16 @@ const loginRedirectStore = useLoginRedirectStore();
 const isAuthChecked = ref(false);
 const currentUser = ref();
 const userVisibleDetails = ref<UserVisibleDetails | null>(null);
-const token = ref(userStore.token);
+const token = computed(() => userStore.token);
 const isProfileMenuOpen = ref(false);
 const isMobileNavMenuOpen = ref(false);
 
 
 onMounted(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    const token = sessionStorage.getItem('find-users-Token') ?? userStore.token;
-    if (user?.emailVerified && token) {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user?.emailVerified) {
+      const token = await user.getIdToken();
+      userStore.setToken(token);
       getProfileData(user);
       currentUser.value = user;
     } else {
