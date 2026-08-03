@@ -98,13 +98,18 @@ const getProfileData = async (user: any) => {
 };
 
 const logout = async () => {
+  // Navigate first so the router finishes tearing down the current page
+  // before we also toggle the navbar/authenticated tree off — doing both
+  // in the same tick can make Vue's patch collide with in-flight
+  // click-outside/dropdown teardown on pages like /profile.
+  await router.push('/login');
   currentUser.value = null;
   userStore.clearToken()
   userStore.clearCurrentUser()
-  sessionStorage.removeItem("find-users-Token")   
+  sessionStorage.removeItem("find-users-Token")
   loginRedirectStore.setRedirectFrom(null)
   try {
-    await signOut(auth); 
+    await signOut(auth);
     // setTimeout(() => { 
     //   userStore.clearToken()
     //   userStore.clearCurrentUser()
