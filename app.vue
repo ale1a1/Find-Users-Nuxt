@@ -169,10 +169,13 @@ watchEffect(() => {
 
 <template >
 
-  <div v-if="isAuthChecked" class="min-h-screen flex flex-col relative">
-    <!-- Blurred background — always present, independent of content loading -->
+  <div class="min-h-screen flex flex-col relative">
+    <!-- Blurred background — always present, independent of auth/content loading -->
     <div class="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }"></div>
     <div class="fixed inset-0 -z-10 backdrop-blur-[6px]"></div>
+
+    <Transition name="fade" mode="out-in">
+    <div v-if="isAuthChecked" key="app" class="flex flex-col flex-1 min-h-0">
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="currentUser">
       <nav class="relative z-20 bg-[#b5811a] border-b-2 border-gray-30/80">
@@ -264,14 +267,15 @@ watchEffect(() => {
     <!-- Footer only if user is authenticated -->
     <template v-if="currentUser">
       <Footer class="z-20" />
-    </template>  
-  </div>
+    </template>
+    </div>
 
-  <template v-else>
-    <div class="flex flex-col items-center justify-center h-screen w-screen bg-neutral-950" role="status" aria-live="polite" aria-label="Loading application">
+    <!-- Auth still resolving — background stays, only this overlay shows -->
+    <div v-else key="loading" class="flex flex-1 flex-col items-center justify-center" role="status" aria-live="polite" aria-label="Loading application">
       <div class="w-16 h-16 border-6 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
-  </template>
+    </Transition>
+  </div>
 
 </template>
 
