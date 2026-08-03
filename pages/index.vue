@@ -53,16 +53,20 @@ const features = [
               <NuxtLink
                 :to="f.to"
                 class="group relative flex flex-col items-center gap-3 p-5 sm:p-7 rounded-2xl overflow-hidden
-                       border border-white/15 bg-neutral-950/80 backdrop-blur-md
+                       border border-white/20 bg-gradient-to-b from-neutral-900 to-neutral-950
+                       shadow-[0_8px_30px_rgba(0,0,0,0.6)] ring-1 ring-black/50
                        transition-all duration-300 h-full
-                       hover:-translate-y-1 hover:border-amber-400/60 hover:bg-neutral-950
-                       hover:shadow-[0_0_35px_-8px_rgba(251,191,36,0.45)]"
+                       hover:-translate-y-1.5 hover:border-amber-400/70
+                       hover:shadow-[0_0_40px_-8px_rgba(251,191,36,0.5)]"
               >
-                <!-- Corner glow accent -->
-                <div class="pointer-events-none absolute -top-10 -right-10 size-28 rounded-full bg-amber-400/0 blur-2xl transition-colors duration-500 group-hover:bg-amber-400/20"></div>
+                <!-- Top accent line -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-amber-400 transition-all duration-500 group-hover:w-2/3"></div>
 
-                <div class="relative flex items-center justify-center size-11 sm:size-12 rounded-xl bg-amber-400/10 ring-1 ring-amber-400/30
-                            group-hover:bg-amber-400/15 group-hover:ring-amber-400/60 transition-all duration-300">
+                <!-- Corner glow accent -->
+                <div class="pointer-events-none absolute -top-10 -right-10 size-32 rounded-full bg-amber-400/0 blur-2xl transition-colors duration-500 group-hover:bg-amber-400/25"></div>
+
+                <div class="relative flex items-center justify-center size-12 sm:size-14 rounded-xl bg-gradient-to-br from-amber-400/15 to-amber-400/5 ring-1 ring-amber-400/30
+                            group-hover:ring-amber-400/70 group-hover:from-amber-400/25 transition-all duration-300 group-hover:rotate-3">
                   <component
                     :is="f.icon"
                     class="size-5 sm:size-6 text-amber-400 group-hover:scale-110 transition-transform duration-300"
@@ -70,11 +74,14 @@ const features = [
                 </div>
 
                 <div class="relative flex flex-col items-center gap-1 text-center">
-                  <span class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">{{ f.label }}</span>
-                  <span class="text-sm sm:text-base lg:text-lg font-bold text-amber-300 tracking-widest drop-shadow-lg">{{ f.highlight }}</span>
+                  <span class="text-xs sm:text-sm text-gray-500 font-medium uppercase tracking-wider">{{ f.label }}</span>
+                  <span class="font-condensed text-xl sm:text-2xl lg:text-3xl font-semibold text-amber-300 uppercase tracking-wide drop-shadow-lg">{{ f.highlight }}</span>
                 </div>
 
-                <ArrowUpRight class="relative size-4 text-white/0 group-hover:text-amber-400/80 -translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300" />
+                <div class="relative mt-1 flex items-center gap-1 text-[11px] uppercase tracking-widest text-white/0 group-hover:text-amber-400/80 transition-all duration-300">
+                  <span>Explore</span>
+                  <ArrowUpRight class="size-3.5 -translate-x-1 group-hover:translate-x-0 transition-transform duration-300" />
+                </div>
               </NuxtLink>
             </li>
           </ul>
