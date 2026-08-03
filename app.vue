@@ -5,7 +5,7 @@ import { useHead } from '#imports'
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from 'vue3-toastify'
 import { useLoginRedirectStore } from '@/stores/loginRedirect';
-import backgroundImage from '~/assets/images/keyboard bg - 2.jpg';
+import backgroundImage from '~/assets/images/keyboard-bg-2.jpg';
 import { useUserStore } from './stores/userStore';
 import { doc, getDoc, type DocumentData, type Firestore } from 'firebase/firestore';
 import Footer from './components/footer.vue';
@@ -169,13 +169,13 @@ watchEffect(() => {
 
 <template >
 
-  <div class="min-h-screen flex flex-col relative">
+  <div class="min-h-screen flex flex-col relative isolate">
     <!-- Blurred background — always present, independent of auth/content loading -->
-    <div class="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }"></div>
-    <div class="fixed inset-0 -z-10 backdrop-blur-[6px]"></div>
+    <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: 'url(' + backgroundImage + ')' }"></div>
+    <div class="fixed inset-0 z-0 backdrop-blur-[6px]"></div>
 
     <Transition name="fade" mode="out-in">
-    <div v-if="isAuthChecked" key="app" class="flex flex-col flex-1 min-h-0">
+    <div v-if="isAuthChecked" key="app" class="relative z-10 flex flex-col flex-1 min-h-0">
     <!-- Navbar renders only if user is authenticated  -->
     <template v-if="currentUser">
       <nav class="relative z-20 bg-[#b5811a] border-b-2 border-gray-30/80">
