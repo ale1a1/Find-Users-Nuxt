@@ -151,12 +151,6 @@ watch(() => userStore.currentUser, (user) => {
 
 watch(() => userStore.userVisibleDetails, (newDetails) => {
   userVisibleDetails.value = newDetails
-}); 
-
-watchEffect(() => {
-  if (userStore.userVisibleDetails) {
-    userVisibleDetails.value = userStore.userVisibleDetails;
-  }
 });
 
 watchEffect(() => {
@@ -223,10 +217,10 @@ watchEffect(() => {
                   <button @click="toggleProfileMenu" type="button" class="relative flex rounded-full bg-gray-900 border border-neutral-800 text-sm cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
-                    <template v-if="!userData?.profilePictureUrl || !userVisibleDetails?.profilePictureUrl">
+                    <template v-if="!userVisibleDetails?.profilePictureUrl">
                       <User class="size-8 text-gray-400" />
                     </template>
-                    <img v-else class="size-8 rounded-full" :src="userVisibleDetails?.profilePictureUrl || userData?.profilePictureUrl" alt="">
+                    <img v-else class="size-8 rounded-full" :src="userVisibleDetails.profilePictureUrl" alt="">
                   </button>
                 </div>        
                 <div v-if="isProfileMenuOpen" v-click-outside="toggleProfileMenu" class=" bg-[#b5811a] border-1 border-black border-t-0 absolute right-0 z-10 mt-2 w-30 origin-top-right rounded-md py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
